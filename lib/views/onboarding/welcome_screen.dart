@@ -11,7 +11,7 @@ class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
   /// Must match filename in `assets/images/` exactly (case-sensitive in builds).
-  static const String _heroAsset = 'assets/images/First_Screen_image.png';
+  static const String _heroAsset = 'assets/images/First_Screen_image.jpg';
 
   static const String _tagline = 'Compare rides. Maximize earnings.';
   static const String _headlineLine1 = 'Turn every trip';

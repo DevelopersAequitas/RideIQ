@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:rideiq/core/theme/app_colors.dart';
 import 'package:rideiq/core/theme/ride_typography.dart';
+import 'package:rideiq/core/ui/ride_responsive.dart';
 
 /// Primary CTA — elevated, shadow, 16px radius, 1px border, 15px padding.
 class RidePrimaryButton extends StatelessWidget {
@@ -10,15 +11,31 @@ class RidePrimaryButton extends StatelessWidget {
     required this.label,
     this.onPressed,
     this.borderRadius = 16,
+    this.padding = const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+    this.minimumHeight = 50,
   });
 
   final String label;
   final VoidCallback? onPressed;
   final double borderRadius;
+  final EdgeInsetsGeometry padding;
+  final double minimumHeight;
 
   @override
   Widget build(BuildContext context) {
     final enabled = onPressed != null;
+    final r = context.r;
+
+    final scaledMinHeight = r.s(minimumHeight).clamp(44.0, 72.0);
+    final scaledPadding = switch (padding) {
+      final EdgeInsets p => EdgeInsets.fromLTRB(
+          r.s(p.left),
+          r.s(p.top),
+          r.s(p.right),
+          r.s(p.bottom),
+        ),
+      _ => padding,
+    };
 
     return SizedBox(
       width: double.infinity,
@@ -32,10 +49,10 @@ class RidePrimaryButton extends StatelessWidget {
           foregroundColor: Colors.white,
           disabledForegroundColor: Colors.white.withOpacity(0.85),
           disabledBackgroundColor: AppColors.ctaBlue.withOpacity(0.35),
-          minimumSize: const Size.fromHeight(50),
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+          minimumSize: Size.fromHeight(scaledMinHeight),
+          padding: scaledPadding,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(borderRadius),
+            borderRadius: BorderRadius.circular(r.s(borderRadius)),
             side: BorderSide(
               color: AppColors.primary3.withOpacity(enabled ? 0.55 : 0.35),
               width: 1,
@@ -49,6 +66,7 @@ class RidePrimaryButton extends StatelessWidget {
             color: enabled
                 ? RideTypography.buttonLabel.color
                 : Colors.white.withOpacity(0.85),
+            fontSize: (RideTypography.buttonLabel.fontSize ?? 16) * r.scale,
           ),
         ),
       ),

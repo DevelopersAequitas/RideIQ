@@ -70,7 +70,7 @@ flutter:
     - assets/icons/
     - assets/images/
     # Explicit entry avoids missing from bundle if folder rules change.
-    - assets/images/First_Screen_image.png
+    - assets/images/First_Screen_image.jpg
     - assets/images/Rider1.png
     - assets/images/iam_driver.png
     - assets/images/splash_native_gradient.png
