@@ -115,3 +115,13 @@ flutter_launcher_icons:
   # 78% canvas fill leaves safe padding so rounded-corner masks never clip artwork.
   adaptive_icon_foreground_inset: 8
   remove_alpha_ios: true
+
+# Native splash (Android drawable-*/android12splash.png, iOS storyboard, etc.).
+# Must match values-v31 windowSplashScreen* colors. Regenerate after changes:
+#   dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/images/RideIQ_App_Icon.png
+  android_12:
+    image: assets/images/RideIQ_App_Icon.png
+    icon_background_color: "#FFFFFF"

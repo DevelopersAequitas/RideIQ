@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:rideiq/core/theme/app_colors.dart';
 import 'package:rideiq/core/ui/ride_responsive.dart';
+import 'package:rideiq/views/handoff/uber_handoff_screen.dart';
+import 'package:rideiq/views/profile/profile_screen_v2.dart';
+import 'package:rideiq/widgets/bottom_role_bar.dart';
 
 class FareComparisonScreen extends StatefulWidget {
   const FareComparisonScreen({super.key});
@@ -45,7 +46,20 @@ class _FareComparisonScreenState extends State<FareComparisonScreen> {
                           onTap: () => Navigator.of(context).pop(),
                         ),
                         const Spacer(),
-                        _ProfileAvatar(size: r.s(40)),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => const ProfileScreen(),
+                                ),
+                              );
+                            },
+                            customBorder: const CircleBorder(),
+                            child: _ProfileAvatar(size: r.s(40)),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -71,50 +85,50 @@ class _FareComparisonScreenState extends State<FareComparisonScreen> {
                         r.s(20),
                         r.s(12),
                       ),
-                      children: const [
-                        _FareRow(
+                      children: [
+                        const _FareRow(
                           logoAsset: 'assets/images/uber.png',
                           provider: 'Uber',
                           product: 'UberX',
                           price: '\$9.10',
                           eta: '5 min',
                         ),
-                        _FareRow(
+                        const _FareRow(
                           logoAsset: 'assets/images/uber.png',
                           provider: 'Uber',
                           product: 'UberX',
                           price: '\$9.10',
                           eta: '5 min',
                         ),
-                        _FareRow(
+                        const _FareRow(
                           logoAsset: 'assets/images/lyft.png',
                           provider: 'Lyft',
                           product: 'Standard',
                           price: '\$9.35',
                           eta: '3 min',
                         ),
-                        _FareRow(
+                        const _FareRow(
                           logoAsset: 'assets/images/uber.png',
                           provider: 'Uber',
                           product: 'Comfort',
                           price: '\$12.50',
                           eta: '6 min',
                         ),
-                        _FareRow(
+                        const _FareRow(
                           logoAsset: 'assets/images/lyft.png',
                           provider: 'Lyft',
                           product: 'Lux',
                           price: '\$15.80',
                           eta: '8 min',
                         ),
-                        _FareRow(
+                        const _FareRow(
                           logoAsset: 'assets/images/uber.png',
                           provider: 'Uber',
                           product: 'Comfort',
                           price: '\$12.50',
                           eta: '6 min',
                         ),
-                        _FareRow(
+                        const _FareRow(
                           logoAsset: 'assets/images/lyft.png',
                           provider: 'Lyft',
                           product: 'Standard',
@@ -124,7 +138,10 @@ class _FareComparisonScreenState extends State<FareComparisonScreen> {
                       ],
                     ),
                   ),
-                  const _BottomRoleBarStatic(),
+                  BottomRoleBar(
+                    selectedIndex: 0,
+                    onSelect: (_) {},
+                  ),
                 ],
               ),
             ),
@@ -437,130 +454,103 @@ class _FareRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final r = context.r;
-
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: r.s(12)),
-      child: Row(
-        children: [
-          ClipOval(
-            child: Image.asset(
-              logoAsset,
-              width: r.s(42),
-              height: r.s(42),
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                width: r.s(42),
-                height: r.s(42),
-                color: const Color(0xFFE9E9EC),
-                alignment: Alignment.center,
-                child: Text(
-                  provider.characters.first,
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w700,
-                    fontSize: r.s(16),
-                  ),
-                ),
+    final isUber = provider.toLowerCase() == 'uber';
+    final onTap = isUber
+        ? () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const UberHandoffScreen(),
               ),
-            ),
-          ),
-          SizedBox(width: r.s(12)),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  provider,
-                  style: TextStyle(
-                    color: AppColors.textTertiary,
-                    fontSize: r.s(11),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                SizedBox(height: r.s(2)),
-                Text(
-                  product,
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: r.s(14),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                price,
-                style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: r.s(14),
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(height: r.s(4)),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.access_time, size: r.s(12), color: AppColors.textTertiary),
-                  SizedBox(width: r.s(4)),
-                  Text(
-                    eta,
-                    style: TextStyle(
-                      color: AppColors.textTertiary,
-                      fontSize: r.s(11),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
+            );
+          }
+        : null;
 
-class _BottomRoleBarStatic extends StatelessWidget {
-  const _BottomRoleBarStatic();
-
-  @override
-  Widget build(BuildContext context) {
-    final r = context.r;
     return Material(
-      color: AppColors.surface,
-      elevation: 0,
-      child: SafeArea(
-        top: false,
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(r.s(14)),
         child: Padding(
-          padding: EdgeInsets.only(
-            left: r.s(24),
-            right: r.s(24),
-            top: r.s(5),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          padding: EdgeInsets.symmetric(vertical: r.s(12)),
+          child: Row(
             children: [
-              Container(height: 1, color: AppColors.borderSecondary),
-              SizedBox(height: r.s(8)),
-              Row(
-                children: const [
-                  Expanded(
-                    child: _BottomNavItem(
-                      label: 'Rider',
-                      assetPath: 'assets/icons/User.svg',
-                      selected: true,
+              ClipOval(
+                child: Image.asset(
+                  logoAsset,
+                  width: r.s(42),
+                  height: r.s(42),
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    width: r.s(42),
+                    height: r.s(42),
+                    color: const Color(0xFFE9E9EC),
+                    alignment: Alignment.center,
+                    child: Text(
+                      provider.characters.first,
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w700,
+                        fontSize: r.s(16),
+                      ),
                     ),
                   ),
-                  Expanded(
-                    child: _BottomNavItem(
-                      label: 'Driver',
-                      assetPath: 'assets/icons/Car.svg',
-                      selected: false,
+                ),
+              ),
+              SizedBox(width: r.s(12)),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      provider,
+                      style: TextStyle(
+                        color: AppColors.textTertiary,
+                        fontSize: r.s(11),
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
+                    SizedBox(height: r.s(2)),
+                    Text(
+                      product,
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: r.s(14),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    price,
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: r.s(14),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(height: r.s(4)),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.access_time,
+                        size: r.s(12),
+                        color: AppColors.textTertiary,
+                      ),
+                      SizedBox(width: r.s(4)),
+                      Text(
+                        eta,
+                        style: TextStyle(
+                          color: AppColors.textTertiary,
+                          fontSize: r.s(11),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -571,49 +561,3 @@ class _BottomRoleBarStatic extends StatelessWidget {
     );
   }
 }
-
-class _BottomNavItem extends StatelessWidget {
-  const _BottomNavItem({
-    required this.label,
-    required this.assetPath,
-    required this.selected,
-  });
-
-  final String label;
-  final String assetPath;
-  final bool selected;
-
-  @override
-  Widget build(BuildContext context) {
-    final r = context.r;
-    final color = selected ? AppColors.ctaBlue : AppColors.textTertiary;
-
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: r.s(4)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            height: r.s(17),
-            child: SvgPicture.asset(
-              assetPath,
-              fit: BoxFit.contain,
-              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-            ),
-          ),
-          SizedBox(height: r.s(6)),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: r.s(12),
-              fontWeight: FontWeight.w600,
-              height: 1.1,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-

@@ -13,6 +13,7 @@ class RidePrimaryButton extends StatelessWidget {
     this.borderRadius = 16,
     this.padding = const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
     this.minimumHeight = 50,
+    this.showBorder = true,
   });
 
   final String label;
@@ -20,6 +21,7 @@ class RidePrimaryButton extends StatelessWidget {
   final double borderRadius;
   final EdgeInsetsGeometry padding;
   final double minimumHeight;
+  final bool showBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +55,12 @@ class RidePrimaryButton extends StatelessWidget {
           padding: scaledPadding,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(r.s(borderRadius)),
-            side: BorderSide(
-              color: AppColors.primary3.withOpacity(enabled ? 0.55 : 0.35),
-              width: 1,
-            ),
+            side: showBorder
+                ? BorderSide(
+                    color: AppColors.primary3.withOpacity(enabled ? 0.55 : 0.35),
+                    width: 1,
+                  )
+                : BorderSide.none,
           ),
         ),
         child: Text(

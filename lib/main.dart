@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'RideIQ',
+      title: 'RydeIQ',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,

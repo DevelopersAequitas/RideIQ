@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:rideiq/core/theme/app_colors.dart';
 import 'package:rideiq/core/ui/ride_responsive.dart';
 import 'package:rideiq/views/home/fare_comparison_screen.dart';
+import 'package:rideiq/views/profile/profile_screen_v2.dart';
+import 'package:rideiq/widgets/bottom_role_bar.dart';
 import 'package:rideiq/widgets/ride_primary_button.dart';
 
 /// Select pickup/drop + recent locations + Rider/Driver tab bar (reference UI).
@@ -128,7 +129,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                 ),
               ),
             ),
-            _BottomRoleBar(
+            BottomRoleBar(
               selectedIndex: _bottomIndex,
               onSelect: (i) => setState(() => _bottomIndex = i),
             ),
@@ -657,62 +658,6 @@ class _RecentLocationTile extends StatelessWidget {
 
 
 
-class _BottomRoleBar extends StatelessWidget {
-  const _BottomRoleBar({
-    required this.selectedIndex,
-    required this.onSelect,
-  });
-
-  final int selectedIndex;
-  final ValueChanged<int> onSelect;
-
-  @override
-  Widget build(BuildContext context) {
-    final r = context.r;
-    return Material(
-      color: AppColors.surface,
-      elevation: 0,
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: r.s(24),
-            right: r.s(24),
-            top: r.s(5),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(height: 1, color: AppColors.borderSecondary),
-              SizedBox(height: r.s(8)),
-              Row(
-                children: [
-                  Expanded(
-                    child: _NavItem(
-                      label: 'Rider',
-                      assetPath: 'assets/icons/User.svg',
-                      selected: selectedIndex == 0,
-                      onTap: () => onSelect(0),
-                    ),
-                  ),
-                  Expanded(
-                    child: _NavItem(
-                      label: 'Driver',
-                      assetPath: 'assets/icons/Car.svg',
-                      selected: selectedIndex == 1,
-                      onTap: () => onSelect(1),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _AvatarCluster extends StatelessWidget {
   const _AvatarCluster();
 
@@ -720,9 +665,22 @@ class _AvatarCluster extends StatelessWidget {
   Widget build(BuildContext context) {
     final r = context.r;
     final avatarSize = r.s(44);
-    return _PhotoAvatar(
-      size: avatarSize,
-      image: const AssetImage('assets/images/Profilepicture.png'),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => const ProfileScreen(),
+            ),
+          );
+        },
+        customBorder: const CircleBorder(),
+        child: _PhotoAvatar(
+          size: avatarSize,
+          image: const AssetImage('assets/images/Profilepicture.png'),
+        ),
+      ),
     );
   }
 }
@@ -753,55 +711,3 @@ class _PhotoAvatar extends StatelessWidget {
     );
   }
 }
-
-class _NavItem extends StatelessWidget {
-  const _NavItem({
-    required this.label,
-    required this.assetPath,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final String assetPath;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final r = context.r;
-    final color = selected ? AppColors.ctaBlue : AppColors.textTertiary;
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(r.s(12)),
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: r.s(4)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: r.s(17),
-              child: SvgPicture.asset(
-                assetPath,
-                fit: BoxFit.contain,
-                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-              ),
-            ),
-            SizedBox(height: r.s(6)),
-            Text(
-              label,
-              style: TextStyle(
-                color: color,
-                fontSize: r.s(12),
-                fontWeight: FontWeight.w600,
-                height: 1.1,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-

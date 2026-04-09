@@ -103,7 +103,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute<void>(
                             builder: (_) =>
-                                const MyHomePage(title: 'RideIQ'),
+                                const MyHomePage(title: 'RydeIQ'),
                           ),
                           (route) => false,
                         );
