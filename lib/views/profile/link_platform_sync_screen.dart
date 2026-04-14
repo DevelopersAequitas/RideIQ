@@ -25,6 +25,21 @@ class _LinkPlatformSyncScreenState extends State<LinkPlatformSyncScreen> {
   bool _done = false;
   Timer? _timer;
 
+  void _popLinkFlowToProfile() {
+    final nav = Navigator.of(context);
+    nav.pop();
+    nav.pop();
+    nav.pop();
+  }
+
+  void _handleBack() {
+    if (_done) {
+      _popLinkFlowToProfile();
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -58,33 +73,39 @@ class _LinkPlatformSyncScreenState extends State<LinkPlatformSyncScreen> {
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
-      child: Scaffold(
-        backgroundColor: AppColors.surface,
-        body: Column(
-          children: [
-            Material(
-              color: AppColors.surface,
-              child: Padding(
-                padding: EdgeInsets.only(top: topPad),
-                child: SizedBox(
-                  height: r.s(46),
-                  child: Row(
-                    children: [
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () => Navigator.of(context).pop(),
-                          customBorder: const CircleBorder(),
-                          child: Padding(
-                            padding: EdgeInsets.all(r.s(14)),
-                            child: Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              size: r.s(18),
-                              color: AppColors.textPrimary,
+      child: PopScope(
+        canPop: !_done,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+          if (_done) _popLinkFlowToProfile();
+        },
+        child: Scaffold(
+          backgroundColor: AppColors.surface,
+          body: Column(
+            children: [
+              Material(
+                color: AppColors.surface,
+                child: Padding(
+                  padding: EdgeInsets.only(top: topPad),
+                  child: SizedBox(
+                    height: r.s(46),
+                    child: Row(
+                      children: [
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: _handleBack,
+                            customBorder: const CircleBorder(),
+                            child: Padding(
+                              padding: EdgeInsets.all(r.s(14)),
+                              child: Icon(
+                                Icons.arrow_back_ios_new_rounded,
+                                size: r.s(18),
+                                color: AppColors.textPrimary,
+                              ),
                             ),
                           ),
                         ),
-                      ),
                       SizedBox(width: r.s(6)),
                       Expanded(
                         child: Text(
@@ -125,16 +146,30 @@ class _LinkPlatformSyncScreenState extends State<LinkPlatformSyncScreen> {
                 ),
               ),
             ),
-            BottomRoleBar(
-              selectedIndex: _bottomIndex,
-              onSelect: (i) => setState(() => _bottomIndex = i),
-              accentColor: const Color(0xFF2D60FF),
-            ),
-          ],
+              BottomRoleBar(
+                selectedIndex: _bottomIndex,
+                onSelect: (i) => setState(() => _bottomIndex = i),
+                accentColor: const Color(0xFF2D60FF),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+}
+
+bool _isLyftPlatform(String platformName) =>
+    platformName.trim().toLowerCase() == 'lyft';
+
+Color _platformLogoBg(String platformName) {
+  if (_isLyftPlatform(platformName)) return const Color(0xFFEA2D8C);
+  return const Color(0xFF111111);
+}
+
+String _platformLogoLabel(String platformName) {
+  if (_isLyftPlatform(platformName)) return 'lyft';
+  return platformName;
 }
 
 class _SyncState extends StatelessWidget {
@@ -146,6 +181,8 @@ class _SyncState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final r = context.r;
+    final logoBg = _platformLogoBg(platformName);
+    final logoLabel = _platformLogoLabel(platformName);
 
     return Column(
       children: [
@@ -168,8 +205,8 @@ class _SyncState extends StatelessWidget {
               ),
               _CircleLogo(
                 size: r.s(74),
-                bg: const Color(0xFF111111),
-                child: Text(platformName),
+                bg: logoBg,
+                child: Text(logoLabel),
               ),
             ],
           ),
@@ -223,6 +260,8 @@ class _SuccessState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final r = context.r;
+    final logoBg = _platformLogoBg(platformName);
+    final logoLabel = _platformLogoLabel(platformName);
     return Column(
       children: [
         const Spacer(),
@@ -236,8 +275,8 @@ class _SuccessState extends StatelessWidget {
                 alignment: Alignment.center,
                 child: _CircleLogo(
                   size: r.s(74),
-                  bg: const Color(0xFF111111),
-                  child: Text(platformName),
+                  bg: logoBg,
+                  child: Text(logoLabel),
                 ),
               ),
               Positioned(

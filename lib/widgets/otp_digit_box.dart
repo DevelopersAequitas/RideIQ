@@ -77,7 +77,7 @@ class _OtpDigitBoxState extends State<OtpDigitBox>
             border: Border.all(
               color: _isFocused
                   ? AppColors.primary2
-                  : AppColors.primary2.withOpacity(0.6),
+                  : AppColors.primary2.withValues(alpha: 0.6),
               width: _isFocused ? 1.6 : 1.2,
             ),
           ),

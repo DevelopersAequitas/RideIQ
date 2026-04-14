@@ -2,9 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-
 import 'package:rideiq/core/constants/splash_assets.dart';
 import 'package:rideiq/core/theme/app_colors.dart';
 import 'package:rideiq/views/onboarding/welcome_screen.dart';
@@ -28,10 +26,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _runSplashFlow() async {
     if (!mounted) return;
-    final ctx = context;
 
     try {
-      await precacheImage(AssetImage(SplashAssets.logo), ctx);
+      await precacheImage(AssetImage(SplashAssets.logo), context);
     } catch (_) {}
 
     if (!mounted) return;
@@ -40,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future<void>.delayed(SplashScreen._displayDuration);
     if (!mounted) return;
 
-    Navigator.of(ctx).pushReplacement(
+    Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(builder: (_) => const WelcomeScreen()),
     );
   }
@@ -75,7 +72,8 @@ class _SplashScreenState extends State<SplashScreen> {
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.high,
                       gaplessPlayback: true,
-                      errorBuilder: (_, __, ___) => _SplashLogoFallback(width: logoWidth),
+                      errorBuilder: (_, __, ___) =>
+                          _SplashLogoFallback(width: logoWidth),
                     ),
                   ),
                   const Spacer(),

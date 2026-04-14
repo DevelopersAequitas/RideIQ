@@ -117,7 +117,7 @@ class _CreateAccountOtpScreenState extends State<CreateAccountOtpScreen> {
       height: 1.4,
     );
     final footerGrey = TextStyle(
-      color: AppColors.textSecondary.withOpacity(0.9),
+      color: AppColors.textSecondary.withValues(alpha: 0.9),
       fontSize: 12,
       fontWeight: FontWeight.w400,
       height: 1.4,

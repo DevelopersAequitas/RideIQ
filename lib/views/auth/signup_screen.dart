@@ -79,7 +79,7 @@ class SignupScreen extends StatelessWidget {
                     "We'll send a verification code to your number.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: AppColors.textSecondary.withOpacity(0.85),
+                      color: AppColors.textSecondary.withValues(alpha: 0.85),
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       height: 1.4,

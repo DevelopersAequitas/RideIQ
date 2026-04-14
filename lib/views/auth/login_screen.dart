@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final contentW = MediaQuery.sizeOf(context).width - (_horizontalPad * 2);
 
     final timerGrey = TextStyle(
-      color: AppColors.textSecondary.withOpacity(0.9),
+      color: AppColors.textSecondary.withValues(alpha: 0.9),
       fontSize: 12,
       fontWeight: FontWeight.w400,
       height: 1.4,
@@ -238,7 +238,7 @@ class _OtpSentBanner extends StatelessWidget {
       width: width,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: AppColors.primaryLight.withOpacity(0.55),
+          color: AppColors.primaryLight.withValues(alpha: 0.55),
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Padding(

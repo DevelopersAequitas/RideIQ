@@ -22,6 +22,20 @@ class LinkPlatformOtpScreen extends StatefulWidget {
 class _LinkPlatformOtpScreenState extends State<LinkPlatformOtpScreen> {
   int _bottomIndex = 0;
 
+  bool get _isLyft => widget.platformName.trim().toLowerCase() == 'lyft';
+  bool get _isUber => widget.platformName.trim().toLowerCase() == 'uber';
+
+  Color get _platformBgColor {
+    if (_isLyft) return const Color(0xFFEA2D8C);
+    if (_isUber) return const Color(0xFF111111);
+    return const Color(0xFF111111);
+  }
+
+  String get _platformBadgeText {
+    if (_isLyft) return 'lyft';
+    return widget.platformName;
+  }
+
   final _controllers = List.generate(6, (_) => TextEditingController());
   final _nodes = List.generate(6, (_) => FocusNode());
 
@@ -111,7 +125,7 @@ class _LinkPlatformOtpScreenState extends State<LinkPlatformOtpScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: r.s(10)),
+                      SizedBox(width: r.s(6)),
                       Expanded(
                         child: Text(
                           'Link Platform',
@@ -140,8 +154,8 @@ class _LinkPlatformOtpScreenState extends State<LinkPlatformOtpScreen> {
                     constraints: BoxConstraints(maxWidth: r.contentMaxWidth),
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(
-                        r.s(25),
-                        r.s(25),
+                        r.s(20),
+                        r.s(22),
                         r.s(20),
                         r.s(16),
                       ),
@@ -151,8 +165,8 @@ class _LinkPlatformOtpScreenState extends State<LinkPlatformOtpScreen> {
                           Row(
                             children: [
                               _CircleLogo(
-                                bg: const Color(0xFF111111),
-                                child: Text(widget.platformName),
+                                bg: _platformBgColor,
+                                child: Text(_platformBadgeText),
                               ),
                               SizedBox(width: r.s(14)),
                               Expanded(
@@ -273,7 +287,7 @@ class _CircleLogo extends StatelessWidget {
       width: r.s(44),
       height: r.s(44),
       decoration: BoxDecoration(
-        color: bg,
+        color: bg, 
         shape: BoxShape.circle,
       ),
       alignment: Alignment.center,

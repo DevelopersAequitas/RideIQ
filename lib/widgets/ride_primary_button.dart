@@ -14,6 +14,7 @@ class RidePrimaryButton extends StatelessWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
     this.minimumHeight = 50,
     this.showBorder = true,
+    this.labelFontSize,
   });
 
   final String label;
@@ -22,6 +23,8 @@ class RidePrimaryButton extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final double minimumHeight;
   final bool showBorder;
+  /// When set, scales with [RideResponsive] like the default label size.
+  final double? labelFontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -45,19 +48,19 @@ class RidePrimaryButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           elevation: enabled ? 4 : 0,
-          shadowColor: AppColors.ctaBlue.withOpacity(0.45),
+          shadowColor: AppColors.ctaBlue.withValues(alpha: 0.45),
           surfaceTintColor: Colors.transparent,
-          backgroundColor: enabled ? AppColors.ctaBlue : AppColors.ctaBlue.withOpacity(0.45),
+          backgroundColor: enabled ? AppColors.ctaBlue : AppColors.ctaBlue.withValues(alpha: 0.45),
           foregroundColor: Colors.white,
-          disabledForegroundColor: Colors.white.withOpacity(0.85),
-          disabledBackgroundColor: AppColors.ctaBlue.withOpacity(0.35),
+          disabledForegroundColor: Colors.white.withValues(alpha: 0.85),
+          disabledBackgroundColor: AppColors.ctaBlue.withValues(alpha: 0.35),
           minimumSize: Size.fromHeight(scaledMinHeight),
           padding: scaledPadding,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(r.s(borderRadius)),
             side: showBorder
                 ? BorderSide(
-                    color: AppColors.primary3.withOpacity(enabled ? 0.55 : 0.35),
+                    color: AppColors.primary3.withValues(alpha: enabled ? 0.55 : 0.35),
                     width: 1,
                   )
                 : BorderSide.none,
@@ -69,8 +72,8 @@ class RidePrimaryButton extends StatelessWidget {
           style: RideTypography.buttonLabel.copyWith(
             color: enabled
                 ? RideTypography.buttonLabel.color
-                : Colors.white.withOpacity(0.85),
-            fontSize: (RideTypography.buttonLabel.fontSize ?? 16) * r.scale,
+                : Colors.white.withValues(alpha: 0.85),
+            fontSize: (labelFontSize ?? RideTypography.buttonLabel.fontSize ?? 16) * r.scale,
           ),
         ),
       ),

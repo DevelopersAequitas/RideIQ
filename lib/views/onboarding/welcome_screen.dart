@@ -88,10 +88,10 @@ class WelcomeScreen extends StatelessWidget {
                       end: Alignment.bottomCenter,
                       stops: const [0.0, 0.35, 0.72, 1.0],
                       colors: [
-                        Colors.black.withOpacity(0.0),
-                        Colors.black.withOpacity(0.28),
-                        Colors.black.withOpacity(0.62),
-                        Colors.black.withOpacity(0.88),
+                        Colors.black.withValues(alpha: 0.0),
+                        Colors.black.withValues(alpha: 0.28),
+                        Colors.black.withValues(alpha: 0.62),
+                        Colors.black.withValues(alpha: 0.88),
                       ],
                     ),
                   ),
@@ -118,7 +118,7 @@ class WelcomeScreen extends StatelessWidget {
                     Text(
                       _tagline,
                       style: RideTypography.tagline.copyWith(
-                        color: Colors.white.withOpacity(0.94),
+                        color: Colors.white.withValues(alpha: 0.94),
                       ),
                     ),
                     const Spacer(),

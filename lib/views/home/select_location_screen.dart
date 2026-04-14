@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rideiq/core/theme/app_colors.dart';
 import 'package:rideiq/core/ui/ride_responsive.dart';
+import 'package:rideiq/views/home/driver_earnings_dashboard_screen.dart';
 import 'package:rideiq/views/home/fare_comparison_screen.dart';
 import 'package:rideiq/views/profile/profile_screen_v2.dart';
 import 'package:rideiq/widgets/bottom_role_bar.dart';
@@ -21,7 +22,6 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
 
   static const double _sheetRadius = 28;
   static const double _hPad = 20;
-  static const Color _bg = Color.fromRGBO(250, 250, 250, 1);
 
   Future<void> _openAddStopSheet() async {
     final r = context.r;
@@ -47,84 +47,97 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: _bg,
+        backgroundColor: AppColors.screenBackgroundSoft,
         body: Column(
           children: [
             Expanded(
               child: SafeArea(
                 bottom: false,
-                child: Center(
+                child: Align(
+                  alignment: Alignment.topCenter,
                   child: ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: r.contentMaxWidth),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(r.s(_sheetRadius)),
-                      ),
-                      child: ColoredBox(
-                        color: _bg,
-                        child: SingleChildScrollView(
-                          padding: EdgeInsets.fromLTRB(
-                            r.s(_hPad),
-                            r.s(18),
-                            r.s(_hPad),
-                            r.s(24),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const _HeaderRow(),
-                              SizedBox(height: r.s(20)),
-                              _LocationRouteCard(onAddStop: _openAddStopSheet),
-                              SizedBox(height: r.s(40)),
-                              RidePrimaryButton(
-                                label: 'Compare Fares',
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute<void>(
-                                      builder: (_) => const FareComparisonScreen(),
+                    child: _bottomIndex == 0
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(r.s(_sheetRadius)),
+                            ),
+                            child: ColoredBox(
+                              color: AppColors.screenBackgroundSoft,
+                              child: SingleChildScrollView(
+                                padding: EdgeInsets.fromLTRB(
+                                  r.s(_hPad),
+                                  r.s(18),
+                                  r.s(_hPad),
+                                  r.s(24),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const _HeaderRow(),
+                                    SizedBox(height: r.s(20)),
+                                    _LocationRouteCard(onAddStop: _openAddStopSheet),
+                                    SizedBox(height: r.s(40)),
+                                    RidePrimaryButton(
+                                      label: 'Compare Fares',
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute<void>(
+                                            builder: (_) => const FareComparisonScreen(),
+                                          ),
+                                        );
+                                      },
+                                      padding: const EdgeInsets.fromLTRB(15, 18, 15, 14),
+                                      minimumHeight: 52,
+                                      borderRadius: 16,
                                     ),
-                                  );
-                                },
-                                padding:
-                                    const EdgeInsets.fromLTRB(15, 18, 15, 14),
-                                minimumHeight: 52,
-                                borderRadius: 16,
-                              ),
-                              SizedBox(height: r.s(42)),
-                              Container(
-                                height: 1,
-                                color: AppColors.borderSecondary,
-                              ),
-                              SizedBox(height: r.s(26)),
-                              Text(
-                                'Recent locations',
-                                style: TextStyle(
-                                  color: AppColors.textSecondary,
-                                  fontSize: r.s(14),
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.2,
+                                    SizedBox(height: r.s(42)),
+                                    Container(
+                                      height: 1,
+                                      color: AppColors.borderSecondary,
+                                    ),
+                                    SizedBox(height: r.s(26)),
+                                    Text(
+                                      'Recent locations',
+                                      style: TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: r.s(14),
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.2,
+                                      ),
+                                    ),
+                                    SizedBox(height: r.s(20)),
+                                    const _RecentLocationTile(
+                                      title: '2458 Maple Ave',
+                                      subtitle: 'Apt 3B — Brooklyn, NY',
+                                    ),
+                                    SizedBox(height: r.s(10)),
+                                    const _RecentLocationTile(
+                                      title: '2458 Maple Ave',
+                                      subtitle: 'Apt 3B — Brooklyn, NY',
+                                    ),
+                                    SizedBox(height: r.s(10)),
+                                    const _RecentLocationTile(
+                                      title: '2458 Maple Ave',
+                                      subtitle: 'Apt 3B — Brooklyn, NY',
+                                    ),
+                                  ],
                                 ),
                               ),
-                              SizedBox(height: r.s(20)),
-                              const _RecentLocationTile(
-                                title: '2458 Maple Ave',
-                                subtitle: 'Apt 3B — Brooklyn, NY',
-                              ),
-                              SizedBox(height: r.s(10)),
-                              const _RecentLocationTile(
-                                title: '2458 Maple Ave',
-                                subtitle: 'Apt 3B — Brooklyn, NY',
-                              ),
-                              SizedBox(height: r.s(10)),
-                              const _RecentLocationTile(
-                                title: '2458 Maple Ave',
-                                subtitle: 'Apt 3B — Brooklyn, NY',
-                              ),
-                            ],
+                            ),
+                          )
+                        : ColoredBox(
+                            color: AppColors.screenBackgroundSoft,
+                            child: DriverEarningsDashboardView(
+                              onAvatarTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) => const ProfileScreen(),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
                   ),
                 ),
               ),

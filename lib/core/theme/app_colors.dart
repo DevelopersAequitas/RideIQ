@@ -45,6 +45,8 @@ class AppColors {
   // Background
   // ========================
   static const Color bgPrimary = Color(0xFFF2F2F7);
+  /// Main shell behind scroll content (`#FAFAFA`).
+  static const Color screenBackgroundSoft = Color(0xFFFAFAFA);
 
   // ========================
   // Basic Colors
@@ -58,6 +60,23 @@ class AppColors {
   static const Color overlayWhite80 = Color(0xCCFFFFFF); // 80%
   static const Color overlayWhite60 = Color(0x99FFFFFF); // 60%
   static const Color overlayWhite20 = Color(0x33FFFFFF); // 20%
+
+  // ========================
+  // Driver / platform linking (reference UI)
+  // ========================
+  /// Profile-style blue for driver “Link” and AYRO badge (`#2D60FF`).
+  static const Color driverAccentBlue = Color(0xFF2D60FF);
+  /// Linked / “Connected” state on driver dashboard.
+  static const Color driverConnectedGreen = Color(0xFF34C759);
+  static const Color platformUberBlack = Color(0xFF111111);
+  static const Color platformLyftMagenta = Color(0xFFEA2D8C);
+
+  /// Driver earnings dashboard: selected platform row (e.g. AYRO “Today”).
+  static const Color driverEarningsRowHighlight = Color(0xFFEEF4FF);
+  /// $/hr pill on earnings rows (same hue as [splashTeal]).
+  static const Color driverEarningsRateTeal = splashTeal;
+  /// Light track behind proportional hourly bars on driver earnings rows.
+  static const Color driverEarningsTrack = Color(0xFFEDEDF0);
 
   // ========================
   // Accent Colors

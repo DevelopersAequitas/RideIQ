@@ -22,6 +22,20 @@ class LinkPlatformScreen extends StatefulWidget {
 class _LinkPlatformScreenState extends State<LinkPlatformScreen> {
   int _bottomIndex = 0;
 
+  bool get _isLyft => widget.platformName.trim().toLowerCase() == 'lyft';
+  bool get _isUber => widget.platformName.trim().toLowerCase() == 'uber';
+
+  Color get _platformBgColor {
+    if (_isLyft) return const Color(0xFFEA2D8C);
+    if (_isUber) return const Color(0xFF111111);
+    return const Color(0xFF111111);
+  }
+
+  String get _platformBadgeText {
+    if (_isLyft) return 'lyft';
+    return widget.platformName;
+  }
+
   InputDecoration _decoration(BuildContext context, {required String hintText}) {
     final r = context.r;
     final baseSide = BorderSide(color: AppColors.borderSecondary, width: 1);
@@ -126,8 +140,8 @@ class _LinkPlatformScreenState extends State<LinkPlatformScreen> {
                           Row(
                             children: [
                               _CircleLogo(
-                                bg: const Color(0xFF111111),
-                                child: Text(widget.platformName),
+                                bg: _platformBgColor,
+                                child: Text(_platformBadgeText),
                               ),
                               SizedBox(width: r.s(14)),
                               Expanded(
@@ -148,13 +162,8 @@ class _LinkPlatformScreenState extends State<LinkPlatformScreen> {
                           TextField(
                             decoration: _decoration(
                               context,
-                              hintText: 'Email or Phone',
+                              hintText: 'Phone',
                             ),
-                          ),
-                          SizedBox(height: r.s(12)),
-                          TextField(
-                            obscureText: true,
-                            decoration: _decoration(context, hintText: 'Password'),
                           ),
                           SizedBox(height: r.s(18)),
                           RidePrimaryButton(

@@ -113,7 +113,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                       elevation: 0,
                       backgroundColor: AppColors.ctaBlue,
                       foregroundColor: Colors.white,
-                      disabledBackgroundColor: AppColors.ctaBlue.withOpacity(0.45),
+                      disabledBackgroundColor: AppColors.ctaBlue.withValues(alpha: 0.45),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),

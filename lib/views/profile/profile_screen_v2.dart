@@ -457,7 +457,13 @@ class _LinkedAccountsCard extends StatelessWidget {
             subtitleColor: null,
             actionLabel: 'Link',
             actionColor: Color(0xFF2D60FF),
-            onActionTap: () {},
+            onActionTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const LinkPlatformScreen(platformName: 'Lyft'),
+                ),
+              );
+            },
           ),
         ],
       ),
