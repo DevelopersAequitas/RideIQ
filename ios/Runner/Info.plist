@@ -47,5 +47,11 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>RideIQ uses your location to detect pickup points and calculate the most accurate fares.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>RideIQ uses your location to detect pickup points and calculate the most accurate fares.</string>
+		<key>PermissionGroupNotification</key>
+		<string>Used for fare alerts and driver insights.</string>
 	</dict>
 </plist>

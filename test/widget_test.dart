@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:rideiq/views/onboarding/welcome_screen.dart';
+import 'package:rideiq/main.dart';
+ 
 
 void main() {
   testWidgets('Welcome screen shows headline and actions', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: WelcomeScreen(),
+        home: MyApp(),
       ),
     );
 

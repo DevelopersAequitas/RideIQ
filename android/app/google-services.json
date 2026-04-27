@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "528502396255",
+    "project_id": "rydeiq-e67d9",
+    "storage_bucket": "rydeiq-e67d9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528502396255:android:4cbf589add79c7b38e12ea",
+        "android_client_info": {
+          "package_name": "com.RideIQ.rideiq"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgsNk4i8fpyTCnWB_kuvFXXZc24g6BNTE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
