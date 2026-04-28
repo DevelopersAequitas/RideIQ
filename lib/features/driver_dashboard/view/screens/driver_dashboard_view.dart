@@ -10,6 +10,7 @@ import 'package:rideiq/features/profile/view/screens/link_platform_screen.dart';
 import 'package:rideiq/features/notifications/view/screens/notifications_screen.dart';
 import 'package:rideiq/shared/widgets/primary_button.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class DriverDashboardView extends ConsumerWidget {
   const DriverDashboardView({super.key});
@@ -18,6 +19,7 @@ class DriverDashboardView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(dashboardViewModelProvider);
     final notifier = ref.read(dashboardViewModelProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFBFBFB),
@@ -31,15 +33,15 @@ class DriverDashboardView extends ConsumerWidget {
                 child: Column(
                   children: [
                     if (!state.isDashboardActive)
-                      _buildLinkView(context, notifier)
+                      _buildLinkView(context, notifier, l10n)
                     else ...[
-                      _buildTabs(state, notifier),
+                      _buildTabs(state, notifier, l10n),
                       if (state.selectedTab == DashboardTab.today)
-                        _buildTodayStats(state, notifier)
+                        _buildTodayStats(state, notifier, l10n)
                       else if (state.selectedTab == DashboardTab.weekly)
-                        _buildWeeklyStats(context, state, notifier)
+                        _buildWeeklyStats(context, state, notifier, l10n)
                       else
-                        _buildAllTimeStats(state, notifier),
+                        _buildAllTimeStats(state, notifier, l10n),
                     ],
                     SizedBox(height: 100.h),
                   ],
@@ -53,6 +55,7 @@ class DriverDashboardView extends ConsumerWidget {
   }
 
   Widget _buildHeader(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.all(20.w),
       child: Row(
@@ -62,7 +65,7 @@ class DriverDashboardView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Driver Dashboard",
+                l10n.driver_dashboard_title,
                 style: TextStyle(
                   fontSize: 22.sp,
                   fontWeight: FontWeight.w700,
@@ -72,7 +75,7 @@ class DriverDashboardView extends ConsumerWidget {
               ),
               SizedBox(height: 4.h),
               Text(
-                "See what you're really earning.",
+                l10n.driver_dashboard_subtitle,
                 style: TextStyle(
                   fontSize: 13.sp,
                   color: const Color(0xFF999999),
@@ -139,7 +142,7 @@ class DriverDashboardView extends ConsumerWidget {
     );
   }
 
-  Widget _buildTabs(DashboardState state, DashboardViewModel notifier) {
+  Widget _buildTabs(DashboardState state, DashboardViewModel notifier, AppLocalizations l10n) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Color(0xFFF2F2F2))),
@@ -147,17 +150,17 @@ class DriverDashboardView extends ConsumerWidget {
       child: Row(
         children: [
           _buildTabItem(
-            "Today",
+            l10n.tab_today,
             state.selectedTab == DashboardTab.today,
             () => notifier.selectTab(DashboardTab.today),
           ),
           _buildTabItem(
-            "Weekly",
+            l10n.tab_weekly,
             state.selectedTab == DashboardTab.weekly,
             () => notifier.selectTab(DashboardTab.weekly),
           ),
           _buildTabItem(
-            "All Time",
+            l10n.tab_all_time,
             state.selectedTab == DashboardTab.allTime,
             () => notifier.selectTab(DashboardTab.allTime),
           ),
@@ -194,7 +197,7 @@ class DriverDashboardView extends ConsumerWidget {
   }
 
   // --- TODAY VIEW ---
-  Widget _buildTodayStats(DashboardState state, DashboardViewModel notifier) {
+  Widget _buildTodayStats(DashboardState state, DashboardViewModel notifier, AppLocalizations l10n) {
     return Column(
       children: [
         Padding(
@@ -203,7 +206,7 @@ class DriverDashboardView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Today's Earnings",
+                l10n.todays_earnings,
                 style: TextStyle(
                   fontSize: 14.sp,
                   color: const Color(0xFF999999),
@@ -240,7 +243,7 @@ class DriverDashboardView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Quick Stats of ${state.selectedPlatform ?? 'all platforms'}",
+                l10n.quick_stats_platform(state.selectedPlatform ?? 'all platforms'),
                 style: TextStyle(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
@@ -257,28 +260,28 @@ class DriverDashboardView extends ConsumerWidget {
                 childAspectRatio: 1.6,
                 children: [
                   _buildStatCard(
-                    "Trips Today",
+                    l10n.trips_today,
                     state.selectedPlatform == "Uber" ? "10" : "14",
                     AppAssets.carProfileSvg,
                   ),
                   _buildStatCard(
-                    "Online Hours",
+                    l10n.online_hours,
                     state.selectedPlatform == "Uber" ? "1.5" : "6.2",
                     AppAssets.moneyWavySvg,
                   ),
                   _buildStatCard(
-                    "Miles Driven",
+                    l10n.miles_driven,
                     state.selectedPlatform == "Uber" ? "50" : "92",
                     AppAssets.roadHorizonSvg,
                   ),
                   _buildStatCard(
-                    "Tips Earned",
+                    l10n.tips_earned,
                     state.selectedPlatform == "Uber" ? "\$14" : "\$28",
                     AppAssets.clockCountdownSvg,
                   ),
-                  _buildStatCard("Idle Time", "1h 10m", AppAssets.moneyWavySvg),
+                  _buildStatCard(l10n.idle_time, "1h 10m", AppAssets.moneyWavySvg),
                   _buildStatCard(
-                    "Acceptance Rate",
+                    l10n.acceptance_rate,
                     "87%",
                     AppAssets.thumbsUpSvg,
                   ),
@@ -286,7 +289,7 @@ class DriverDashboardView extends ConsumerWidget {
               ),
               SizedBox(height: 24.h),
               _buildInsightCard(
-                "You earned more per hour on Uber today compared to the other platforms.",
+                l10n.insight_today_uber,
               ),
             ],
           ),
@@ -300,13 +303,14 @@ class DriverDashboardView extends ConsumerWidget {
     BuildContext context,
     DashboardState state,
     DashboardViewModel notifier,
+    AppLocalizations l10n,
   ) {
     return Column(
       children: [
         Padding(
           padding: EdgeInsets.all(20.w),
           child: _buildInsightCard(
-            "You earned more per hour on Uber this week compared to the other platforms.",
+            l10n.insight_weekly_uber,
           ),
         ),
         Padding(
@@ -318,7 +322,7 @@ class DriverDashboardView extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Earnings by Day",
+                    l10n.earnings_by_day,
                     style: TextStyle(
                       fontSize: 15.sp,
                       color: const Color(0xFF666666),
@@ -342,7 +346,7 @@ class DriverDashboardView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Quick Stats for ${state.selectedPlatform ?? 'Uber'}",
+                l10n.quick_stats_for_platform(state.selectedPlatform ?? 'Uber'),
                 style: TextStyle(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
@@ -359,18 +363,18 @@ class DriverDashboardView extends ConsumerWidget {
                 childAspectRatio: 1.6,
                 children: [
                   _buildStatCard(
-                    "Total Earnings",
+                    l10n.total_earnings,
                     "\$1,245",
                     AppAssets.currencyCircleDollarSvg,
                   ),
                   _buildStatCard(
-                    "Earnings per Hour",
+                    l10n.earnings_per_hour,
                     "\$26.40",
                     AppAssets.coinsSvg,
                   ),
-                  _buildStatCard("Total Trips", "78", AppAssets.carProfileSvg),
+                  _buildStatCard(l10n.total_trips, "78", AppAssets.carProfileSvg),
                   _buildStatCard(
-                    "Total Hours",
+                    l10n.total_hours,
                     "42.5",
                     AppAssets.clockCountdownSvg,
                   ),
@@ -384,7 +388,7 @@ class DriverDashboardView extends ConsumerWidget {
   }
 
   // --- ALL TIME VIEW ---
-  Widget _buildAllTimeStats(DashboardState state, DashboardViewModel notifier) {
+  Widget _buildAllTimeStats(DashboardState state, DashboardViewModel notifier, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -394,7 +398,7 @@ class DriverDashboardView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Platform Earnings Comparison",
+                l10n.platform_earnings_comparison,
                 style: TextStyle(
                   fontSize: 14.sp,
                   color: const Color(0xFF999999),
@@ -432,7 +436,7 @@ class DriverDashboardView extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(20.w),
                   ),
                   child: Text(
-                    "Best Platform",
+                    l10n.best_platform,
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
@@ -470,7 +474,7 @@ class DriverDashboardView extends ConsumerWidget {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  "\$24.80 per hour",
+                  l10n.per_hour("\$24.80"),
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
@@ -486,7 +490,7 @@ class DriverDashboardView extends ConsumerWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Text(
-            "Milestones",
+            l10n.milestones,
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
@@ -502,25 +506,25 @@ class DriverDashboardView extends ConsumerWidget {
           child: Row(
             children: [
               _buildMilestoneCircle(
-                "Completed",
+                l10n.milestone_completed,
                 "500",
-                "Trips",
+                l10n.trips,
                 1.0,
                 const Color(0xFF1E74E9),
               ),
               SizedBox(width: 16.w),
               _buildMilestoneCircle(
-                "In Progress",
+                l10n.milestone_in_progress,
                 "1000",
-                "Trips",
+                l10n.trips,
                 0.6,
                 const Color(0xFF1E74E9),
               ),
               SizedBox(width: 16.w),
               _buildMilestoneCircle(
-                "Locked",
+                l10n.milestone_locked,
                 "1500",
-                "Trips",
+                l10n.trips,
                 0.0,
                 const Color(0xFFE0E0E0),
               ),
@@ -536,7 +540,7 @@ class DriverDashboardView extends ConsumerWidget {
           child: Row(
             children: [
               _buildMilestoneCircle(
-                "Earned",
+                l10n.milestone_earned,
                 "\$10k",
                 "",
                 1.0,
@@ -544,7 +548,7 @@ class DriverDashboardView extends ConsumerWidget {
               ),
               SizedBox(width: 16.w),
               _buildMilestoneCircle(
-                "In Progress",
+                l10n.milestone_in_progress,
                 "\$25k",
                 "",
                 0.4,
@@ -552,7 +556,7 @@ class DriverDashboardView extends ConsumerWidget {
               ),
               SizedBox(width: 16.w),
               _buildMilestoneCircle(
-                "Locked",
+                l10n.milestone_locked,
                 "\$30k",
                 "",
                 0.0,
@@ -571,7 +575,7 @@ class DriverDashboardView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Quick Stats",
+                l10n.quick_stats,
                 style: TextStyle(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
@@ -588,17 +592,17 @@ class DriverDashboardView extends ConsumerWidget {
                 childAspectRatio: 1.6,
                 children: [
                   _buildStatCard(
-                    "Total Earnings",
+                    l10n.total_earnings,
                     "\$1,245",
                     AppAssets.currencyCircleDollarSvg,
                   ),
-                  _buildStatCard("Total Trips", "542", AppAssets.carProfileSvg),
+                  _buildStatCard(l10n.total_trips, "542", AppAssets.carProfileSvg),
                   _buildStatCard(
-                    "Total Hours",
+                    l10n.total_hours,
                     "542",
                     AppAssets.clockCountdownSvg,
                   ),
-                  _buildStatCard("Avg Rating", "4.8", AppAssets.coinsSvg),
+                  _buildStatCard(l10n.avg_rating, "4.8", AppAssets.coinsSvg),
                 ],
               ),
             ],
@@ -744,7 +748,7 @@ class DriverDashboardView extends ConsumerWidget {
     );
   }
 
-  Widget _buildLinkView(BuildContext context, DashboardViewModel notifier) {
+  Widget _buildLinkView(BuildContext context, DashboardViewModel notifier, AppLocalizations l10n) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Column(
@@ -755,7 +759,8 @@ class DriverDashboardView extends ConsumerWidget {
             name: "Uber",
             logo: AppAssets.uberLogoPng,
             isConnected: true,
-            status: "Connected",
+            status: l10n.connected,
+            l10n: l10n,
           ),
           SizedBox(height: 16.h),
           _buildPlatformLinkCard(
@@ -763,11 +768,12 @@ class DriverDashboardView extends ConsumerWidget {
             name: "Lyft",
             logo: AppAssets.lyftLogoPng,
             isConnected: false,
-            status: "Not Linked",
+            status: l10n.not_linked,
+            l10n: l10n,
           ),
           SizedBox(height: 40.h),
           PrimaryButton(
-            text: "Go to Dashboard",
+            text: l10n.go_to_dashboard,
             onPressed: () => notifier.activateDashboard(),
           ),
         ],
@@ -781,6 +787,7 @@ class DriverDashboardView extends ConsumerWidget {
     required String logo,
     required bool isConnected,
     required String status,
+    required AppLocalizations l10n,
   }) {
     final isUber = name.toLowerCase() == "uber";
     return Container(
@@ -852,7 +859,7 @@ class DriverDashboardView extends ConsumerWidget {
                 );
               },
               child: Text(
-                "Link",
+                l10n.link,
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,

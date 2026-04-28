@@ -2,14 +2,68 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/core/constants/app_assets.dart';
+import 'package:rideiq/core/providers/language_provider.dart';
 import 'package:rideiq/features/profile/view/widgets/settings_widgets.dart';
+import 'package:rideiq/features/profile/view/widgets/delete_account_dialog.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
+  void _showLanguageBottomSheet(BuildContext context, WidgetRef ref, String currentLang) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.w)),
+      ),
+      builder: (context) {
+        final l10n = AppLocalizations.of(context)!;
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.select_language,
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Figtree',
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 24.h),
+              ListTile(
+                title: Text(l10n.english),
+                trailing: currentLang == 'en' ? const Icon(Icons.check, color: Color(0xFF1E74E9)) : null,
+                onTap: () {
+                  ref.read(languageProvider.notifier).setLanguage('en');
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(l10n.spanish),
+                trailing: currentLang == 'es' ? const Icon(Icons.check, color: Color(0xFF1E74E9)) : null,
+                onTap: () {
+                  ref.read(languageProvider.notifier).setLanguage('es');
+                  Navigator.pop(context);
+                },
+              ),
+              SizedBox(height: 24.h),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final lang = ref.watch(languageProvider);
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -20,7 +74,7 @@ class SettingsScreen extends ConsumerWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          "Setting",
+          l10n.settings,
           style: TextStyle(
             color: Colors.black,
             fontSize: 18.sp,
@@ -39,15 +93,15 @@ class SettingsScreen extends ConsumerWidget {
             // Language Selection
             SettingDropdownItem(
               assetPath: AppAssets.translateSvg,
-              label: "Language",
-              value: "English",
-              onTap: () {},
+              label: l10n.language,
+              value: lang == 'en' ? l10n.english : l10n.spanish,
+              onTap: () => _showLanguageBottomSheet(context, ref, lang),
             ),
 
             // Default Ride Selection
             SettingDropdownItem(
               assetPath: AppAssets.carProfileSettingSvg,
-              label: "Default Ride",
+              label: l10n.default_ride,
               value: "Comfort",
               onTap: () {},
             ),
@@ -57,8 +111,8 @@ class SettingsScreen extends ConsumerWidget {
             // Delete Account
             SettingActionItem(
               assetPath: AppAssets.trashSvg,
-              label: "Delete Account",
-              onTap: () {},
+              label: l10n.delete_account,
+              onTap: () => DeleteAccountDialog.show(context, ref),
             ),
           ].animate(interval: 50.ms).fadeIn(duration: 400.ms).slideY(begin: 0.05, end: 0, curve: Curves.easeOutQuad),
         ),

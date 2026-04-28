@@ -9,6 +9,7 @@ import 'package:rideiq/features/paywall/view/widgets/billing_toggle.dart';
 import 'package:rideiq/core/services/local_service.dart';
 import 'package:rideiq/features/home/view/screens/main_dashboard_screen.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class PaywallScreen extends ConsumerWidget {
   const PaywallScreen({super.key});
@@ -17,6 +18,7 @@ class PaywallScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(paywallViewModelProvider);
     final notifier = ref.read(paywallViewModelProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
     const double cardHeight = 100.0; // Same base as header for alignment
 
     return Scaffold(
@@ -32,7 +34,7 @@ class PaywallScreen extends ConsumerWidget {
 
             // 4. Billing Info
             Text(
-              "After FREE trial, you will be billed...",
+              l10n.paywall_billed_after_trial,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 12.sp,
@@ -63,7 +65,7 @@ class PaywallScreen extends ConsumerWidget {
                     ),
                   ),
                   TextSpan(
-                    text: state.isMonthly ? " /Month" : " /Year",
+                    text: state.isMonthly ? l10n.paywall_month : l10n.paywall_year,
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 16.sp,
@@ -86,7 +88,7 @@ class PaywallScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Benefits",
+                    l10n.paywall_benefits,
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 14.sp,
@@ -94,12 +96,12 @@ class PaywallScreen extends ConsumerWidget {
                     ),
                   ),
                   SizedBox(height: 12.h),
-                  const BenefitRow(text: "1. Compare ride prices instantly"),
-                  const BenefitRow(
-                    text: "2. Track your earnings across platforms",
+                  BenefitRow(text: l10n.paywall_benefit_1),
+                  BenefitRow(
+                    text: l10n.paywall_benefit_2,
                   ),
-                  const BenefitRow(
-                    text: "3. Get smart insights to maximize income",
+                  BenefitRow(
+                    text: l10n.paywall_benefit_3,
                   ),
                 ],
               ),
@@ -111,7 +113,7 @@ class PaywallScreen extends ConsumerWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30.w),
               child: PrimaryButton(
-                text: "Start Free Trial",
+                text: l10n.paywall_start_trial,
                 onPressed: () async {
                   await LocalService.setAuthStep(AuthSteps.home);
                   if (context.mounted) {
@@ -132,3 +134,4 @@ class PaywallScreen extends ConsumerWidget {
     );
   }
 }
+

@@ -3,6 +3,7 @@ import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/shared/widgets/primary_button.dart';
 import 'package:rideiq/shared/widgets/app_text_field.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class LocationSearchSheet extends StatefulWidget {
   final String title;
@@ -31,6 +32,7 @@ class _LocationSearchSheetState extends State<LocationSearchSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
@@ -64,14 +66,14 @@ class _LocationSearchSheetState extends State<LocationSearchSheet> {
                     fontFamily: 'Figtree',
                   ),
                 ),
-                _buildCurrentLocationBtn(),
+                _buildCurrentLocationBtn(context),
               ],
             ),
             SizedBox(height: 24.h),
 
             AppTextField(
               controller: _controller,
-              label: "Search location",
+              label: l10n.search_location,
               prefix: Icon(
                 Icons.location_on_outlined,
                 color: const Color(0xFF1D72DD),
@@ -89,7 +91,7 @@ class _LocationSearchSheetState extends State<LocationSearchSheet> {
             SizedBox(height: 40.h),
 
             PrimaryButton(
-              text: "Done",
+              text: l10n.done,
               onPressed: () {
                 widget.onDone(_controller.text);
                 Navigator.pop(context);
@@ -102,7 +104,8 @@ class _LocationSearchSheetState extends State<LocationSearchSheet> {
     );
   }
 
-  Widget _buildCurrentLocationBtn() {
+  Widget _buildCurrentLocationBtn(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       decoration: BoxDecoration(
@@ -114,7 +117,7 @@ class _LocationSearchSheetState extends State<LocationSearchSheet> {
           Icon(Icons.my_location, color: const Color(0xFF1D72DD), size: 16.sp),
           SizedBox(width: 8.w),
           Text(
-            "Current location",
+            l10n.current_location,
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w600,
@@ -162,3 +165,4 @@ class _LocationSearchSheetState extends State<LocationSearchSheet> {
     ).animate().fade().slideX(begin: 0.05);
   }
 }
+

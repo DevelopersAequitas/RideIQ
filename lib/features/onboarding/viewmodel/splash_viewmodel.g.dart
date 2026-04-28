@@ -13,7 +13,7 @@ part of 'splash_viewmodel.dart';
 final splashViewModelProvider = SplashViewModelProvider._();
 
 final class SplashViewModelProvider
-    extends $AsyncNotifierProvider<SplashViewModel, void> {
+    extends $AsyncNotifierProvider<SplashViewModel, String> {
   SplashViewModelProvider._()
     : super(
         from: null,
@@ -33,19 +33,19 @@ final class SplashViewModelProvider
   SplashViewModel create() => SplashViewModel();
 }
 
-String _$splashViewModelHash() => r'42493e869bf72ba1e5ccc3b225be25f8e9133566';
+String _$splashViewModelHash() => r'a5bb21e1edce90e85847ce4150cf350af6d00a74';
 
-abstract class _$SplashViewModel extends $AsyncNotifier<void> {
-  FutureOr<void> build();
+abstract class _$SplashViewModel extends $AsyncNotifier<String> {
+  FutureOr<String> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<void>, void>;
+    final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<void>, void>,
-              AsyncValue<void>,
+              AnyNotifier<AsyncValue<String>, String>,
+              AsyncValue<String>,
               Object?,
               Object?
             >;

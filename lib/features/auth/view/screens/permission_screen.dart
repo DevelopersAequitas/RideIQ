@@ -6,6 +6,7 @@ import 'package:rideiq/features/auth/view/widgets/permission_card.dart';
 import 'package:rideiq/features/paywall/view/screens/paywall_screen.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class PermissionScreen extends ConsumerWidget {
   const PermissionScreen({super.key});
@@ -14,6 +15,7 @@ class PermissionScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(authViewModelProvider);
     final notifier = ref.read(authViewModelProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
 
     // Auto-navigate when both are granted
     ref.listen(authViewModelProvider, (prev, next) {
@@ -40,7 +42,7 @@ class PermissionScreen extends ConsumerWidget {
             children: [
               SizedBox(height: 20.h),
               Text(
-                "Allow Permissions",
+                l10n.allow_permissions,
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.w600,
@@ -52,8 +54,8 @@ class PermissionScreen extends ConsumerWidget {
               SizedBox(height: 48.h),
 
               PermissionCard(
-                title: "Location",
-                subtitle: "Used to detect pickup location",
+                title: l10n.location,
+                subtitle: l10n.location_subtitle,
                 assetPath: AppAssets.mapPinSvg,
                 isGranted: state.locationGranted,
                 onTap: notifier.requestLocationPermission,
@@ -62,8 +64,8 @@ class PermissionScreen extends ConsumerWidget {
               SizedBox(height: 32.h),
 
               PermissionCard(
-                title: "Notifications",
-                subtitle: "Used for fare alerts and driver insights",
+                title: l10n.notifications,
+                subtitle: l10n.notifications_subtitle,
                 assetPath: AppAssets.bellRingingSvg,
                 isGranted: state.notificationsGranted,
                 onTap: notifier.requestNotificationPermission,
@@ -75,3 +77,4 @@ class PermissionScreen extends ConsumerWidget {
     );
   }
 }
+

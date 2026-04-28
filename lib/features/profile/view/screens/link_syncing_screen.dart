@@ -4,6 +4,7 @@ import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/core/constants/app_assets.dart';
 import 'package:rideiq/features/profile/viewmodel/link_viewmodel.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class LinkSyncingScreen extends ConsumerWidget {
   final String platformName;
@@ -19,6 +20,7 @@ class LinkSyncingScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(linkViewModelProvider);
     final notifier = ref.read(linkViewModelProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
 
     // Trigger sync once on build
     if (state.syncStep == LinkSyncStep.none) {
@@ -39,7 +41,7 @@ class LinkSyncingScreen extends ConsumerWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          "Syncing",
+          l10n.syncing,
           style: TextStyle(
             color: Colors.black,
             fontSize: 18.sp,
@@ -123,8 +125,8 @@ class LinkSyncingScreen extends ConsumerWidget {
             if (!isSuccess)
               Text(
                 isDriverMode
-                    ? "Pulling your ride history..."
-                    : "Connecting to $platformName...",
+                    ? l10n.pulling_ride_history
+                    : l10n.connecting_to(platformName),
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
@@ -135,7 +137,7 @@ class LinkSyncingScreen extends ConsumerWidget {
 
             if (isSuccess)
               Text(
-                "$platformName Connected",
+                l10n.platform_connected(platformName),
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
@@ -173,7 +175,7 @@ class LinkSyncingScreen extends ConsumerWidget {
                     // Subtext logic
                     if (isDriverMode) ...[
                       Text(
-                        "Found 142 trips",
+                        l10n.found_trips,
                         style: TextStyle(
                           color: const Color(0xFF1E74E9),
                           fontSize: 14.sp,
@@ -182,7 +184,7 @@ class LinkSyncingScreen extends ConsumerWidget {
                       ).animate().fade(delay: 1.seconds),
                       SizedBox(height: 8.h),
                       Text(
-                        "Estimated sync time: 1 minute",
+                        l10n.estimated_sync_time,
                         style: TextStyle(
                           color: const Color(0xFF999999),
                           fontSize: 13.sp,
@@ -190,7 +192,7 @@ class LinkSyncingScreen extends ConsumerWidget {
                       ),
                     ] else
                       Text(
-                        "Securely syncing your ride data.",
+                        l10n.securely_syncing,
                         style: TextStyle(
                           color: const Color(0xFF999999),
                           fontSize: 13.sp,
@@ -205,7 +207,7 @@ class LinkSyncingScreen extends ConsumerWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 40.w),
                 child: Text(
-                  "Your trips are now synced with\nRYDE-IQ.",
+                  l10n.trips_synced,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: const Color(0xFF999999),
@@ -238,8 +240,8 @@ class LinkSyncingScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: const Text(
-                    "Done",
+                  child: Text(
+                    l10n.done,
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -254,3 +256,4 @@ class LinkSyncingScreen extends ConsumerWidget {
     );
   }
 }
+

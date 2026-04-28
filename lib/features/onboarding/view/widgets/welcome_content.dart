@@ -7,6 +7,7 @@ import 'package:rideiq/features/auth/view/screens/login_screen.dart';
 import 'package:rideiq/features/auth/view/screens/create_account_screen.dart';
 import 'package:rideiq/shared/widgets/primary_button.dart';
 import 'package:rideiq/core/utils/size_config.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class WelcomeContent extends ConsumerWidget {
   const WelcomeContent({super.key});
@@ -14,6 +15,7 @@ class WelcomeContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.read(welcomeViewModelProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
@@ -30,7 +32,7 @@ class WelcomeContent extends ConsumerWidget {
           
           // Main Headline
           Text(
-            "Turn every trip\ninto insight.",
+            l10n.welcome_title,
             style: TextStyle(
               color: Colors.white,
               fontFamily: 'Figtree',
@@ -45,7 +47,7 @@ class WelcomeContent extends ConsumerWidget {
           
           // Buttons
           PrimaryButton(
-            text: "Log in",
+            text: l10n.welcome_login,
             onPressed: () {
               viewModel.onLoginPressed();
               Navigator.of(context).push(
@@ -65,7 +67,7 @@ class WelcomeContent extends ConsumerWidget {
                 );
               },
               child: Text(
-                "Sign up",
+                l10n.welcome_signup,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16.sp,
@@ -83,3 +85,4 @@ class WelcomeContent extends ConsumerWidget {
     );
   }
 }
+

@@ -1,65 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:rideiq/core/utils/size_config.dart';
 
 class LabeledInputField extends StatelessWidget {
   final String label;
-  final String hint;
+  final String? hint;
   final ValueChanged<String> onChanged;
   final bool hasLabelOnBorder;
+  final bool isEmail;
 
   const LabeledInputField({
     super.key,
     required this.label,
-    required this.hint,
+    this.hint,
     required this.onChanged,
     this.hasLabelOnBorder = true,
+    this.isEmail = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          margin: const EdgeInsets.only(top: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          height: 64,
-          decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Center(
-            child: TextField(
-              onChanged: onChanged,
-              decoration: InputDecoration(
-                hintText: hint,
-                hintStyle: const TextStyle(
-                  color: Color(0xFF9E9E9E),
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                ),
-                border: InputBorder.none,
-                isDense: true,
-              ),
-            ),
-          ),
+    return TextFormField(
+      onChanged: onChanged,
+      keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
+      style: TextStyle(
+        fontSize: 16.sp,
+        fontWeight: FontWeight.w500,
+        color: const Color(0xFF1A1A1A),
+        fontFamily: 'Figtree',
+      ),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        labelStyle: TextStyle(
+          color: const Color(0xFF999999),
+          fontSize: 14.sp,
+          fontFamily: 'Figtree',
         ),
-        if (hasLabelOnBorder)
-          Positioned(
-            left: 14,
-            top: 0,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              color: Colors.white,
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.black54,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-      ],
+        floatingLabelStyle: TextStyle(
+          color: const Color(0xFF1E74E9),
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Figtree',
+        ),
+        hintStyle: TextStyle(
+          color: const Color(0xFFE0E0E0),
+          fontSize: 14.sp,
+          fontFamily: 'Figtree',
+        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20.w),
+          borderSide: const BorderSide(color: Color(0xFFF2F2F2), width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20.w),
+          borderSide: const BorderSide(color: Color(0xFF1E74E9), width: 1.5),
+        ),
+        filled: true,
+        fillColor: Colors.white,
+        floatingLabelBehavior: FloatingLabelBehavior.auto,
+      ),
     );
   }
 }

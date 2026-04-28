@@ -6,6 +6,12 @@ import 'package:rideiq/core/constants/app_assets.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/features/onboarding/viewmodel/splash_viewmodel.dart';
 import 'package:rideiq/features/onboarding/view/screens/welcome_screen.dart';
+import 'package:rideiq/features/auth/view/screens/user_selection_screen.dart';
+import 'package:rideiq/features/auth/view/screens/permission_screen.dart';
+import 'package:rideiq/features/paywall/view/screens/paywall_screen.dart';
+import 'package:rideiq/features/home/view/screens/main_dashboard_screen.dart';
+import 'package:rideiq/core/services/local_service.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class SplashScreen extends ConsumerWidget {
   const SplashScreen({super.key});
@@ -14,12 +20,34 @@ class SplashScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Listen for completion in the ViewModel
     ref.listen(splashViewModelProvider, (previous, next) {
-      if (next is AsyncData) {
+      if (next is AsyncData<String>) {
+        final step = next.value;
+        
+        Widget nextScreen;
+        switch (step) {
+          case AuthSteps.userType:
+            nextScreen = const UserSelectionScreen();
+            break;
+          case AuthSteps.permissions:
+            nextScreen = const PermissionScreen();
+            break;
+          case AuthSteps.paywall:
+            nextScreen = const PaywallScreen();
+            break;
+          case AuthSteps.home:
+            nextScreen = const MainDashboardScreen();
+            break;
+          default:
+            nextScreen = const WelcomeScreen();
+        }
+
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+          MaterialPageRoute(builder: (_) => nextScreen),
         );
       }
     });
+
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Container(
@@ -38,24 +66,14 @@ class SplashScreen extends ConsumerWidget {
             // Logo
             SvgPicture.asset(AppAssets.whiteLogoSvg, width: 220.w),
             SizedBox(height: 12.h),
-            // Tagline
-            // Text(
-            //   "Compare rides. Maximize earnings.",
-            //   style: TextStyle(
-            //     color: Colors.white,
-            //     fontSize: 14.sp,
-            //     fontWeight: FontWeight.w400,
-            //     fontFamily: 'Figtree',
-            //   ),
-            // ),
             const Spacer(),
             // Version Info
             Padding(
               padding: EdgeInsets.only(bottom: 40.h),
               child: Text(
-                "Version 0.0.01",
+                l10n.version_info("0.0.01"),
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.8),
+                  color: Colors.white.withAlpha(204), // 0.8 * 255
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
                   fontFamily: 'Figtree',
@@ -68,3 +86,4 @@ class SplashScreen extends ConsumerWidget {
     );
   }
 }
+

@@ -8,6 +8,7 @@ import 'package:rideiq/features/profile/view/screens/link_verification_screen.da
 import 'package:rideiq/features/profile/viewmodel/link_viewmodel.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:country_picker/country_picker.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class LinkPlatformScreen extends ConsumerWidget {
   final String platformName;
@@ -23,6 +24,7 @@ class LinkPlatformScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(linkViewModelProvider);
     final notifier = ref.read(linkViewModelProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
 
     final isUber = platformName.toLowerCase() == "uber";
     final logoAsset = isUber ? AppAssets.uberLogoPng : AppAssets.lyftLogoPng;
@@ -41,7 +43,7 @@ class LinkPlatformScreen extends ConsumerWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          "Link Platform",
+          l10n.link_platform,
           style: TextStyle(
             color: Colors.black,
             fontSize: 18.sp,
@@ -101,7 +103,7 @@ class LinkPlatformScreen extends ConsumerWidget {
                       countryListTheme: CountryListThemeData(
                         borderRadius: BorderRadius.circular(20.w),
                         inputDecoration: InputDecoration(
-                          hintText: 'Search country',
+                          hintText: l10n.search_country,
                           prefixIcon: const Icon(Icons.search),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20.w),
@@ -138,7 +140,7 @@ class LinkPlatformScreen extends ConsumerWidget {
                 // Phone Input
                 Expanded(
                   child: AppTextField(
-                    label: "Phone",
+                    label: l10n.phone,
                     onChanged: notifier.updatePhone,
                     keyboardType: TextInputType.phone,
                   ),
@@ -149,7 +151,7 @@ class LinkPlatformScreen extends ConsumerWidget {
             if (isDriverMode) ...[
               SizedBox(height: 20.h),
               AppTextField(
-                label: "Driver's license number",
+                label: l10n.drivers_license_number,
                 onChanged: notifier.updateLicense,
               ).animate().fade(delay: 200.ms).slideY(begin: 0.1),
             ],
@@ -158,7 +160,7 @@ class LinkPlatformScreen extends ConsumerWidget {
 
             // Continue Button
             PrimaryButton(
-              text: "Continue",
+              text: l10n.continue_btn,
               isLoading: state.isLoading,
               onPressed: isValid
                   ? () {
@@ -185,3 +187,4 @@ class LinkPlatformScreen extends ConsumerWidget {
     );
   }
 }
+

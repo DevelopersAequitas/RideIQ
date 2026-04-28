@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/core/constants/app_assets.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class FareBottomNav extends StatelessWidget {
   final int currentIndex;
@@ -15,6 +16,7 @@ class FareBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.only(
         top: 12.h,
@@ -31,7 +33,7 @@ class FareBottomNav extends StatelessWidget {
             assetPath: currentIndex == 0 
                 ? AppAssets.riderTabFilled 
                 : AppAssets.riderTabOutlined,
-            label: "Rider",
+            label: l10n.rider,
             isActive: currentIndex == 0,
             onTap: () => onTabChanged(0),
           ),
@@ -39,7 +41,7 @@ class FareBottomNav extends StatelessWidget {
             assetPath: currentIndex == 1 
                 ? AppAssets.driverTabFilled 
                 : AppAssets.driverTabOutlined,
-            label: "Driver",
+            label: l10n.driver,
             isActive: currentIndex == 1,
             onTap: () => onTabChanged(1),
           ),
@@ -102,3 +104,4 @@ class _NavItem extends StatelessWidget {
     );
   }
 }
+

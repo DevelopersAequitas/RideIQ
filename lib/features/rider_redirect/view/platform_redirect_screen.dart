@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; 
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class PlatformRedirectScreen extends ConsumerStatefulWidget {
   final String platformName;
@@ -72,16 +73,16 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
                 children: [
                   _buildAnimatedLogo(),
                   SizedBox(height: 48.h),
-                  _buildStatusText(),
+                  _buildStatusText(context),
                   if (_isChecking) ...[
                     SizedBox(height: 40.h),
-                    _buildCancelButton(),
+                    _buildCancelButton(context),
                   ],
                 ],
               ),
             ),
-            if (!_isChecking && !_isInstalled) _buildNotInstalledFooter(),
-            if (!_isChecking && _isInstalled) _buildInstalledFooter(),
+            if (!_isChecking && !_isInstalled) _buildNotInstalledFooter(context),
+            if (!_isChecking && _isInstalled) _buildInstalledFooter(context),
           ],
         ),
       ),
@@ -136,13 +137,14 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
     ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack);
   }
 
-  Widget _buildStatusText() {
-    String title = "Opening ${widget.platformName}";
-    String subtitle = "Your pickup and drop location\nhave been added.";
+  Widget _buildStatusText(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    String title = l10n.opening_platform(widget.platformName);
+    String subtitle = l10n.locations_added;
 
     if (!_isChecking && !_isInstalled) {
-      title = "App is not installed";
-      subtitle = "Get ${widget.platformName} to book selected ride.";
+      title = l10n.app_not_installed_title;
+      subtitle = l10n.get_app_to_book(widget.platformName);
     }
 
     return Column(
@@ -171,7 +173,8 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
     ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1);
   }
 
-  Widget _buildCancelButton() {
+  Widget _buildCancelButton(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return OutlinedButton(
       onPressed: () => Navigator.pop(context),
       style: OutlinedButton.styleFrom(
@@ -180,7 +183,7 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.w)),
       ),
       child: Text(
-        "Cancel",
+        l10n.cancel,
         style: TextStyle(
           fontSize: 16.sp,
           fontWeight: FontWeight.w600,
@@ -190,7 +193,8 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
     );
   }
 
-  Widget _buildNotInstalledFooter() {
+  Widget _buildNotInstalledFooter(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Positioned(
       bottom: 40.h,
       left: 0,
@@ -199,7 +203,7 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
         child: ElevatedButton.icon(
           onPressed: () {},
           icon: const Icon(Icons.file_download_outlined),
-          label: Text("Install ${widget.platformName}"),
+          label: Text(l10n.install_platform(widget.platformName)),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
             foregroundColor: const Color(0xFF1E74E9),
@@ -213,7 +217,8 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
     ).animate().fadeIn().slideY(begin: 0.2);
   }
 
-  Widget _buildInstalledFooter() {
+  Widget _buildInstalledFooter(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Positioned(
       bottom: 40.h,
       left: 24.w,
@@ -222,13 +227,13 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "App not installed?",
+            l10n.app_not_installed_question,
             style: TextStyle(fontSize: 14.sp, color: const Color(0xFF999999)),
           ),
           OutlinedButton.icon(
             onPressed: () {},
             icon: const Icon(Icons.file_download_outlined, size: 20),
-            label: Text("Install ${widget.platformName}"),
+            label: Text(l10n.install_platform(widget.platformName)),
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: Color(0xFFF2F2F2)),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.w)),
@@ -240,3 +245,4 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
     ).animate().fadeIn().slideY(begin: 0.2);
   }
 }
+

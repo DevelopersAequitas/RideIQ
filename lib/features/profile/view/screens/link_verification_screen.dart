@@ -7,6 +7,7 @@ import 'package:rideiq/features/auth/view/widgets/otp_input_field.dart';
 import 'package:rideiq/features/profile/view/screens/link_syncing_screen.dart';
 import 'package:rideiq/features/profile/viewmodel/link_viewmodel.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class LinkVerificationScreen extends ConsumerWidget {
   final String platformName;
@@ -24,6 +25,7 @@ class LinkVerificationScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(linkViewModelProvider);
     final notifier = ref.read(linkViewModelProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
 
     final isUber = platformName.toLowerCase() == "uber";
     final logoAsset = isUber ? AppAssets.uberLogoPng : AppAssets.lyftLogoPng;
@@ -39,7 +41,7 @@ class LinkVerificationScreen extends ConsumerWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          "Link Platform",
+          l10n.link_platform,
           style: TextStyle(
             color: Colors.black,
             fontSize: 18.sp,
@@ -88,7 +90,7 @@ class LinkVerificationScreen extends ConsumerWidget {
 
               // 2. Simple Instruction
               Text(
-                "Enter verification code",
+                l10n.enter_verification_code,
                 style: TextStyle(
                   fontSize: 14.sp,
                   color: const Color(0xFF999999),
@@ -110,7 +112,7 @@ class LinkVerificationScreen extends ConsumerWidget {
 
               // 4. Action Button
               PrimaryButton(
-                text: "Verify",
+                text: l10n.verify,
                 isLoading: state.isLoading,
                 onPressed: state.isOtpValid
                     ? () {
@@ -139,7 +141,7 @@ class LinkVerificationScreen extends ConsumerWidget {
                   onPressed: () {},
                   child: RichText(
                     text: TextSpan(
-                      text: "Didn't receive the code? ",
+                      text: l10n.didnt_receive_code,
                       style: TextStyle(
                         color: const Color(0xFF999999),
                         fontSize: 14.sp,
@@ -147,7 +149,7 @@ class LinkVerificationScreen extends ConsumerWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: "Resend",
+                          text: l10n.resend,
                           style: TextStyle(
                             color: const Color(0xFF1D72DD),
                             fontWeight: FontWeight.w600,
@@ -173,7 +175,7 @@ class LinkVerificationScreen extends ConsumerWidget {
                   SizedBox(width: 12.w),
                   Expanded(
                     child: Text(
-                      "We only read earnings data. We never modify your account.",
+                      l10n.security_footer,
                       style: TextStyle(
                         color: const Color(0xFF999999),
                         fontSize: 13.sp,
@@ -193,3 +195,4 @@ class LinkVerificationScreen extends ConsumerWidget {
     );
   }
 }
+

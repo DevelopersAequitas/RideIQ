@@ -1,5 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:rideiq/core/services/api_service.dart';
+
+import 'package:rideiq/core/constants/api_constants.dart';
+
 part 'auth_repository.g.dart';
 
 abstract class AuthRepository {
@@ -14,10 +20,40 @@ abstract class AuthRepository {
     required String verificationId,
     required String smsCode,
   });
+
+  Future<void> verifyBackend({
+    required String token,
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String role,
+  });
+
+  Future<void> signOut();
+
+  Future<void> deleteAccount();
+
+  User? get currentUser;
 }
 
 class FirebaseAuthRepository implements AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final ApiService _apiService;
+
+  FirebaseAuthRepository(this._apiService);
+
+  @override
+  User? get currentUser => _auth.currentUser;
+
+  @override
+  Future<void> signOut() async {
+    await _auth.signOut();
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    await _auth.currentUser?.delete();
+  }
 
   @override
   Future<void> verifyPhoneNumber({
@@ -57,9 +93,38 @@ class FirebaseAuthRepository implements AuthRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<void> verifyBackend({
+    required String token,
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String role,
+  }) async {
+    try {
+      await _apiService.post(
+        ApiConstants.verifyAuth,
+        data: {
+          'first_name': firstName,
+          'last_name': lastName,
+          'email': email,
+          'firebase_token': token,
+          'role': role.toLowerCase(),
+        },
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+    } catch (e) {
+      if (e is DioException) {
+        print("Backend Error Details: ${e.response?.data}");
+      }
+      rethrow;
+    }
+  }
 }
 
 @riverpod
 AuthRepository authRepository(Ref ref) {
-  return FirebaseAuthRepository();
+  final apiService = ref.watch(apiServiceProvider);
+  return FirebaseAuthRepository(apiService);
 }

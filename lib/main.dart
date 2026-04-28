@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 import 'package:rideiq/features/onboarding/view/screens/splash_screen.dart';
-import 'package:rideiq/features/auth/view/screens/user_selection_screen.dart';
-import 'package:rideiq/features/auth/view/screens/permission_screen.dart';
-import 'package:rideiq/features/paywall/view/screens/paywall_screen.dart';
-import 'package:rideiq/features/home/view/screens/main_dashboard_screen.dart';
-import 'package:rideiq/core/services/local_service.dart';
 import 'package:rideiq/core/utils/size_config.dart';
+import 'package:rideiq/core/providers/language_provider.dart';
 import 'package:rideiq/firebase_options.dart';
 
 void main() async {
@@ -15,26 +13,34 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  final initialStep = await LocalService.getAuthStep();
-
   runApp(
-    ProviderScope(
-      child: MyApp(
-        initialStep: initialStep,
-      ), // Force null to start from Splash Screen for testing
+    const ProviderScope(
+      child: MyApp(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  final String? initialStep;
-  const MyApp({super.key, this.initialStep});
+class MyApp extends ConsumerWidget {
+  const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final lang = ref.watch(languageProvider);
+
     return MaterialApp(
       title: 'RideIQ',
       debugShowCheckedModeBanner: false,
+      locale: Locale(lang),
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('es'),
+      ],
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'Figtree',
@@ -43,24 +49,9 @@ class MyApp extends StatelessWidget {
       home: Builder(
         builder: (context) {
           SizeConfig.init(context);
-          return _getInitialScreen();
+          return const SplashScreen();
         },
       ),
     );
-  }
-
-  Widget _getInitialScreen() {
-    switch (initialStep) {
-      case AuthSteps.userType:
-        return const UserSelectionScreen();
-      case AuthSteps.permissions:
-        return const PermissionScreen();
-      case AuthSteps.paywall:
-        return const PaywallScreen();
-      case AuthSteps.home:
-        return const MainDashboardScreen();
-      default:
-        return const SplashScreen();
-    }
   }
 }

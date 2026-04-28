@@ -3,6 +3,7 @@ import 'package:rideiq/core/utils/size_config.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rideiq/core/constants/app_assets.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class PaywallHeader extends StatelessWidget {
   const PaywallHeader({super.key});
@@ -10,6 +11,7 @@ class PaywallHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double cardHeight = 100.0; // Fixed base height for calculation
+    final l10n = AppLocalizations.of(context)!;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -43,7 +45,7 @@ class PaywallHeader extends StatelessWidget {
                 ),
                 SizedBox(height: 40.h),
                 Text(
-                  "Start saving more\non every ride",
+                  l10n.paywall_title,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
@@ -57,7 +59,7 @@ class PaywallHeader extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50.w),
                   child: Text(
-                    "Compare fares and track earnings across platforms. all in one place.",
+                    l10n.paywall_subtitle,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -104,7 +106,7 @@ class PaywallHeader extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "7-Day Free Trial",
+                  l10n.paywall_7_day_trial,
                   style: TextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
@@ -113,7 +115,7 @@ class PaywallHeader extends StatelessWidget {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  "No charges today. Cancel anytime.",
+                  l10n.paywall_no_charges,
                   style: TextStyle(
                     color: const Color(0xFF1D72DD),
                     fontSize: 12.sp,
@@ -156,3 +158,4 @@ class WavePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+

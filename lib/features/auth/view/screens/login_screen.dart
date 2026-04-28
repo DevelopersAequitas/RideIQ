@@ -8,6 +8,7 @@ import 'package:rideiq/features/home/view/screens/main_dashboard_screen.dart';
 import 'package:rideiq/shared/widgets/primary_button.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:elegant_notification/elegant_notification.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
@@ -22,6 +23,7 @@ class LoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(authViewModelProvider);
     final notifier = ref.read(authViewModelProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
 
     // Listen for authentication success
     ref.listen(authViewModelProvider.select((s) => s.isAuthenticated), (
@@ -45,7 +47,7 @@ class LoginScreen extends ConsumerWidget {
         ElegantNotification.error(
           width: 380.w,
           height: 100.h,
-          title: const Text("Error"),
+          title: Text(l10n.error),
           description: Text(next),
           displayCloseButton: true,
         ).show(context);
@@ -60,7 +62,7 @@ class LoginScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AuthHeader(title: "Login"),
+              AuthHeader(title: l10n.login),
 
               const SizedBox(height: 100),
               PhoneInputField(
@@ -73,7 +75,7 @@ class LoginScreen extends ConsumerWidget {
 
               if (!state.isOtpSent)
                 PrimaryButton(
-                  text: "Send OTP",
+                  text: l10n.send_otp,
                   isLoading: state.isLoading,
                   onPressed: notifier.sendOtp,
                 )
@@ -88,7 +90,7 @@ class LoginScreen extends ConsumerWidget {
                   ),
                   child: Center(
                     child: Text(
-                      "OTP Sent",
+                      l10n.otp_sent,
                       style: TextStyle(
                         color: const Color(0xFF1E74E9),
                         fontWeight: FontWeight.w600,
@@ -102,9 +104,9 @@ class LoginScreen extends ConsumerWidget {
                 const Divider(color: Color(0xFFF0F0F0), thickness: 1),
                 const SizedBox(height: 48),
 
-                const Text(
-                  "Enter OTP",
-                  style: TextStyle(
+                Text(
+                  l10n.enter_otp,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: Colors.black54,
@@ -122,9 +124,9 @@ class LoginScreen extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        const Text(
-                          "Resend OTP in ",
-                          style: TextStyle(color: Colors.black45, fontSize: 14),
+                        Text(
+                          l10n.resend_otp_in,
+                          style: const TextStyle(color: Colors.black45, fontSize: 14),
                         ),
                         Text(
                           _formatTimer(state.resendTimer),
@@ -139,9 +141,9 @@ class LoginScreen extends ConsumerWidget {
                     if (state.resendTimer == 0)
                       TextButton(
                         onPressed: notifier.sendOtp,
-                        child: const Text(
-                          "Resend",
-                          style: TextStyle(
+                        child: Text(
+                          l10n.resend,
+                          style: const TextStyle(
                             color: Color(0xFF1E74E9),
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
@@ -154,7 +156,7 @@ class LoginScreen extends ConsumerWidget {
                 const SizedBox(height: 40),
 
                 PrimaryButton(
-                  text: "Login",
+                  text: l10n.login,
                   isLoading: state.isLoading,
                   onPressed: state.otp.length == 6 ? notifier.login : null,
                 ),
@@ -166,3 +168,4 @@ class LoginScreen extends ConsumerWidget {
     );
   }
 }
+

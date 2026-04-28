@@ -8,6 +8,7 @@ import 'package:rideiq/shared/widgets/primary_button.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class CreateAccountScreen extends ConsumerWidget {
   const CreateAccountScreen({super.key});
@@ -16,6 +17,7 @@ class CreateAccountScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(authViewModelProvider);
     final notifier = ref.read(authViewModelProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
 
     // Listen for OTP sent state to navigate
     ref.listen(authViewModelProvider.select((s) => s.isOtpSent), (prev, next) {
@@ -30,11 +32,29 @@ class CreateAccountScreen extends ConsumerWidget {
     ref.listen(authViewModelProvider.select((s) => s.errorMessage), (prev, next) {
       if (next != null) {
         ElegantNotification.error(
-          width: 380.w,
-          height: 100.h,
-          title: const Text("Error"),
-          description: Text(next),
+          width: MediaQuery.of(context).size.width * 0.9,
+          background: const Color(0xFFFFFBFA), // Very light red/blush
+          title: Text(
+            l10n.error,
+            style: TextStyle(
+              color: const Color(0xFFC62828),
+              fontWeight: FontWeight.w700,
+              fontSize: 14.sp,
+            ),
+          ),
+          description: Text(
+            next,
+            style: TextStyle(
+              color: const Color(0xFFC62828),
+              fontSize: 13.sp,
+            ),
+          ),
           displayCloseButton: true,
+          icon: Icon(
+            Icons.error_outline,
+            color: const Color(0xFFC62828),
+            size: 24.sp,
+          ),
         ).show(context);
       }
     });
@@ -47,7 +67,7 @@ class CreateAccountScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AuthHeader(title: "Create Account"),
+              AuthHeader(title: l10n.create_account),
               SizedBox(height: 120.h),
               
               PhoneInputField(
@@ -60,7 +80,7 @@ class CreateAccountScreen extends ConsumerWidget {
               
               if (!state.isOtpSent)
                 PrimaryButton(
-                  text: "Send OTP",
+                  text: l10n.send_otp,
                   isLoading: state.isLoading,
                   onPressed: notifier.sendOtp,
                 )
@@ -75,7 +95,7 @@ class CreateAccountScreen extends ConsumerWidget {
                   ),
                   child: Center(
                     child: Text(
-                      "OTP Sent",
+                      l10n.otp_sent,
                       style: TextStyle(
                         color: const Color(0xFF1E74E9),
                         fontWeight: FontWeight.w600,
@@ -89,7 +109,7 @@ class CreateAccountScreen extends ConsumerWidget {
               
               Center(
                 child: Text(
-                  "We'll send a verification code to your number.",
+                  l10n.verification_code_msg,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black54,
@@ -105,3 +125,4 @@ class CreateAccountScreen extends ConsumerWidget {
     );
   }
 }
+

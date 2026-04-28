@@ -7,13 +7,16 @@ import 'package:rideiq/features/profile/view/widgets/stat_card.dart';
 import 'package:rideiq/features/profile/view/widgets/profile_menu_item.dart';
 import 'package:rideiq/features/profile/view/screens/settings_screen.dart';
 import 'package:rideiq/features/profile/view/screens/link_platform_screen.dart';
+import 'package:rideiq/features/profile/view/widgets/logout_dialog.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -24,7 +27,7 @@ class ProfileScreen extends ConsumerWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          "Profile",
+          l10n.profile,
           style: TextStyle(
             color: Colors.black,
             fontSize: 18.sp,
@@ -56,18 +59,18 @@ class ProfileScreen extends ConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: StatCard(
                           assetPath: AppAssets.carProfileSvg,
-                          label: "Total Rides",
+                          label: l10n.total_rides,
                           value: "126",
                         ),
                       ),
                       SizedBox(width: 16.w),
-                      const Expanded(
+                      Expanded(
                         child: StatCard(
                           assetPath: AppAssets.moneyWavySvg,
-                          label: "Total Spent",
+                          label: l10n.total_spent,
                           value: "\$1,842",
                         ),
                       ),
@@ -76,18 +79,18 @@ class ProfileScreen extends ConsumerWidget {
                   SizedBox(height: 16.h),
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: StatCard(
                           assetPath: AppAssets.mapPinSvg,
-                          label: "Frequent Location",
+                          label: l10n.frequent_location,
                           value: "Downtown, LA",
                         ),
                       ),
                       SizedBox(width: 16.w),
-                      const Expanded(
+                      Expanded(
                         child: StatCard(
                           assetPath: AppAssets.clockCountdownSvg,
-                          label: "Avg Ride Time",
+                          label: l10n.avg_ride_time,
                           value: "18 mins",
                         ),
                       ),
@@ -100,7 +103,7 @@ class ProfileScreen extends ConsumerWidget {
 
               // 3. Linked Accounts Section
               Text(
-                "Linked Accounts",
+                l10n.linked_accounts,
                 style: TextStyle(
                   color: const Color(0xFF999999),
                   fontSize: 14.sp,
@@ -122,29 +125,29 @@ class ProfileScreen extends ConsumerWidget {
                     children: [
                       ProfileMenuItem(
                         assetPath: AppAssets.headsetSvg,
-                        label: "Help Center",
+                        label: l10n.help_center,
                         onTap: () {},
                       ),
                       ProfileMenuItem(
                         assetPath: AppAssets.fileTextSvg,
-                        label: "Privacy Policy",
+                        label: l10n.privacy_policy,
                         onTap: () {},
                       ),
                       ProfileMenuItem(
                         assetPath: AppAssets.warningCircleSvg,
-                        label: "Report",
+                        label: l10n.report,
                         onTap: () {},
                       ),
                       ProfileMenuItem(
                         assetPath: AppAssets.infoSvg,
-                        label: "About Us",
+                        label: l10n.about_us,
                         onTap: () {},
                       ),
                       ProfileMenuItem(
                         assetPath: AppAssets.signOutSvg,
-                        label: "Log Out",
+                        label: l10n.log_out,
                         isDestructive: true,
-                        onTap: () {},
+                        onTap: () => LogoutDialog.show(context, ref),
                       ),
                     ].animate(interval: 50.ms).fadeIn(delay: 500.ms).slideY(begin: 0.1, end: 0),
                   ),
@@ -243,6 +246,7 @@ class ProfileScreen extends ConsumerWidget {
     bool isConnected,
     bool isUber,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.all(20.w),
       child: Row(
@@ -279,7 +283,7 @@ class ProfileScreen extends ConsumerWidget {
                       Icon(Icons.check, color: Colors.green, size: 12.sp),
                       SizedBox(width: 4.w),
                       Text(
-                        "Connected",
+                        l10n.connected,
                         style: TextStyle(
                           color: Colors.green,
                           fontSize: 12.sp,
@@ -298,7 +302,7 @@ class ProfileScreen extends ConsumerWidget {
               }
             },
             child: Text(
-              isConnected ? "Disconnect" : "Link",
+              isConnected ? l10n.disconnect : l10n.link,
               style: TextStyle(
                 color: isConnected
                     ? const Color(0xFFE53935)
@@ -324,3 +328,4 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 }
+

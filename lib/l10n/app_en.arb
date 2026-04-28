@@ -1,0 +1,202 @@
+{
+  "@@locale": "en",
+  "settings": "Settings",
+  "language": "Language",
+  "english": "English",
+  "spanish": "Spanish",
+  "select_language": "Select Language",
+  "default_ride": "Default Ride",
+  "delete_account": "Delete Account",
+  "logout": "Logout",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "delete_account_confirm": "Are you sure you want to delete your account? This action cannot be undone and you will lose all your data.",
+  "logout_confirm": "Are you sure you want to log out? You will need to sign in again to access your account.",
+  "profile": "Profile",
+  "total_rides": "Total Rides",
+  "total_spent": "Total Spent",
+  "frequent_location": "Frequent Location",
+  "avg_ride_time": "Avg Ride Time",
+  "linked_accounts": "Linked Accounts",
+  "help_center": "Help Center",
+  "privacy_policy": "Privacy Policy",
+  "report": "Report",
+  "about_us": "About Us",
+  "log_out": "Log Out",
+  "connected": "Connected",
+  "disconnect": "Disconnect",
+  "link": "Link",
+  "link_platform": "Link Platform",
+  "search_country": "Search country",
+  "phone": "Phone",
+  "drivers_license_number": "Driver's license number",
+  "continue_btn": "Continue",
+  "enter_verification_code": "Enter verification code",
+  "verify": "Verify",
+  "didnt_receive_code": "Didn't receive the code? ",
+  "resend": "Resend",
+  "security_footer": "We only read earnings data. We never modify your account.",
+  "syncing": "Syncing",
+  "pulling_ride_history": "Pulling your ride history...",
+  "connecting_to": "Connecting to {platform}...",
+  "@connecting_to": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      }
+    }
+  },
+  "platform_connected": "{platform} Connected",
+  "@platform_connected": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      }
+    }
+  },
+  "found_trips": "Found 142 trips",
+  "estimated_sync_time": "Estimated sync time: 1 minute",
+  "securely_syncing": "Securely syncing your ride data.",
+  "trips_synced": "Your trips are now synced with\nRYDE-IQ.",
+  "done": "Done",
+  "login": "Login",
+  "create_account": "Create Account",
+  "send_otp": "Send OTP",
+  "otp_sent": "OTP Sent",
+  "enter_otp": "Enter OTP",
+  "resend_otp_in": "Resend OTP in ",
+  "error": "Error",
+  "verification_code_msg": "We'll send a verification code to your number.",
+  "first_name": "First name",
+  "last_name": "Last name",
+  "email_optional": "Email (Optional)",
+  "confirm": "Confirm",
+  "by_clicking_confirm": "By Clicking Confirm, I agree to\n",
+  "terms_and_conditions": "Terms & Conditions",
+  "and_text": " and ",
+  "what_brings_you_here": "What brings you here?",
+  "im_a_passenger": "I'm a Passenger",
+  "find_cheapest_ride_fares": "Find cheapest ride fares",
+  "im_a_driver": "I'm a Driver",
+  "compare_my_earnings": "Compare my earnings",
+  "allow_permissions": "Allow Permissions",
+  "location": "Location",
+  "location_subtitle": "Used to detect pickup location",
+  "notifications": "Notifications",
+  "notifications_subtitle": "Used for fare alerts and driver insights",
+  "welcome_title": "Turn every trip\ninto insight.",
+  "welcome_login": "Log in",
+  "welcome_signup": "Sign up",
+  "paywall_billed_after_trial": "After FREE trial, you will be billed...",
+  "paywall_monthly": "Monthly",
+  "paywall_yearly": "Yearly",
+  "paywall_save_percent": "Save 30%",
+  "paywall_month": " /Month",
+  "paywall_year": " /Year",
+  "paywall_benefits": "Benefits",
+  "paywall_benefit_1": "1. Compare ride prices instantly",
+  "paywall_benefit_2": "2. Track your earnings across platforms",
+  "paywall_benefit_3": "3. Get smart insights to maximize income",
+  "paywall_start_trial": "Start Free Trial",
+  "paywall_title": "Start saving more\non every ride",
+  "paywall_subtitle": "Compare fares and track earnings across platforms. all in one place.",
+  "paywall_7_day_trial": "7-Day Free Trial",
+  "paywall_no_charges": "No charges today. Cancel anytime.",
+  "rider": "Rider",
+  "driver": "Driver",
+  "version_info": "Version {version}",
+  "@version_info": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "notifications_title": "Notifications",
+  "clear": "Clear",
+  "no_notifications_yet": "No notifications yet",
+  "search_location": "Search location",
+  "current_location": "Current location",
+  "opening_platform": "Opening {platform}",
+  "@opening_platform": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      }
+    }
+  },
+  "locations_added": "Your pickup and drop location\nhave been added.",
+  "app_not_installed_title": "App is not installed",
+  "get_app_to_book": "Get {platform} to book selected ride.",
+  "@get_app_to_book": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      }
+    }
+  },
+  "install_platform": "Install {platform}",
+  "@install_platform": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      }
+    }
+  },
+  "app_not_installed_question": "App not installed?",
+  "driver_dashboard_title": "Driver Dashboard",
+  "driver_dashboard_subtitle": "See what you're really earning.",
+  "tab_today": "Today",
+  "tab_weekly": "Weekly",
+  "tab_all_time": "All Time",
+  "todays_earnings": "Today's Earnings",
+  "quick_stats_platform": "Quick Stats of {platform}",
+  "@quick_stats_platform": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      }
+    }
+  },
+  "trips_today": "Trips Today",
+  "online_hours": "Online Hours",
+  "miles_driven": "Miles Driven",
+  "tips_earned": "Tips Earned",
+  "idle_time": "Idle Time",
+  "acceptance_rate": "Acceptance Rate",
+  "insight_today_uber": "You earned more per hour on Uber today compared to the other platforms.",
+  "insight_weekly_uber": "You earned more per hour on Uber this week compared to the other platforms.",
+  "earnings_by_day": "Earnings by Day",
+  "quick_stats_for_platform": "Quick Stats for {platform}",
+  "@quick_stats_for_platform": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      }
+    }
+  },
+  "total_earnings": "Total Earnings",
+  "earnings_per_hour": "Earnings per Hour",
+  "total_trips": "Total Trips",
+  "total_hours": "Total Hours",
+  "platform_earnings_comparison": "Platform Earnings Comparison",
+  "best_platform": "Best Platform",
+  "per_hour": "{amount} per hour",
+  "@per_hour": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "milestones": "Milestones",
+  "milestone_completed": "Completed",
+  "milestone_in_progress": "In Progress",
+  "milestone_locked": "Locked",
+  "trips": "Trips",
+  "milestone_earned": "Earned",
+  "quick_stats": "Quick Stats",
+  "avg_rating": "Avg Rating",
+  "go_to_dashboard": "Go to Dashboard",
+  "not_linked": "Not Linked"
+}

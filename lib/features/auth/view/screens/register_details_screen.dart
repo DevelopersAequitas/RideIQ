@@ -9,6 +9,7 @@ import 'package:rideiq/shared/widgets/primary_button.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class RegisterDetailsScreen extends ConsumerWidget {
   const RegisterDetailsScreen({super.key});
@@ -23,6 +24,7 @@ class RegisterDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(authViewModelProvider);
     final notifier = ref.read(authViewModelProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
 
     ref.listen(authViewModelProvider.select((s) => s.errorMessage), (
       prev,
@@ -30,11 +32,29 @@ class RegisterDetailsScreen extends ConsumerWidget {
     ) {
       if (next != null) {
         ElegantNotification.error(
-          width: 380.w,
-          height: 100.h,
-          title: const Text("Error"),
-          description: Text(next),
+          width: MediaQuery.of(context).size.width * 0.9,
+          background: const Color(0xFFFFFBFA), // Very light red/blush
+          title: Text(
+            l10n.error,
+            style: TextStyle(
+              color: const Color(0xFFC62828),
+              fontWeight: FontWeight.w700,
+              fontSize: 14.sp,
+            ),
+          ),
+          description: Text(
+            next,
+            style: TextStyle(
+              color: const Color(0xFFC62828),
+              fontSize: 13.sp,
+            ),
+          ),
           displayCloseButton: true,
+          icon: Icon(
+            Icons.error_outline,
+            color: const Color(0xFFC62828),
+            size: 24.sp,
+          ),
         ).show(context);
       }
     });
@@ -57,11 +77,11 @@ class RegisterDetailsScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const AuthHeader(title: "Create Account"),
+                      AuthHeader(title: l10n.create_account),
                       SizedBox(height: 28.h),
 
                       Text(
-                        "Enter OTP",
+                        l10n.enter_otp,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
@@ -80,7 +100,7 @@ class RegisterDetailsScreen extends ConsumerWidget {
                           Row(
                             children: [
                               Text(
-                                "Resend OTP in ",
+                                l10n.resend_otp_in,
                                 style: TextStyle(
                                   color: Colors.black45,
                                   fontSize: 14.sp,
@@ -100,7 +120,7 @@ class RegisterDetailsScreen extends ConsumerWidget {
                             TextButton(
                               onPressed: notifier.sendOtp,
                               child: Text(
-                                "Resend",
+                                l10n.resend,
                                 style: TextStyle(
                                   color: const Color(0xFF1E74E9),
                                   fontWeight: FontWeight.w600,
@@ -116,30 +136,27 @@ class RegisterDetailsScreen extends ConsumerWidget {
                       SizedBox(height: 24.h),
 
                       LabeledInputField(
-                        label: "First name",
-                        hint: "Placeholder...",
+                        label: l10n.first_name,
                         onChanged: notifier.updateFirstName,
                       ),
-                      SizedBox(height: 12.h),
+                      SizedBox(height: 16.h),
 
                       LabeledInputField(
-                        label: "Last name",
-                        hint: "Placeholder...",
+                        label: l10n.last_name,
                         onChanged: notifier.updateLastName,
                       ),
-                      SizedBox(height: 12.h),
+                      SizedBox(height: 16.h),
 
                       LabeledInputField(
-                        label: "Email (Optional)",
-                        hint: "Email (Optional)",
+                        label: l10n.email_optional,
                         onChanged: notifier.updateEmail,
-                        hasLabelOnBorder: false,
+                        isEmail: true,
                       ),
 
                       SizedBox(height: 32.h),
 
                       PrimaryButton(
-                        text: "Confirm",
+                        text: l10n.confirm,
                         isLoading: state.isLoading,
                         onPressed: state.otp.length == 6 ? () async {
                           await notifier.login();
@@ -166,21 +183,21 @@ class RegisterDetailsScreen extends ConsumerWidget {
                               height: 1.5,
                               fontFamily: 'Figtree',
                             ),
-                            children: const [
+                            children: [
                               TextSpan(
-                                text: "By Clicking Confirm, I agree to\n",
+                                text: l10n.by_clicking_confirm,
                               ),
                               TextSpan(
-                                text: "Terms & Conditions",
-                                style: TextStyle(
+                                text: l10n.terms_and_conditions,
+                                style: const TextStyle(
                                   color: Color(0xFF1E74E9),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              TextSpan(text: " and "),
+                              TextSpan(text: l10n.and_text),
                               TextSpan(
-                                text: "Privacy Policy",
-                                style: TextStyle(
+                                text: l10n.privacy_policy,
+                                style: const TextStyle(
                                   color: Color(0xFF1E74E9),
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -200,3 +217,4 @@ class RegisterDetailsScreen extends ConsumerWidget {
     );
   }
 }
+

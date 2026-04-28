@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rideiq/core/utils/size_config.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class BillingToggle extends StatelessWidget {
   final bool isMonthly;
@@ -13,6 +14,7 @@ class BillingToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.all(4.w),
       decoration: BoxDecoration(
@@ -24,7 +26,7 @@ class BillingToggle extends StatelessWidget {
         children: [
           // Monthly Item
           _ToggleItem(
-            label: "Monthly",
+            label: l10n.paywall_monthly,
             active: isMonthly,
             onTap: () => onToggle(true),
           ),
@@ -32,10 +34,11 @@ class BillingToggle extends StatelessWidget {
           SizedBox(width: 10.w), // 10px gap between items
           // Yearly Item
           _ToggleItem(
-            label: "Yearly",
+            label: l10n.paywall_yearly,
             active: !isMonthly,
             onTap: () => onToggle(false),
             hasBadge: true,
+            badgeText: l10n.paywall_save_percent,
           ),
         ],
       ),
@@ -48,12 +51,14 @@ class _ToggleItem extends StatelessWidget {
   final bool active;
   final VoidCallback onTap;
   final bool hasBadge;
+  final String? badgeText;
 
   const _ToggleItem({
     required this.label,
     required this.active,
     required this.onTap,
     this.hasBadge = false,
+    this.badgeText,
   });
 
   @override
@@ -104,7 +109,7 @@ class _ToggleItem extends StatelessWidget {
                 fontFamily: 'Figtree',
               ),
             ),
-            if (hasBadge) ...[
+            if (hasBadge && badgeText != null) ...[
               SizedBox(width: 6.w),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
@@ -113,7 +118,7 @@ class _ToggleItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4.w),
                 ),
                 child: Text(
-                  "Save 30%",
+                  badgeText!,
                   style: TextStyle(
                     color: Colors.green,
                     fontSize: 10.sp,
@@ -129,3 +134,4 @@ class _ToggleItem extends StatelessWidget {
     );
   }
 }
+

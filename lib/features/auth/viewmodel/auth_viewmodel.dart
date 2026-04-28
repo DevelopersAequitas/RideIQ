@@ -133,11 +133,58 @@ class AuthViewModel extends _$AuthViewModel {
       );
 
       if (userCredential != null && userCredential.user != null) {
-        await LocalService.setAuthStep(AuthSteps.home);
+        await LocalService.setAuthStep(AuthSteps.userType);
         state = state.copyWith(isLoading: false, isAuthenticated: true);
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: "Invalid OTP");
+    }
+  }
+
+  Future<void> syncWithBackend() async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      final user = ref.read(authRepositoryProvider).currentUser;
+      if (user == null) throw Exception("User not logged in");
+
+      // Force refresh token to ensure validity
+      final token = await user.getIdToken(true);
+
+      await ref.read(authRepositoryProvider).verifyBackend(
+            token: token ?? '',
+            firstName: state.firstName,
+            lastName: state.lastName,
+            email: state.email,
+            role: state.userType,
+          );
+
+      await LocalService.setAuthStep(AuthSteps.permissions);
+      state = state.copyWith(isLoading: false);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> logout() async {
+    state = state.copyWith(isLoading: true);
+    try {
+      await ref.read(authRepositoryProvider).signOut();
+      await LocalService.clearAll();
+      state = const AuthState();
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    state = state.copyWith(isLoading: true);
+    try {
+      await ref.read(authRepositoryProvider).deleteAccount();
+      await LocalService.clearAll();
+      state = const AuthState();
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
   }
 }

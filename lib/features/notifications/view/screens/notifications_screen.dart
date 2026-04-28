@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/features/notifications/viewmodel/notification_viewmodel.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});
@@ -12,6 +13,7 @@ class NotificationsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifications = ref.watch(notificationViewModelProvider);
     final notifier = ref.read(notificationViewModelProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -23,7 +25,7 @@ class NotificationsScreen extends ConsumerWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          "Notifications",
+          l10n.notifications_title,
           style: TextStyle(
             color: Colors.black,
             fontSize: 18.sp,
@@ -44,7 +46,7 @@ class NotificationsScreen extends ConsumerWidget {
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
               ),
               child: Text(
-                "Clear",
+                l10n.clear,
                 style: TextStyle(
                   color: const Color(0xFF1A1A1A),
                   fontSize: 14.sp,
@@ -58,7 +60,7 @@ class NotificationsScreen extends ConsumerWidget {
         centerTitle: false,
       ),
       body: notifications.isEmpty
-          ? _buildEmptyState()
+          ? _buildEmptyState(context)
           : ListView.separated(
               padding: EdgeInsets.symmetric(vertical: 20.h),
               itemCount: notifications.length,
@@ -138,7 +140,8 @@ class NotificationsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -146,7 +149,7 @@ class NotificationsScreen extends ConsumerWidget {
           Icon(Icons.notifications_none, size: 64.sp, color: const Color(0xFFF2F2F2)),
           SizedBox(height: 16.h),
           Text(
-            "No notifications yet",
+            l10n.no_notifications_yet,
             style: TextStyle(
               fontSize: 16.sp,
               color: const Color(0xFF999999),
@@ -158,3 +161,4 @@ class NotificationsScreen extends ConsumerWidget {
     );
   }
 }
+

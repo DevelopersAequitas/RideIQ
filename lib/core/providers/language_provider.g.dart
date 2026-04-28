@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'auth_viewmodel.dart';
+part of 'language_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,51 +9,50 @@ part of 'auth_viewmodel.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(AuthViewModel)
-final authViewModelProvider = AuthViewModelProvider._();
+@ProviderFor(Language)
+final languageProvider = LanguageProvider._();
 
-final class AuthViewModelProvider
-    extends $NotifierProvider<AuthViewModel, AuthState> {
-  AuthViewModelProvider._()
+final class LanguageProvider extends $NotifierProvider<Language, String> {
+  LanguageProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'authViewModelProvider',
+        name: r'languageProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$authViewModelHash();
+  String debugGetCreateSourceHash() => _$languageHash();
 
   @$internal
   @override
-  AuthViewModel create() => AuthViewModel();
+  Language create() => Language();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AuthState value) {
+  Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<AuthState>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
 
-String _$authViewModelHash() => r'3f2c70ef0e744cb4a317e2e2cd9c29cbb1030c35';
+String _$languageHash() => r'14c1727cacf68732c2f6b6b1e6b823a04460b021';
 
-abstract class _$AuthViewModel extends $Notifier<AuthState> {
-  AuthState build();
+abstract class _$Language extends $Notifier<String> {
+  String build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AuthState, AuthState>;
+    final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AuthState, AuthState>,
-              AuthState,
+              AnyNotifier<String, String>,
+              String,
               Object?,
               Object?
             >;

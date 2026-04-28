@@ -7,6 +7,7 @@ import 'package:rideiq/shared/widgets/primary_button.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/core/constants/app_assets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class UserSelectionScreen extends ConsumerWidget {
   const UserSelectionScreen({super.key});
@@ -15,9 +16,19 @@ class UserSelectionScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(authViewModelProvider);
     final notifier = ref.read(authViewModelProvider.notifier);
+    final l10n = AppLocalizations.of(context)!;
+
+    // Listen for errors
+    ref.listen(authViewModelProvider.select((s) => s.errorMessage), (prev, next) {
+      if (next != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next), backgroundColor: Colors.red),
+        );
+      }
+    });
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8), // Match the light background in Figma
+      backgroundColor: const Color(0xFFF8F8F8),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
@@ -26,7 +37,7 @@ class UserSelectionScreen extends ConsumerWidget {
             children: [
               SizedBox(height: 20.h),
               Text(
-                "What brings you here?",
+                l10n.what_brings_you_here,
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.w600,
@@ -38,8 +49,8 @@ class UserSelectionScreen extends ConsumerWidget {
               SizedBox(height: 32.h),
               
               UserTypeCard(
-                title: "I'm a Passenger",
-                subtitle: "Find cheapest ride fares",
+                title: l10n.im_a_passenger,
+                subtitle: l10n.find_cheapest_ride_fares,
                 imagePath: AppAssets.passengerPng,
                 isSelected: state.userType == 'passenger',
                 onTap: () => notifier.updateUserType('passenger'),
@@ -48,8 +59,8 @@ class UserSelectionScreen extends ConsumerWidget {
               SizedBox(height: 20.h),
               
               UserTypeCard(
-                title: "I'm a Driver",
-                subtitle: "Compare my earnings",
+                title: l10n.im_a_driver,
+                subtitle: l10n.compare_my_earnings,
                 imagePath: AppAssets.driverPng,
                 isSelected: state.userType == 'driver',
                 onTap: () => notifier.updateUserType('driver'),
@@ -58,13 +69,20 @@ class UserSelectionScreen extends ConsumerWidget {
               const Spacer(),
               
               PrimaryButton(
-                text: "Continue",
-                onPressed: () {
-                  notifier.completeUserSelection(); // Trigger save in background
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const PermissionScreen()),
-                  );
-                },
+                text: l10n.continue_btn,
+                isLoading: state.isLoading,
+                onPressed: state.userType.isNotEmpty ? () async {
+                  try {
+                    await notifier.syncWithBackend();
+                    if (context.mounted) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const PermissionScreen()),
+                      );
+                    }
+                  } catch (e) {
+                    // Error is handled by listener
+                  }
+                } : null,
               ).animate().fade(delay: 600.ms),
             ],
           ),
@@ -73,3 +91,4 @@ class UserSelectionScreen extends ConsumerWidget {
     );
   }
 }
+
