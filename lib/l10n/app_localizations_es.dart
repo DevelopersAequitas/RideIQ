@@ -450,4 +450,47 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get not_linked => 'No vinculado';
+
+  @override
+  String get driver_verification_title => 'Verificación de conductor';
+
+  @override
+  String get verify_income_title => 'Verifica tus ingresos';
+
+  @override
+  String get verify_income_subtitle =>
+      'Conecta de forma segura tu plataforma de nómina o gig para verificar tu estado de conductor e ingresos.';
+
+  @override
+  String get income_verified_success => 'Ingresos verificados con éxito';
+
+  @override
+  String get verify_income_with_truv => 'Verificar ingresos con Truv';
+
+  @override
+  String get truv_income_verification => 'Verificación de ingresos';
+
+  @override
+  String get verification_pending => 'Pendiente';
+
+  @override
+  String get verification_verified => 'Verificado';
+
+  @override
+  String get verification_failed => 'Fallido';
+
+  @override
+  String get verification_connected => 'Conectado';
+
+  @override
+  String get verification_unknown => 'Desconocido';
+
+  @override
+  String get income_source_connected => 'Fuente de ingresos conectada';
+
+  @override
+  String get verified_employer => 'Empleador verificado';
+
+  @override
+  String get link_btn => 'Vincular';
 }

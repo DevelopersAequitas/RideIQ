@@ -22,7 +22,7 @@ class AppAssets {
   static const String roadHorizonSvg = 'assets/RoadHorizon.svg';
   static const String coinsSvg = 'assets/Coins.svg';
   static const String starSvg = 'assets/Star.svg';
-  static const String trophySvg = 'assets/trophy.svg';
+  static const String trophySvg = 'assets/Trophy.png';
   static const String bellRingingSvg = 'assets/BellRinging.svg';
 
   // Notification Icons

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:rideiq/core/utils/size_config.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rideiq/features/profile/view/screens/profile_screen.dart';
+import 'package:rideiq/features/profile/viewmodel/profile_viewmodel.dart';
 
-class LocationSummaryHeader extends StatelessWidget {
+class LocationSummaryHeader extends ConsumerWidget {
   final String pickup;
   final String stop;
   final String dropoff;
@@ -17,7 +19,8 @@ class LocationSummaryHeader extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profileState = ref.watch(profileViewModelProvider);
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: const BoxDecoration(color: Colors.white),
@@ -88,8 +91,15 @@ class LocationSummaryHeader extends StatelessWidget {
                 },
                 child: CircleAvatar(
                   radius: 20.w,
-                  backgroundImage: const NetworkImage(
-                    "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+                  backgroundColor: const Color(0xFF1E74E9),
+                  child: Text(
+                    profileState.initials,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                      fontFamily: 'Figtree',
+                    ),
                   ),
                 ),
               ),

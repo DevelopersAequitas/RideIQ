@@ -1,8 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rideiq/core/constants/api_constants.dart';
+import 'package:rideiq/core/utils/app_logger.dart';
+import 'package:rideiq/core/services/local_service.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
+
 
 part 'api_service.g.dart';
 
@@ -25,26 +31,44 @@ class ApiService {
   ApiService() {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        // Skip automated injection for the verification endpoint as it's handled explicitly
+        // 1. Skip backend token for the verification endpoint itself
         if (options.path.contains(ApiConstants.verifyAuth)) {
+          final user = FirebaseAuth.instance.currentUser;
+          if (user != null) {
+            final token = await user.getIdToken();
+            options.headers['Authorization'] = 'Bearer $token';
+          }
           return handler.next(options);
         }
 
+        // 2. Try to use stored backend token (Bearer token)
+        final backendToken = await LocalService.getAuthToken();
+        if (backendToken != null && backendToken.isNotEmpty) {
+          AppLogger.info('Using Backend Bearer token for: ${options.path}', tag: 'ApiService');
+          options.headers['Authorization'] = 'Bearer $backendToken';
+          return handler.next(options);
+        }
+
+        // 3. Fallback to fresh Firebase token if no backend token exists yet
         final user = FirebaseAuth.instance.currentUser;
         if (user != null) {
-          final token = await user.getIdToken();
-          
-          // 1. Add to Authorization Header (Standard)
+          final token = await user.getIdToken(options.path.contains('/truv/'));
+          AppLogger.info('No backend token. Falling back to Firebase token for: ${options.path}', tag: 'ApiService');
           options.headers['Authorization'] = 'Bearer $token';
-          
-          // 2. Add to Body if applicable
-          if (options.data is Map<String, dynamic>) {
-            options.data['firebase_token'] = token;
-          }
         }
+
         return handler.next(options);
       },
+
+
+      onError: (DioException e, handler) async {
+        // Simple error logging with the new colored AppLogger
+        AppLogger.error('API Error: ${e.requestOptions.path}', error: e.response?.data ?? e.message, tag: 'ApiService');
+        return handler.next(e);
+      },
+
     ));
+
 
     _dio.interceptors.add(LogInterceptor(
       requestBody: true,

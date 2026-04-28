@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'link_viewmodel.dart';
+part of 'truv_viewmodel.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,51 +9,51 @@ part of 'link_viewmodel.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(LinkViewModel)
-final linkViewModelProvider = LinkViewModelProvider._();
+@ProviderFor(TruvViewModel)
+final truvViewModelProvider = TruvViewModelProvider._();
 
-final class LinkViewModelProvider
-    extends $NotifierProvider<LinkViewModel, LinkState> {
-  LinkViewModelProvider._()
+final class TruvViewModelProvider
+    extends $NotifierProvider<TruvViewModel, TruvState> {
+  TruvViewModelProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'linkViewModelProvider',
+        name: r'truvViewModelProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$linkViewModelHash();
+  String debugGetCreateSourceHash() => _$truvViewModelHash();
 
   @$internal
   @override
-  LinkViewModel create() => LinkViewModel();
+  TruvViewModel create() => TruvViewModel();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(LinkState value) {
+  Override overrideWithValue(TruvState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<LinkState>(value),
+      providerOverride: $SyncValueProvider<TruvState>(value),
     );
   }
 }
 
-String _$linkViewModelHash() => r'1eda200cf2d835b2fb92389e1a2374d8d068d18d';
+String _$truvViewModelHash() => r'310e5d9d138d89d2c288ccfc409c503a571aadf1';
 
-abstract class _$LinkViewModel extends $Notifier<LinkState> {
-  LinkState build();
+abstract class _$TruvViewModel extends $Notifier<TruvState> {
+  TruvState build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<LinkState, LinkState>;
+    final ref = this.ref as $Ref<TruvState, TruvState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<LinkState, LinkState>,
-              LinkState,
+              AnyNotifier<TruvState, TruvState>,
+              TruvState,
               Object?,
               Object?
             >;

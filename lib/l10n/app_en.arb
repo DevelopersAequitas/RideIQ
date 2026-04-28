@@ -198,5 +198,20 @@
   "quick_stats": "Quick Stats",
   "avg_rating": "Avg Rating",
   "go_to_dashboard": "Go to Dashboard",
-  "not_linked": "Not Linked"
+  "not_linked": "Not Linked",
+  "driver_verification_title": "Driver Verification",
+  "verify_income_title": "Verify your income",
+  "verify_income_subtitle": "Securely connect your payroll or gig platform to verify your driver status and income.",
+  "income_verified_success": "Income verified successfully",
+  "verify_income_with_truv": "Verify Income with Truv",
+  "truv_income_verification": "Income Verification",
+  "verification_pending": "Pending",
+  "verification_verified": "Verified",
+  "verification_failed": "Failed",
+  "verification_connected": "Connected",
+  "verification_unknown": "Unknown",
+  "income_source_connected": "Income Source Connected",
+  "verified_employer": "Verified Employer",
+  "link_btn": "Link"
 }
+

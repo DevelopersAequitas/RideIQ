@@ -149,6 +149,7 @@ class AuthViewModel extends _$AuthViewModel {
 
       // Force refresh token to ensure validity
       final token = await user.getIdToken(true);
+      if (!ref.mounted) return;
 
       await ref.read(authRepositoryProvider).verifyBackend(
             token: token ?? '',
@@ -157,23 +158,34 @@ class AuthViewModel extends _$AuthViewModel {
             email: state.email,
             role: state.userType,
           );
+      
+      if (!ref.mounted) return;
 
       await LocalService.setAuthStep(AuthSteps.permissions);
-      state = state.copyWith(isLoading: false);
+      if (ref.mounted) {
+        state = state.copyWith(isLoading: false);
+      }
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      if (ref.mounted) {
+        state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      }
       rethrow;
     }
   }
+
 
   Future<void> logout() async {
     state = state.copyWith(isLoading: true);
     try {
       await ref.read(authRepositoryProvider).signOut();
       await LocalService.clearAll();
-      state = const AuthState();
+      if (ref.mounted) {
+        state = const AuthState();
+      }
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      if (ref.mounted) {
+        state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      }
     }
   }
 
@@ -182,9 +194,14 @@ class AuthViewModel extends _$AuthViewModel {
     try {
       await ref.read(authRepositoryProvider).deleteAccount();
       await LocalService.clearAll();
-      state = const AuthState();
+      if (ref.mounted) {
+        state = const AuthState();
+      }
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      if (ref.mounted) {
+        state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      }
     }
   }
+
 }

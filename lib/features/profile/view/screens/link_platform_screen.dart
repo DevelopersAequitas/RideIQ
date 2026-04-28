@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rideiq/core/services/local_service.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/core/constants/app_assets.dart';
 import 'package:rideiq/shared/widgets/app_text_field.dart';
@@ -9,6 +10,10 @@ import 'package:rideiq/features/profile/viewmodel/link_viewmodel.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:rideiq/l10n/app_localizations.dart';
+import 'package:rideiq/features/truv/view/screens/driver_verification_screen.dart';
+import 'package:rideiq/features/truv/viewmodel/truv_viewmodel.dart'; 
+
+
 
 class LinkPlatformScreen extends ConsumerWidget {
   final String platformName;
@@ -161,23 +166,48 @@ class LinkPlatformScreen extends ConsumerWidget {
             // Continue Button
             PrimaryButton(
               text: l10n.continue_btn,
-              isLoading: state.isLoading,
+              isLoading: state.isLoading || ref.watch(truvViewModelProvider).isLoading,
+
               onPressed: isValid
+
                   ? () {
-                      notifier.handleContinue().then((success) {
+                      notifier.handleContinue().then((success) async {
                         if (success && context.mounted) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => LinkVerificationScreen(
-                                platformName: platformName,
-                                phoneNumber: state.fullPhone,
-                                isDriverMode: isDriverMode,
+                          if (isDriverMode) {
+                            // Save driver details
+                            await LocalService.setDriverDetails(
+                              phone: state.fullPhone,
+                              license: state.license,
+                            );
+
+
+                            final truvNotifier = ref.read(truvViewModelProvider.notifier);
+                            final bridgeToken = await truvNotifier.createBridgeToken(context);
+                            
+                            if (bridgeToken != null && context.mounted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const DriverVerificationScreen(),
+                                ),
+                              );
+                            }
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => LinkVerificationScreen(
+                                  platformName: platformName,
+                                  phoneNumber: state.fullPhone,
+                                  isDriverMode: isDriverMode,
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          }
                         }
                       });
+
+
                     }
                   : null,
             ).animate().fade(delay: 300.ms).scale(),

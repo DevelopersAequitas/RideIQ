@@ -9,11 +9,13 @@ import 'package:rideiq/l10n/app_localizations.dart';
 class LinkSyncingScreen extends ConsumerWidget {
   final String platformName;
   final bool isDriverMode;
+  final String? publicToken;
 
   const LinkSyncingScreen({
     super.key,
     required this.platformName,
     required this.isDriverMode,
+    this.publicToken,
   });
 
   @override
@@ -24,10 +26,15 @@ class LinkSyncingScreen extends ConsumerWidget {
 
     // Trigger sync once on build
     if (state.syncStep == LinkSyncStep.none) {
-      Future.microtask(() => notifier.startSync());
+      if (publicToken != null) {
+        Future.microtask(() => notifier.startTruvSync(context, publicToken!));
+      } else {
+        Future.microtask(() => notifier.startSync());
+      }
     }
 
-    final isUber = platformName.toLowerCase() == "uber";
+
+    final isUber = platformName.toLowerCase() == "uber" || platformName.toLowerCase() == "ayro";
     final logoAsset = isUber ? AppAssets.uberLogoPng : AppAssets.lyftLogoPng;
     final isSuccess = state.syncStep == LinkSyncStep.success;
 

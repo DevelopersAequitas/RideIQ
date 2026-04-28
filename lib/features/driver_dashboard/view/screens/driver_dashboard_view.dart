@@ -5,18 +5,34 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rideiq/core/constants/app_assets.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/features/driver_dashboard/viewmodel/dashboard_viewmodel.dart';
-import 'package:rideiq/features/profile/view/screens/profile_screen.dart';
 import 'package:rideiq/features/profile/view/screens/link_platform_screen.dart';
+import 'package:rideiq/features/profile/view/screens/profile_screen.dart';
+import 'package:rideiq/features/profile/viewmodel/profile_viewmodel.dart';
 import 'package:rideiq/features/notifications/view/screens/notifications_screen.dart';
+import 'package:rideiq/features/truv/viewmodel/truv_viewmodel.dart';
 import 'package:rideiq/shared/widgets/primary_button.dart';
+
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:rideiq/l10n/app_localizations.dart';
 
-class DriverDashboardView extends ConsumerWidget {
+class DriverDashboardView extends ConsumerStatefulWidget {
   const DriverDashboardView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DriverDashboardView> createState() => _DriverDashboardViewState();
+}
+
+class _DriverDashboardViewState extends ConsumerState<DriverDashboardView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(truvViewModelProvider.notifier).checkStatus(context);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(dashboardViewModelProvider);
     final notifier = ref.read(dashboardViewModelProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
@@ -33,15 +49,15 @@ class DriverDashboardView extends ConsumerWidget {
                 child: Column(
                   children: [
                     if (!state.isDashboardActive)
-                      _buildLinkView(context, notifier, l10n)
+                      _buildLinkView(context, notifier, l10n, ref)
                     else ...[
                       _buildTabs(state, notifier, l10n),
                       if (state.selectedTab == DashboardTab.today)
-                        _buildTodayStats(state, notifier, l10n)
+                        _buildTodayStats(state, notifier, l10n, ref)
                       else if (state.selectedTab == DashboardTab.weekly)
-                        _buildWeeklyStats(context, state, notifier, l10n)
+                        _buildWeeklyStats(context, state, notifier, l10n, ref)
                       else
-                        _buildAllTimeStats(state, notifier, l10n),
+                        _buildAllTimeStats(state, notifier, l10n, ref),
                     ],
                     SizedBox(height: 100.h),
                   ],
@@ -56,33 +72,36 @@ class DriverDashboardView extends ConsumerWidget {
 
   Widget _buildHeader(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final profileState = ref.watch(profileViewModelProvider);
     return Padding(
       padding: EdgeInsets.all(20.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.driver_dashboard_title,
-                style: TextStyle(
-                  fontSize: 22.sp,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF1A1A1A),
-                  fontFamily: 'Figtree',
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.driver_dashboard_title,
+                  style: TextStyle(
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF1A1A1A),
+                    fontFamily: 'Figtree',
+                  ),
                 ),
-              ),
-              SizedBox(height: 4.h),
-              Text(
-                l10n.driver_dashboard_subtitle,
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  color: const Color(0xFF999999),
-                  fontFamily: 'Figtree',
+                SizedBox(height: 4.h),
+                Text(
+                  l10n.driver_dashboard_subtitle,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    color: const Color(0xFF999999),
+                    fontFamily: 'Figtree',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Row(
             children: [
@@ -107,32 +126,43 @@ class DriverDashboardView extends ConsumerWidget {
                           const ProfileScreen(),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
-                        const begin = Offset(0.0, 0.05);
-                        const end = Offset.zero;
-                        const curve = Curves.easeOutQuart;
+                            const begin = Offset(0.0, 0.05);
+                            const end = Offset.zero;
+                            const curve = Curves.easeOutQuart;
 
-                        var slideTween = Tween(begin: begin, end: end)
-                            .chain(CurveTween(curve: curve));
-                        var fadeTween =
-                            Tween<double>(begin: 0.0, end: 1.0).chain(
-                          CurveTween(curve: Curves.easeOut),
-                        );
+                            var slideTween = Tween(
+                              begin: begin,
+                              end: end,
+                            ).chain(CurveTween(curve: curve));
+                            var fadeTween = Tween<double>(
+                              begin: 0.0,
+                              end: 1.0,
+                            ).chain(CurveTween(curve: Curves.easeOut));
 
-                        return SlideTransition(
-                          position: animation.drive(slideTween),
-                          child: FadeTransition(
-                            opacity: animation.drive(fadeTween),
-                            child: child,
-                          ),
-                        );
-                      },
+                            return SlideTransition(
+                              position: animation.drive(slideTween),
+                              child: FadeTransition(
+                                opacity: animation.drive(fadeTween),
+                                child: child,
+                              ),
+                            );
+                          },
                       transitionDuration: const Duration(milliseconds: 500),
                     ),
                   );
                 },
                 child: CircleAvatar(
                   radius: 22.w,
-                  backgroundImage: const AssetImage(AppAssets.driverPng),
+                  backgroundColor: const Color(0xFF1E74E9),
+                  child: Text(
+                    profileState.initials,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                      fontFamily: 'Figtree',
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -142,7 +172,11 @@ class DriverDashboardView extends ConsumerWidget {
     );
   }
 
-  Widget _buildTabs(DashboardState state, DashboardViewModel notifier, AppLocalizations l10n) {
+  Widget _buildTabs(
+    DashboardState state,
+    DashboardViewModel notifier,
+    AppLocalizations l10n,
+  ) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Color(0xFFF2F2F2))),
@@ -197,7 +231,13 @@ class DriverDashboardView extends ConsumerWidget {
   }
 
   // --- TODAY VIEW ---
-  Widget _buildTodayStats(DashboardState state, DashboardViewModel notifier, AppLocalizations l10n) {
+  Widget _buildTodayStats(
+    DashboardState state,
+    DashboardViewModel notifier,
+    AppLocalizations l10n,
+    WidgetRef ref,
+  ) {
+    final truvState = ref.watch(truvViewModelProvider);
     return Column(
       children: [
         Padding(
@@ -216,9 +256,9 @@ class DriverDashboardView extends ConsumerWidget {
               _buildEarningsRow(
                 "Uber",
                 AppAssets.uberLogoPng,
-                "\$26/hr",
-                "\$120",
-                0.8,
+                truvState.getPlatformStats("Uber")["rate"]!,
+                truvState.getPlatformStats("Uber")["total"]!,
+                truvState.getEarningsProgress("Uber"),
                 state.selectedPlatform == "Uber",
                 () => notifier.selectPlatform("Uber"),
               ),
@@ -226,15 +266,26 @@ class DriverDashboardView extends ConsumerWidget {
               _buildEarningsRow(
                 "Lyft",
                 AppAssets.lyftLogoPng,
-                "\$18/hr",
-                "\$42",
-                0.4,
+                truvState.getPlatformStats("Lyft")["rate"]!,
+                truvState.getPlatformStats("Lyft")["total"]!,
+                truvState.getEarningsProgress("Lyft"),
                 state.selectedPlatform == "Lyft",
                 () => notifier.selectPlatform("Lyft"),
               ),
+              // SizedBox(height: 12.h),
+              // _buildEarningsRow(
+              //   "Ayro",
+              //   AppAssets.uberLogoPng,
+              //   truvState.getPlatformStats("Ayro")["rate"]!,
+              //   truvState.getPlatformStats("Ayro")["total"]!,
+              //   truvState.getEarningsProgress("Ayro"),
+              //   state.selectedPlatform == "Ayro",
+              //   () => notifier.selectPlatform("Ayro"),
+              // ),
             ],
           ),
         ).animate().fade().slideY(begin: 0.1),
+
         Container(
           width: double.infinity,
           padding: EdgeInsets.all(20.w),
@@ -243,7 +294,9 @@ class DriverDashboardView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                l10n.quick_stats_platform(state.selectedPlatform ?? 'all platforms'),
+                l10n.quick_stats_platform(
+                  state.selectedPlatform ?? 'all platforms',
+                ),
                 style: TextStyle(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
@@ -261,36 +314,47 @@ class DriverDashboardView extends ConsumerWidget {
                 children: [
                   _buildStatCard(
                     l10n.trips_today,
-                    state.selectedPlatform == "Uber" ? "10" : "14",
+                    truvState.getPlatformStats(
+                      state.selectedPlatform ?? "Uber",
+                    )["trips"]!,
                     AppAssets.carProfileSvg,
                   ),
                   _buildStatCard(
                     l10n.online_hours,
-                    state.selectedPlatform == "Uber" ? "1.5" : "6.2",
+                    truvState.getPlatformStats(
+                      state.selectedPlatform ?? "Uber",
+                    )["hours"]!,
                     AppAssets.moneyWavySvg,
                   ),
                   _buildStatCard(
                     l10n.miles_driven,
-                    state.selectedPlatform == "Uber" ? "50" : "92",
+                    truvState.getPlatformStats(
+                      state.selectedPlatform ?? "Uber",
+                    )["miles"]!,
                     AppAssets.roadHorizonSvg,
                   ),
                   _buildStatCard(
                     l10n.tips_earned,
-                    state.selectedPlatform == "Uber" ? "\$14" : "\$28",
+                    truvState.getPlatformStats(
+                      state.selectedPlatform ?? "Uber",
+                    )["tips"]!,
                     AppAssets.clockCountdownSvg,
                   ),
-                  _buildStatCard(l10n.idle_time, "1h 10m", AppAssets.moneyWavySvg),
+
+                  _buildStatCard(
+                    l10n.idle_time,
+                    truvState.idleTime,
+                    AppAssets.moneyWavySvg,
+                  ),
                   _buildStatCard(
                     l10n.acceptance_rate,
-                    "87%",
+                    truvState.acceptanceRate,
                     AppAssets.thumbsUpSvg,
                   ),
                 ],
               ),
               SizedBox(height: 24.h),
-              _buildInsightCard(
-                l10n.insight_today_uber,
-              ),
+              _buildInsightCard(l10n.insight_today_uber),
             ],
           ),
         ).animate().fade(delay: 200.ms).slideY(begin: 0.1),
@@ -304,14 +368,15 @@ class DriverDashboardView extends ConsumerWidget {
     DashboardState state,
     DashboardViewModel notifier,
     AppLocalizations l10n,
+    WidgetRef ref,
   ) {
+    final truvState = ref.watch(truvViewModelProvider);
+
     return Column(
       children: [
         Padding(
           padding: EdgeInsets.all(20.w),
-          child: _buildInsightCard(
-            l10n.insight_weekly_uber,
-          ),
+          child: _buildInsightCard(l10n.insight_weekly_uber),
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -333,7 +398,7 @@ class DriverDashboardView extends ConsumerWidget {
                 ],
               ),
               SizedBox(height: 24.h),
-              _buildBarChart(),
+              _buildBarChart(truvState, state.selectedPlatform),
             ],
           ),
         ).animate().fade().slideY(begin: 0.1),
@@ -364,18 +429,30 @@ class DriverDashboardView extends ConsumerWidget {
                 children: [
                   _buildStatCard(
                     l10n.total_earnings,
-                    "\$1,245",
+                    truvState.getPlatformStats(
+                      state.selectedPlatform ?? "Uber",
+                    )["total"]!,
                     AppAssets.currencyCircleDollarSvg,
                   ),
                   _buildStatCard(
                     l10n.earnings_per_hour,
-                    "\$26.40",
+                    truvState.getPlatformStats(
+                      state.selectedPlatform ?? "Uber",
+                    )["rate"]!,
                     AppAssets.coinsSvg,
                   ),
-                  _buildStatCard(l10n.total_trips, "78", AppAssets.carProfileSvg),
+                  _buildStatCard(
+                    l10n.total_trips,
+                    truvState.getPlatformStats(
+                      state.selectedPlatform ?? "Uber",
+                    )["trips"]!,
+                    AppAssets.carProfileSvg,
+                  ),
                   _buildStatCard(
                     l10n.total_hours,
-                    "42.5",
+                    truvState.getPlatformStats(
+                      state.selectedPlatform ?? "Uber",
+                    )["hours"]!,
                     AppAssets.clockCountdownSvg,
                   ),
                 ],
@@ -388,7 +465,13 @@ class DriverDashboardView extends ConsumerWidget {
   }
 
   // --- ALL TIME VIEW ---
-  Widget _buildAllTimeStats(DashboardState state, DashboardViewModel notifier, AppLocalizations l10n) {
+  Widget _buildAllTimeStats(
+    DashboardState state,
+    DashboardViewModel notifier,
+    AppLocalizations l10n,
+    WidgetRef ref,
+  ) {
+    final truvState = ref.watch(truvViewModelProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -406,9 +489,23 @@ class DriverDashboardView extends ConsumerWidget {
                 ),
               ),
               SizedBox(height: 20.h),
-              _buildEarningsComparisonRow("Uber", "\$24.80/hr", 0.9),
+              _buildEarningsComparisonRow(
+                "Uber",
+                "${truvState.getPlatformStats("Uber")["rate"]!}",
+                truvState.getEarningsProgress("Uber"),
+              ),
               SizedBox(height: 12.h),
-              _buildEarningsComparisonRow("Lyft", "\$21.40/hr", 0.7),
+              _buildEarningsComparisonRow(
+                "Lyft",
+                "${truvState.getPlatformStats("Lyft")["rate"]!}",
+                truvState.getEarningsProgress("Lyft"),
+              ),
+              // SizedBox(height: 12.h),
+              // _buildEarningsComparisonRow(
+              //   "Ayro",
+              //   "${truvState.getPlatformStats("Ayro")["rate"]!}",
+              //   truvState.getEarningsProgress("Ayro"),
+              // ),
             ],
           ),
         ).animate().fade().slideY(begin: 0.1),
@@ -424,7 +521,7 @@ class DriverDashboardView extends ConsumerWidget {
             ),
             child: Column(
               children: [
-                SvgPicture.asset(AppAssets.trophySvg, height: 100.h),
+                Image.asset(AppAssets.trophySvg, height: 100.h),
                 SizedBox(height: 16.h),
                 Container(
                   padding: EdgeInsets.symmetric(
@@ -454,7 +551,6 @@ class DriverDashboardView extends ConsumerWidget {
                         width: 32.w,
                         height: 32.w,
                         color: Colors.black,
-                        padding: EdgeInsets.all(6.w),
                         child: Image.asset(
                           AppAssets.uberLogoPng,
                           fit: BoxFit.contain,
@@ -474,7 +570,8 @@ class DriverDashboardView extends ConsumerWidget {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  l10n.per_hour("\$24.80"),
+                  l10n.per_hour(truvState.earningsPerHour),
+
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
@@ -499,72 +596,90 @@ class DriverDashboardView extends ConsumerWidget {
           ),
         ),
         SizedBox(height: 16.h),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Row(
-            children: [
-              _buildMilestoneCircle(
-                l10n.milestone_completed,
-                "500",
-                l10n.trips,
-                1.0,
-                const Color(0xFF1E74E9),
-              ),
-              SizedBox(width: 16.w),
-              _buildMilestoneCircle(
-                l10n.milestone_in_progress,
-                "1000",
-                l10n.trips,
-                0.6,
-                const Color(0xFF1E74E9),
-              ),
-              SizedBox(width: 16.w),
-              _buildMilestoneCircle(
-                l10n.milestone_locked,
-                "1500",
-                l10n.trips,
-                0.0,
-                const Color(0xFFE0E0E0),
-              ),
-            ],
-          ),
-        ).animate().fade(delay: 300.ms).slideX(begin: 0.1),
+        Builder(
+          builder: (context) {
+            final int trips = int.tryParse(truvState.totalTrips) ?? 0;
+            final double trips500 = (trips / 500.0).clamp(0.0, 1.0);
+            final double trips1000 = (trips / 1000.0).clamp(0.0, 1.0);
+            final double trips1500 = (trips / 1500.0).clamp(0.0, 1.0);
 
-        SizedBox(height: 24.h),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Row(
-            children: [
-              _buildMilestoneCircle(
-                l10n.milestone_earned,
-                "\$10k",
-                "",
-                1.0,
-                const Color(0xFF00C897),
-              ),
-              SizedBox(width: 16.w),
-              _buildMilestoneCircle(
-                l10n.milestone_in_progress,
-                "\$25k",
-                "",
-                0.4,
-                const Color(0xFF00C897),
-              ),
-              SizedBox(width: 16.w),
-              _buildMilestoneCircle(
-                l10n.milestone_locked,
-                "\$30k",
-                "",
-                0.0,
-                const Color(0xFFE0E0E0),
-              ),
-            ],
-          ),
-        ).animate().fade(delay: 400.ms).slideX(begin: 0.1),
+            final double earnings = double.tryParse(truvState.totalEarnings.replaceAll(RegExp(r'[^0-9.]'), '')) ?? 0.0;
+            final double earn10k = (earnings / 10000.0).clamp(0.0, 1.0);
+            final double earn25k = (earnings / 25000.0).clamp(0.0, 1.0);
+            final double earn30k = (earnings / 30000.0).clamp(0.0, 1.0);
+
+            return Column(
+              children: [
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Row(
+                    children: [
+                      _buildMilestoneCircle(
+                        trips500 >= 1.0 ? l10n.milestone_completed : (trips500 > 0 ? l10n.milestone_in_progress : l10n.milestone_locked),
+                        "500",
+                        l10n.trips,
+                        trips500,
+                        trips500 > 0 ? const Color(0xFF1E74E9) : const Color(0xFFE0E0E0),
+                      ),
+                      SizedBox(width: 16.w),
+                      _buildMilestoneCircle(
+                        trips1000 >= 1.0 ? l10n.milestone_completed : (trips1000 > 0 ? l10n.milestone_in_progress : l10n.milestone_locked),
+                        "1000",
+                        l10n.trips,
+                        trips1000,
+                        trips1000 > 0 ? const Color(0xFF1E74E9) : const Color(0xFFE0E0E0),
+                      ),
+                      SizedBox(width: 16.w),
+                      _buildMilestoneCircle(
+                        trips1500 >= 1.0 ? l10n.milestone_completed : (trips1500 > 0 ? l10n.milestone_in_progress : l10n.milestone_locked),
+                        "1500",
+                        l10n.trips,
+                        trips1500,
+                        trips1500 > 0 ? const Color(0xFF1E74E9) : const Color(0xFFE0E0E0),
+                      ),
+                    ],
+                  ),
+                ).animate().fade(delay: 300.ms).slideX(begin: 0.1),
+
+                SizedBox(height: 24.h),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Row(
+                    children: [
+                      _buildMilestoneCircle(
+                        earn10k >= 1.0 ? l10n.milestone_earned : (earn10k > 0 ? l10n.milestone_in_progress : l10n.milestone_locked),
+                        "\$10k",
+                        "",
+                        earn10k,
+                        earn10k > 0 ? const Color(0xFF00C897) : const Color(0xFFE0E0E0),
+                      ),
+                      SizedBox(width: 16.w),
+                      _buildMilestoneCircle(
+                        earn25k >= 1.0 ? l10n.milestone_earned : (earn25k > 0 ? l10n.milestone_in_progress : l10n.milestone_locked),
+                        "\$25k",
+                        "",
+                        earn25k,
+                        earn25k > 0 ? const Color(0xFF00C897) : const Color(0xFFE0E0E0),
+                      ),
+                      SizedBox(width: 16.w),
+                      _buildMilestoneCircle(
+                        earn30k >= 1.0 ? l10n.milestone_earned : (earn30k > 0 ? l10n.milestone_in_progress : l10n.milestone_locked),
+                        "\$30k",
+                        "",
+                        earn30k,
+                        earn30k > 0 ? const Color(0xFF00C897) : const Color(0xFFE0E0E0),
+                      ),
+                    ],
+                  ),
+                ).animate().fade(delay: 400.ms).slideX(begin: 0.1),
+              ],
+            );
+          }
+        ),
 
         SizedBox(height: 32.h),
         Container(
@@ -593,16 +708,20 @@ class DriverDashboardView extends ConsumerWidget {
                 children: [
                   _buildStatCard(
                     l10n.total_earnings,
-                    "\$1,245",
+                    truvState.totalEarnings,
                     AppAssets.currencyCircleDollarSvg,
                   ),
-                  _buildStatCard(l10n.total_trips, "542", AppAssets.carProfileSvg),
+                  _buildStatCard(
+                    l10n.total_trips,
+                    truvState.totalTrips,
+                    AppAssets.carProfileSvg,
+                  ),
                   _buildStatCard(
                     l10n.total_hours,
-                    "542",
+                    truvState.totalHours,
                     AppAssets.clockCountdownSvg,
                   ),
-                  _buildStatCard(l10n.avg_rating, "4.8", AppAssets.coinsSvg),
+                  _buildStatCard(l10n.avg_rating, truvState.averageRating, AppAssets.coinsSvg),
                 ],
               ),
             ],
@@ -621,7 +740,7 @@ class DriverDashboardView extends ConsumerWidget {
   ) {
     return Row(
       children: [
-        Container(
+        SizedBox(
           width: 250.w,
           height: 36.h,
           child: Stack(
@@ -748,7 +867,17 @@ class DriverDashboardView extends ConsumerWidget {
     );
   }
 
-  Widget _buildLinkView(BuildContext context, DashboardViewModel notifier, AppLocalizations l10n) {
+  Widget _buildLinkView(
+    BuildContext context,
+    DashboardViewModel notifier,
+    AppLocalizations l10n,
+    WidgetRef ref,
+  ) {
+    final truvState = ref.watch(truvViewModelProvider);
+    final isUberConnected = truvState.isPlatformConnected("Uber");
+
+    final isLyftConnected = truvState.isPlatformConnected("Lyft");
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Column(
@@ -758,19 +887,41 @@ class DriverDashboardView extends ConsumerWidget {
             context: context,
             name: "Uber",
             logo: AppAssets.uberLogoPng,
-            isConnected: true,
-            status: l10n.connected,
+            isConnected: isUberConnected,
+            status: isUberConnected ? l10n.connected : l10n.not_linked,
             l10n: l10n,
+            ref: ref,
+            onLinkTap: isUberConnected
+                ? null
+                : () => _openDriverLinkFlow(context, "Uber"),
           ),
           SizedBox(height: 16.h),
           _buildPlatformLinkCard(
             context: context,
             name: "Lyft",
             logo: AppAssets.lyftLogoPng,
-            isConnected: false,
-            status: l10n.not_linked,
+            isConnected: isLyftConnected,
+            status: isLyftConnected ? l10n.connected : l10n.not_linked,
             l10n: l10n,
+            ref: ref,
+            onLinkTap: isLyftConnected
+                ? null
+                : () => _openDriverLinkFlow(context, "Lyft"),
           ),
+          // SizedBox(height: 16.h),
+          // _buildPlatformLinkCard(
+          //   context: context,
+          //   name: "Ayro",
+          //   logo: AppAssets.uberLogoPng,
+          //   isConnected: truvState.isPlatformConnected("Ayro"),
+          //   status: truvState.isPlatformConnected("Ayro") ? l10n.connected : l10n.not_linked,
+          //   l10n: l10n,
+          //   ref: ref,
+          //   onLinkTap: truvState.isPlatformConnected("Ayro")
+          //       ? null
+          //       : () => _openDriverLinkFlow(context, "Ayro"),
+          // ),
+
           SizedBox(height: 40.h),
           PrimaryButton(
             text: l10n.go_to_dashboard,
@@ -788,8 +939,24 @@ class DriverDashboardView extends ConsumerWidget {
     required bool isConnected,
     required String status,
     required AppLocalizations l10n,
+    required WidgetRef ref,
+    VoidCallback? onLinkTap,
   }) {
     final isUber = name.toLowerCase() == "uber";
+    final truvState = ref.watch(truvViewModelProvider);
+
+    // Extract company name from report data if available
+    String companyName = name;
+    if (isConnected && truvState.reportData != null) {
+      try {
+        final employments =
+            truvState.reportData!['data']['employments'] as List;
+        if (employments.isNotEmpty) {
+          companyName = employments[0]['company']['name'] ?? name;
+        }
+      } catch (_) {}
+    }
+
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -805,7 +972,6 @@ class DriverDashboardView extends ConsumerWidget {
               width: 48.w,
               height: 48.w,
               color: isUber ? Colors.black : const Color(0xFFFF00BF),
-              padding: EdgeInsets.all(10.w),
               child: Image.asset(logo, fit: BoxFit.contain),
             ),
           ),
@@ -815,10 +981,12 @@ class DriverDashboardView extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  name,
+                  isConnected ? companyName : name,
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1A1A1A),
+                    fontFamily: 'Figtree',
                   ),
                 ),
                 SizedBox(height: 4.h),
@@ -826,51 +994,100 @@ class DriverDashboardView extends ConsumerWidget {
                   children: [
                     if (isConnected)
                       Icon(
-                        Icons.check,
-                        color: const Color(0xFF00C897),
-                        size: 16.sp,
+                        Icons.verified,
+                        color: const Color(0xFF1ABC9C),
+                        size: 14.sp,
                       ),
                     if (isConnected) SizedBox(width: 4.w),
-                    Text(
-                      status,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: isConnected
-                            ? const Color(0xFF00C897)
-                            : const Color(0xFF999999),
+                    Flexible(
+                      child: Text(
+                        isConnected ? l10n.income_source_connected : status,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: isConnected
+                              ? const Color(0xFF1ABC9C)
+                              : const Color(0xFF999999),
+                          fontFamily: 'Figtree',
+                        ),
                       ),
                     ),
                   ],
                 ),
+                if (isConnected) ...[
+                  SizedBox(height: 2.h),
+                  Text(
+                    l10n.verified_employer,
+                    style: TextStyle(
+                      fontSize: 11.sp,
+                      color: const Color(0xFF999999),
+                      fontFamily: 'Figtree',
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
-          if (!isConnected)
+          if (!isConnected && onLinkTap != null)
             TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => LinkPlatformScreen(
-                      platformName: name,
-                      isDriverMode: true,
-                    ),
-                  ),
-                );
-              },
+              onPressed: onLinkTap,
               child: Text(
-                l10n.link,
+                l10n.link_btn,
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF1E74E9),
                 ),
               ),
+            )
+          else if (isConnected)
+            Icon(
+              Icons.check_circle,
+              color: const Color(0xFF1ABC9C),
+              size: 24.sp,
             ),
         ],
       ),
     );
   }
+
+  // Future<void> _openDriverLinkFlow(BuildContext context) async {
+  //   await Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (_) => DriverTruvVerificationScreen(
+  //         openTruvBridge: (bridgeToken) async {
+  //           final controller = TextEditingController();
+  //           final token = await showDialog<String?>(
+  //             context: context,
+  //             builder: (ctx) => AlertDialog(
+  //               title: const Text('Truv public_token'),
+  //               content: TextField(
+  //                 controller: controller,
+  //                 decoration: const InputDecoration(
+  //                   hintText: 'Paste public_token from Truv SDK',
+  //                 ),
+  //               ),
+  //               actions: [
+  //                 TextButton(
+  //                   onPressed: () => Navigator.pop(ctx, null),
+  //                   child: const Text('Cancel'),
+  //                 ),
+  //                 ElevatedButton(
+  //                   onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+  //                   child: const Text('Continue'),
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //           controller.dispose();
+  //           return token;
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildEarningsRow(
     String name,
@@ -1067,8 +1284,9 @@ class DriverDashboardView extends ConsumerWidget {
         color: Colors.white,
         onSelected: (value) {
           if (value == "All") {
-            if (state.selectedPlatform != null)
+            if (state.selectedPlatform != null) {
               notifier.selectPlatform(state.selectedPlatform!);
+            }
           } else {
             notifier.selectPlatform(value);
           }
@@ -1111,6 +1329,11 @@ class DriverDashboardView extends ConsumerWidget {
             AppAssets.lyftLogoPng,
             state.selectedPlatform == "Lyft",
           ),
+          // _buildPopupMenuItem(
+          //   "Ayro",
+          //   AppAssets.uberLogoPng,
+          //   state.selectedPlatform == "Ayro",
+          // ),
         ],
       ),
     );
@@ -1159,10 +1382,15 @@ class DriverDashboardView extends ConsumerWidget {
     );
   }
 
-  Widget _buildBarChart() {
-    final values = [0.4, 0.6, 0.3, 0.7, 0.5, 0.65, 0.8];
+  Widget _buildBarChart(TruvState truvState, String? selectedPlatform) {
+    final rawData = truvState.getWeeklyEarningsData(selectedPlatform);
+    final maxValue = rawData.isEmpty
+        ? 1.0
+        : rawData.reduce((a, b) => a > b ? a : b);
+    final safeMax = maxValue == 0 ? 1.0 : maxValue;
+    final values = rawData.map((e) => e / safeMax).toList();
     final labels = ["M", "T", "W", "T", "F", "S", "S"];
-    return Container(
+    return SizedBox(
       height: 200.h,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1207,6 +1435,16 @@ class DriverDashboardView extends ConsumerWidget {
             ],
           );
         }),
+      ),
+    );
+  }
+
+  void _openDriverLinkFlow(BuildContext context, String platformName) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) =>
+            LinkPlatformScreen(platformName: platformName, isDriverMode: true),
       ),
     );
   }

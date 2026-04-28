@@ -27,7 +27,7 @@ class LinkVerificationScreen extends ConsumerWidget {
     final notifier = ref.read(linkViewModelProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
 
-    final isUber = platformName.toLowerCase() == "uber";
+    final isUber = platformName.toLowerCase() == "uber" || platformName.toLowerCase() == "ayro";
     final logoAsset = isUber ? AppAssets.uberLogoPng : AppAssets.lyftLogoPng;
 
     return Scaffold(

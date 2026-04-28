@@ -913,6 +913,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not Linked'**
   String get not_linked;
+
+  /// No description provided for @driver_verification_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Verification'**
+  String get driver_verification_title;
+
+  /// No description provided for @verify_income_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your income'**
+  String get verify_income_title;
+
+  /// No description provided for @verify_income_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Securely connect your payroll or gig platform to verify your driver status and income.'**
+  String get verify_income_subtitle;
+
+  /// No description provided for @income_verified_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Income verified successfully'**
+  String get income_verified_success;
+
+  /// No description provided for @verify_income_with_truv.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Income with Truv'**
+  String get verify_income_with_truv;
+
+  /// No description provided for @truv_income_verification.
+  ///
+  /// In en, this message translates to:
+  /// **'Income Verification'**
+  String get truv_income_verification;
+
+  /// No description provided for @verification_pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get verification_pending;
+
+  /// No description provided for @verification_verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get verification_verified;
+
+  /// No description provided for @verification_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get verification_failed;
+
+  /// No description provided for @verification_connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get verification_connected;
+
+  /// No description provided for @verification_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get verification_unknown;
+
+  /// No description provided for @income_source_connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Income Source Connected'**
+  String get income_source_connected;
+
+  /// No description provided for @verified_employer.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified Employer'**
+  String get verified_employer;
+
+  /// No description provided for @link_btn.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get link_btn;
 }
 
 class _AppLocalizationsDelegate

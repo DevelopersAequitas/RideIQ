@@ -1,0 +1,349 @@
+import 'package:flutter/material.dart';
+import 'package:rideiq/features/truv/repository/truv_repository.dart';
+import 'package:rideiq/features/auth/repository/auth_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rideiq/core/utils/app_logger.dart';
+
+import 'package:rideiq/core/services/local_service.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'truv_viewmodel.g.dart';
+
+class TruvState {
+  final bool isLoading;
+  final String status;
+  final Map<String, dynamic>? reportData;
+
+  TruvState({
+    this.isLoading = false,
+    this.status = 'pending',
+    this.reportData,
+  });
+
+  TruvState copyWith({
+    bool? isLoading,
+    String? status,
+    Map<String, dynamic>? reportData,
+  }) {
+    return TruvState(
+      isLoading: isLoading ?? this.isLoading,
+      status: status ?? this.status,
+      reportData: reportData ?? this.reportData,
+    );
+  }
+  Map<String, String> getPlatformStats(String platformName) {
+    if (reportData == null) return {"total": "\$0", "rate": "\$0/hr", "trips": "0", "hours": "0", "miles": "0", "tips": "\$0"};
+    
+    try {
+      final data = reportData!['data'];
+      final employments = data['employments'] as List?;
+      
+      if (employments != null) {
+        final emp = employments.firstWhere(
+          (e) => e['company']?['name']?.toString().toLowerCase().contains(platformName.toLowerCase()) ?? false,
+          orElse: () => null,
+        );
+        
+        if (emp != null) {
+          final earnings = emp['total_earnings'] ?? emp['income']?['total'] ?? "0";
+          final rate = emp['earnings_per_hour'] ?? emp['income']?['hourly_rate'] ?? "0";
+          final trips = emp['total_trips'] ?? emp['trips_count'] ?? "0";
+          final hours = emp['total_hours'] ?? emp['hours_worked'] ?? "0";
+          final miles = emp['miles_driven'] ?? "0";
+          final tips = emp['tips_earned'] ?? "0";
+          
+          return {
+            "total": "\$${earnings.toString()}",
+            "rate": "\$${rate.toString()}/hr",
+            "trips": trips.toString(),
+            "hours": hours.toString(),
+            "miles": miles.toString(),
+            "tips": "\$${tips.toString()}",
+          };
+        }
+      }
+      return {"total": "\$0", "rate": "\$0/hr", "trips": "0", "hours": "0", "miles": "0", "tips": "\$0"};
+    } catch (_) {
+      return {"total": "\$0", "rate": "\$0/hr", "trips": "0", "hours": "0", "miles": "0", "tips": "\$0"};
+    }
+  }
+
+  double getEarningsProgress(String platformName) {
+    if (reportData == null) return 0.0;
+    try {
+      final stats = getPlatformStats(platformName);
+      final earningsStr = stats["total"]!.replaceAll("\$", "");
+      final earnings = double.tryParse(earningsStr) ?? 0.0;
+      // Example goal: \$1000
+      final progress = (earnings / 1000).clamp(0.0, 1.0);
+      return progress;
+    } catch (_) {
+      return 0.0;
+    }
+  }
+
+  List<double> getWeeklyEarningsData(String? platformName) {
+    if (reportData == null) {
+      return [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    }
+    
+    // Fallback to dummy data only if connected and data exists,
+    // otherwise return zeros.
+    if (platformName != null && !isPlatformConnected(platformName)) {
+      return [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    }
+
+    if (platformName == 'Uber') {
+      return [45, 82, 61, 95, 74, 58, 89];
+    } else if (platformName == 'Lyft') {
+      return [30, 60, 45, 80, 50, 40, 75];
+    }
+    // else if (platformName == 'Ayro') {
+    //   return [25, 45, 30, 50, 40, 35, 60];
+    // }
+    return [45, 82, 61, 95, 74, 58, 89];
+  }
+
+  bool isPlatformConnected(String platformName) {
+    if (status == 'connected' || status == 'verified') return true;
+    
+    if (reportData == null) return false;
+    try {
+      final data = reportData!['data'];
+      final employments = data['employments'] as List?;
+      return employments?.any(
+        (e) => e['company']?['name']?.toString().toLowerCase().contains(platformName.toLowerCase()) ?? false
+      ) ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  String get totalEarnings {
+    if (reportData == null) return "\$0";
+    try {
+      final data = reportData!['data'];
+      final earnings = data['total_earnings'] ?? data['earnings']?['total'] ?? 0;
+      return "\$${earnings.toString()}";
+    } catch (_) {
+      return "\$0";
+    }
+  }
+
+  String get earningsPerHour {
+    if (reportData == null) return "\$0.00";
+    try {
+      final data = reportData!['data'];
+      final rate = data['earnings_per_hour'] ?? data['earnings']?['hourly_rate'] ?? 0;
+      return "\$${rate.toString()}";
+    } catch (_) {
+      return "\$0.00";
+    }
+  }
+
+  String get totalTrips {
+    if (reportData == null) return "0";
+    try {
+      final data = reportData!['data'];
+      final trips = data['total_trips'] ?? data['trips_count'] ?? 0;
+      return trips.toString();
+    } catch (_) {
+      return "0";
+    }
+  }
+
+  String get totalHours {
+    if (reportData == null) return "0";
+    try {
+      final data = reportData!['data'];
+      final hours = data['total_hours'] ?? data['hours_worked'] ?? 0;
+      return hours.toString();
+    } catch (_) {
+      return "0";
+    }
+  }
+
+  String get idleTime {
+    if (reportData == null) return "0h 0m";
+    try {
+      final data = reportData!['data'];
+      final idle = data['idle_time'] ?? "0h 0m";
+      return idle.toString();
+    } catch (_) {
+      return "0h 0m";
+    }
+  }
+
+  String get acceptanceRate {
+    if (reportData == null) return "0%";
+    try {
+      final data = reportData!['data'];
+      final rate = data['acceptance_rate'] ?? 0;
+      return "$rate%";
+    } catch (_) {
+      return "0%";
+    }
+  }
+
+  String get averageRating {
+    if (reportData == null) return "0.0";
+    try {
+      final data = reportData!['data'];
+      final rating = data['average_rating'] ?? data['rating'] ?? 0.0;
+      return rating.toString();
+    } catch (_) {
+      return "0.0";
+    }
+  }
+}
+
+
+
+@riverpod
+class TruvViewModel extends _$TruvViewModel {
+  @override
+  TruvState build() {
+    return TruvState();
+  }
+
+  Future<String?> createBridgeToken(BuildContext context) async {
+    state = state.copyWith(isLoading: true);
+    AppLogger.info('>>> Preparing Truv Flow...', tag: 'TruvFlow');
+
+    try {
+      // 1. Check if we have the backend bearer token
+      String? backendToken = await LocalService.getAuthToken();
+
+      if (backendToken == null || backendToken.isEmpty) {
+        AppLogger.info(
+          'Backend token missing. Attempting to sync with backend first...',
+          tag: 'TruvFlow',
+        );
+
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          final firebaseToken = await user.getIdToken(true);
+          final nameParts = user.displayName?.split(' ') ?? [];
+          final firstName = nameParts.isNotEmpty ? nameParts.first : '';
+          final lastName = nameParts.length > 1 ? nameParts.last : '';
+
+          await ref
+              .read(authRepositoryProvider)
+              .verifyBackend(
+                token: firebaseToken.toString(),
+                firstName: firstName,
+                lastName: lastName,
+                email: user.email ?? '',
+                role: 'driver',
+              );
+
+          // Refresh local variable
+          backendToken = await LocalService.getAuthToken();
+        }
+      }
+
+      if (backendToken == null || backendToken.isEmpty) {
+        AppLogger.error(
+          'FAILED: Could not obtain backend bearer token',
+          tag: 'TruvFlow',
+        );
+        return null;
+      }
+
+      // 2. Now call create-token with the backend token (handled by ApiService interceptor)
+      AppLogger.info('Requesting Bridge Token...', tag: 'TruvFlow');
+      final data = await ref.read(truvRepositoryProvider).createBridgeToken();
+      if (!ref.mounted) return null;
+
+      if (data != null) {
+        final token = data['bridge_token'];
+        if (token != null) {
+          await LocalService.setBridgeToken(token);
+          if (!ref.mounted) return token;
+          AppLogger.info(
+            'SUCCESS: Bridge Token cached: ${token.substring(0, 10)}...',
+            tag: 'TruvFlow',
+          );
+          return token;
+        }
+      }
+      AppLogger.error('FAILED: No bridge_token in response', tag: 'TruvFlow');
+      return null;
+    } catch (e) {
+      if (!ref.mounted) return null;
+      AppLogger.error(
+        'CRITICAL: Error in createBridgeToken',
+        error: e,
+        tag: 'TruvFlow',
+      );
+      return null;
+    } finally {
+      if (ref.mounted) {
+        state = state.copyWith(isLoading: false);
+      }
+    }
+  }
+
+  Future<bool> exchangeToken(BuildContext context, String publicToken) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final success = await ref.read(truvRepositoryProvider).exchangeToken(publicToken);
+      if (!ref.mounted) return success;
+      return success;
+    } catch (e) {
+      if (!ref.mounted) return false;
+      AppLogger.error('Error exchanging token', error: e, tag: 'TruvVM');
+      return false;
+    } finally {
+      if (ref.mounted) {
+        state = state.copyWith(isLoading: false);
+      }
+    }
+  }
+
+  Future<Map<String, dynamic>?> checkStatus(BuildContext context) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final result = await ref.read(truvRepositoryProvider).checkStatus();
+      if (!ref.mounted) return result;
+      
+      if (result != null) {
+        final status = result['verification_status'] ?? 'pending';
+        state = state.copyWith(status: status);
+      }
+      
+      return result;
+    } catch (e) {
+      if (!ref.mounted) return null;
+      AppLogger.error('Error checking status', error: e, tag: 'TruvVM');
+      return null;
+    } finally {
+      if (ref.mounted) {
+        state = state.copyWith(isLoading: false);
+      }
+    }
+  }
+
+  Future<Map<String, dynamic>?> fetchReport(BuildContext context) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final result = await ref.read(truvRepositoryProvider).fetchReport();
+      if (!ref.mounted) return result;
+      
+      if (result != null) {
+        state = state.copyWith(reportData: result);
+        AppLogger.info('SUCCESS: Report data cached globally', tag: 'TruvFlow');
+      }
+      
+      return result;
+    } catch (e) {
+      if (!ref.mounted) return null;
+      AppLogger.error('Error fetching report', error: e, tag: 'TruvVM');
+      return null;
+    } finally {
+      if (ref.mounted) {
+        state = state.copyWith(isLoading: false);
+      }
+    }
+  }
+}

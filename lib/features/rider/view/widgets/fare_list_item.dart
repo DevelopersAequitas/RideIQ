@@ -11,7 +11,7 @@ class FareListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isUber = fare.platform == "Uber";
+    final isUber = fare.platform == "Uber" || fare.platform == "Ayro"; // Fallback Ayro to Uber logo for now
     final logoAsset = isUber ? AppAssets.uberLogoPng : AppAssets.lyftLogoPng;
 
     return GestureDetector(

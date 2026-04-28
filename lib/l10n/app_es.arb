@@ -135,5 +135,20 @@
   "quick_stats": "Estadísticas",
   "avg_rating": "Calificación prom.",
   "go_to_dashboard": "Ir al panel de control",
-  "not_linked": "No vinculado"
+  "not_linked": "No vinculado",
+  "driver_verification_title": "Verificación de conductor",
+  "verify_income_title": "Verifica tus ingresos",
+  "verify_income_subtitle": "Conecta de forma segura tu plataforma de nómina o gig para verificar tu estado de conductor e ingresos.",
+  "income_verified_success": "Ingresos verificados con éxito",
+  "verify_income_with_truv": "Verificar ingresos con Truv",
+  "truv_income_verification": "Verificación de ingresos",
+  "verification_pending": "Pendiente",
+  "verification_verified": "Verificado",
+  "verification_failed": "Fallido",
+  "verification_connected": "Conectado",
+  "verification_unknown": "Desconocido",
+  "income_source_connected": "Fuente de ingresos conectada",
+  "verified_employer": "Empleador verificado",
+  "link_btn": "Vincular"
 }
+

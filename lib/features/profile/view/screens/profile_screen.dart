@@ -8,6 +8,8 @@ import 'package:rideiq/features/profile/view/widgets/profile_menu_item.dart';
 import 'package:rideiq/features/profile/view/screens/settings_screen.dart';
 import 'package:rideiq/features/profile/view/screens/link_platform_screen.dart';
 import 'package:rideiq/features/profile/view/widgets/logout_dialog.dart';
+import 'package:rideiq/features/profile/view/screens/edit_profile_screen.dart';
+import 'package:rideiq/features/profile/viewmodel/profile_viewmodel.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:rideiq/l10n/app_localizations.dart';
 
@@ -17,6 +19,8 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final profileState = ref.watch(profileViewModelProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -47,7 +51,7 @@ class ProfileScreen extends ConsumerWidget {
               SizedBox(height: 20.h),
 
               // 1. User Info Header
-              _buildUserHeader(context)
+              _buildUserHeader(context, profileState)
                   .animate()
                   .fadeIn(duration: 400.ms)
                   .slideY(begin: -0.1, end: 0, curve: Curves.easeOutQuad),
@@ -160,46 +164,67 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildUserHeader(BuildContext context) {
+  Widget _buildUserHeader(BuildContext context, profileState) {
     return Row(
       children: [
         CircleAvatar(
           radius: 30.w,
-          backgroundImage: const NetworkImage(
-            "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+          backgroundColor: const Color(0xFF1E74E9),
+          child: Text(
+            profileState.initials,
+            style: TextStyle(
+              fontSize: 24.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+              fontFamily: 'Figtree',
+            ),
           ),
         ),
         SizedBox(width: 20.w),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Ethan Carter",
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                  color: const Color(0xFF1A1A1A),
-                  fontFamily: 'Figtree',
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const EditProfileScreen()),
+              );
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      profileState.fullName,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF1A1A1A),
+                        fontFamily: 'Figtree',
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Icon(Icons.edit, size: 16.sp, color: const Color(0xFF1E74E9)),
+                  ],
                 ),
-              ),
-              Text(
-                "ethancarter@gmail.com",
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: const Color(0xFF999999),
-                  fontFamily: 'Figtree',
+                Text(
+                  profileState.email,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: const Color(0xFF999999),
+                    fontFamily: 'Figtree',
+                  ),
                 ),
-              ),
-              Text(
-                "+1 555-0123",
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: const Color(0xFF999999),
-                  fontFamily: 'Figtree',
+                Text(
+                  profileState.phone,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: const Color(0xFF999999),
+                    fontFamily: 'Figtree',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         IconButton(
@@ -235,6 +260,8 @@ class ProfileScreen extends ConsumerWidget {
           _buildAccountTile(context, "Uber", false, true),
           const Divider(height: 1, color: Color(0xFFF2F2F2)),
           _buildAccountTile(context, "Lyft", false, false),
+          // const Divider(height: 1, color: Color(0xFFF2F2F2)),
+          // _buildAccountTile(context, "Ayro", false, true),
         ],
       ),
     );

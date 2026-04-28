@@ -8,6 +8,7 @@ import 'package:rideiq/features/rider/view/widgets/recent_location_item.dart';
 import 'package:rideiq/features/rider/view/widgets/location_search_sheet.dart';
 import 'package:rideiq/features/rider/view/screens/fare_results_screen.dart';
 import 'package:rideiq/features/profile/view/screens/profile_screen.dart';
+import 'package:rideiq/features/profile/viewmodel/profile_viewmodel.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class SelectLocationScreen extends ConsumerWidget {
@@ -40,6 +41,7 @@ class SelectLocationScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(fareComparisonViewModelProvider);
     final notifier = ref.read(fareComparisonViewModelProvider.notifier);
+    final profileState = ref.watch(profileViewModelProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -100,8 +102,15 @@ class SelectLocationScreen extends ConsumerWidget {
                       },
                       child: CircleAvatar(
                         radius: 20.w,
-                        backgroundImage: const NetworkImage(
-                          "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+                        backgroundColor: const Color(0xFF1E74E9),
+                        child: Text(
+                          profileState.initials,
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            fontFamily: 'Figtree',
+                          ),
                         ),
                       ),
                     ),

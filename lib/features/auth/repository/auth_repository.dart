@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rideiq/core/services/api_service.dart';
+import 'package:rideiq/core/services/local_service.dart';
+
 
 import 'package:rideiq/core/constants/api_constants.dart';
 
@@ -103,7 +105,7 @@ class FirebaseAuthRepository implements AuthRepository {
     required String role,
   }) async {
     try {
-      await _apiService.post(
+      final response = await _apiService.post(
         ApiConstants.verifyAuth,
         data: {
           'first_name': firstName,
@@ -114,6 +116,14 @@ class FirebaseAuthRepository implements AuthRepository {
         },
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
+
+      if (response.data['status'] == true && response.data['data'] != null) {
+        final backendToken = response.data['data']['token'];
+        if (backendToken != null) {
+          await LocalService.setAuthToken(backendToken);
+        }
+      }
+
     } catch (e) {
       if (e is DioException) {
         print("Backend Error Details: ${e.response?.data}");
