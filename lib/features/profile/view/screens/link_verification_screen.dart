@@ -27,8 +27,15 @@ class LinkVerificationScreen extends ConsumerWidget {
     final notifier = ref.read(linkViewModelProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
 
+    final String logoAsset;
+    if (platformName.toLowerCase() == "uber") {
+      logoAsset = AppAssets.uberLogoPng;
+    } else if (platformName.toLowerCase() == "lyft") {
+      logoAsset = AppAssets.lyftLogoPng;
+    } else {
+      logoAsset = AppAssets.ayroLogoPng;
+    }
     final isUber = platformName.toLowerCase() == "uber" || platformName.toLowerCase() == "ayro";
-    final logoAsset = isUber ? AppAssets.uberLogoPng : AppAssets.lyftLogoPng;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -69,7 +76,6 @@ class LinkVerificationScreen extends ConsumerWidget {
                       height: 54.w,
                       width: 54.w,
                       color: isUber ? Colors.black : const Color(0xFFFF00BF),
-                      // padding: EdgeInsets.all(14.w),
                       child: Image.asset(logoAsset, fit: BoxFit.contain),
                     ),
                   ),

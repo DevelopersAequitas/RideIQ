@@ -486,4 +486,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get link_btn => 'Link';
+
+  @override
+  String get edit_profile => 'Edit Profile';
+
+  @override
+  String get enter_first_name => 'Enter first name';
+
+  @override
+  String get enter_last_name => 'Enter last name';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get enter_email => 'Enter email';
+
+  @override
+  String get invalid_email => 'Invalid email';
+
+  @override
+  String get required_field => 'Required';
+
+  @override
+  String get save_changes => 'Save Changes';
+
+  @override
+  String get pickup_location => 'Pickup location';
+
+  @override
+  String get drop_location => 'Drop location';
+
+  @override
+  String get stop_label => 'Stop';
+
+  @override
+  String get stops_label => 'Stops';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get edit_locations => 'Edit locations';
+
+  @override
+  String get none => 'None';
+
+  @override
+  String get filter_all => 'All';
+
+  @override
+  String get filter_economy => 'Economy';
+
+  @override
+  String get filter_premium => 'Premium';
+
+  @override
+  String get min_abbreviation => 'min';
 }

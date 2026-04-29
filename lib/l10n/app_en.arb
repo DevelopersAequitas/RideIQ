@@ -212,6 +212,25 @@
   "verification_unknown": "Unknown",
   "income_source_connected": "Income Source Connected",
   "verified_employer": "Verified Employer",
-  "link_btn": "Link"
+  "link_btn": "Link",
+  "edit_profile": "Edit Profile",
+  "enter_first_name": "Enter first name",
+  "enter_last_name": "Enter last name",
+  "email": "Email",
+  "enter_email": "Enter email",
+  "invalid_email": "Invalid email",
+  "required_field": "Required",
+  "save_changes": "Save Changes",
+  "pickup_location": "Pickup location",
+  "drop_location": "Drop location",
+  "stop_label": "Stop",
+  "stops_label": "Stops",
+  "edit": "Edit",
+  "edit_locations": "Edit locations",
+  "none": "None",
+  "filter_all": "All",
+  "filter_economy": "Economy",
+  "filter_premium": "Premium",
+  "min_abbreviation": "min"
 }
 

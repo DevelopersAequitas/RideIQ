@@ -41,7 +41,7 @@ final class LinkViewModelProvider
   }
 }
 
-String _$linkViewModelHash() => r'1eda200cf2d835b2fb92389e1a2374d8d068d18d';
+String _$linkViewModelHash() => r'4b5a63a61b952733792bf2aa6dd3b96a6159f7eb';
 
 abstract class _$LinkViewModel extends $Notifier<LinkState> {
   LinkState build();

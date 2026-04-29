@@ -31,8 +31,15 @@ class LinkPlatformScreen extends ConsumerWidget {
     final notifier = ref.read(linkViewModelProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
 
-    final isUber = platformName.toLowerCase() == "uber";
-    final logoAsset = isUber ? AppAssets.uberLogoPng : AppAssets.lyftLogoPng;
+    final String logoAsset;
+    if (platformName.toLowerCase() == "uber") {
+      logoAsset = AppAssets.uberLogoPng;
+    } else if (platformName.toLowerCase() == "lyft") {
+      logoAsset = AppAssets.lyftLogoPng;
+    } else {
+      logoAsset = AppAssets.ayroLogoPng;
+    }
+    final isUber = platformName.toLowerCase() == "uber" || platformName.toLowerCase() == "ayro";
 
     final isValid = isDriverMode
         ? state.isDriverPlatformValid
@@ -182,7 +189,7 @@ class LinkPlatformScreen extends ConsumerWidget {
 
 
                             final truvNotifier = ref.read(truvViewModelProvider.notifier);
-                            final bridgeToken = await truvNotifier.createBridgeToken(context);
+                            final bridgeToken = await truvNotifier.createBridgeToken();
                             
                             if (bridgeToken != null && context.mounted) {
                               Navigator.push(

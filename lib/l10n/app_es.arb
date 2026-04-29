@@ -149,6 +149,25 @@
   "verification_unknown": "Desconocido",
   "income_source_connected": "Fuente de ingresos conectada",
   "verified_employer": "Empleador verificado",
-  "link_btn": "Vincular"
+  "link_btn": "Vincular",
+  "edit_profile": "Editar perfil",
+  "enter_first_name": "Ingrese el nombre",
+  "enter_last_name": "Ingrese el apellido",
+  "email": "Correo electrónico",
+  "enter_email": "Ingrese el correo electrónico",
+  "invalid_email": "Correo electrónico inválido",
+  "required_field": "Requerido",
+  "save_changes": "Guardar cambios",
+  "pickup_location": "Ubicación de recogida",
+  "drop_location": "Ubicación de destino",
+  "stop_label": "Parada",
+  "stops_label": "Paradas",
+  "edit": "Editar",
+  "edit_locations": "Editar ubicaciones",
+  "none": "Ninguna",
+  "filter_all": "Todos",
+  "filter_economy": "Económico",
+  "filter_premium": "Premium",
+  "min_abbreviation": "min"
 }
 

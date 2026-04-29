@@ -20,6 +20,6 @@ final mockFares = [
   FareResult(platform: "Lyft", rideType: "Standard", price: 9.35, etaMinutes: 3, category: "Economy"),
   FareResult(platform: "Uber", rideType: "Comfort", price: 12.50, etaMinutes: 6, category: "Premium"),
   FareResult(platform: "Lyft", rideType: "Lux", price: 15.80, etaMinutes: 8, category: "Premium"),
-  // FareResult(platform: "Ayro", rideType: "Standard", price: 8.50, etaMinutes: 4, category: "Economy"),
-  // FareResult(platform: "Ayro", rideType: "Premium", price: 14.00, etaMinutes: 7, category: "Premium"),
+  FareResult(platform: "Ayro", rideType: "Standard", price: 8.50, etaMinutes: 4, category: "Economy"),
+  FareResult(platform: "Ayro", rideType: "Premium", price: 14.00, etaMinutes: 7, category: "Premium"),
 ];

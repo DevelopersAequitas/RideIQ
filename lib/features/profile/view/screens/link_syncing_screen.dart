@@ -27,15 +27,22 @@ class LinkSyncingScreen extends ConsumerWidget {
     // Trigger sync once on build
     if (state.syncStep == LinkSyncStep.none) {
       if (publicToken != null) {
-        Future.microtask(() => notifier.startTruvSync(context, publicToken!));
+        Future.microtask(() => notifier.startTruvSync(publicToken!));
       } else {
         Future.microtask(() => notifier.startSync());
       }
     }
 
 
+    final String logoAsset;
+    if (platformName.toLowerCase() == "uber") {
+      logoAsset = AppAssets.uberLogoPng;
+    } else if (platformName.toLowerCase() == "lyft") {
+      logoAsset = AppAssets.lyftLogoPng;
+    } else {
+      logoAsset = AppAssets.ayroLogoPng;
+    }
     final isUber = platformName.toLowerCase() == "uber" || platformName.toLowerCase() == "ayro";
-    final logoAsset = isUber ? AppAssets.uberLogoPng : AppAssets.lyftLogoPng;
     final isSuccess = state.syncStep == LinkSyncStep.success;
 
     return Scaffold(
@@ -73,7 +80,6 @@ class LinkSyncingScreen extends ConsumerWidget {
                     height: 100.w,
                     width: 100.w,
                     color: isUber ? Colors.black : const Color(0xFFFF00BF),
-                    // padding: EdgeInsets.all(24.w),
                     child: Image.asset(logoAsset, fit: BoxFit.contain),
                   ),
                 ),

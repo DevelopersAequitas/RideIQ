@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
 import 'package:rideiq/core/constants/app_assets.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/features/rider/model/fare_result.dart';
 import 'package:rideiq/features/rider_redirect/view/platform_redirect_screen.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class FareListItem extends StatelessWidget {
   final FareResult fare;
@@ -11,8 +12,20 @@ class FareListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isUber = fare.platform == "Uber" || fare.platform == "Ayro"; // Fallback Ayro to Uber logo for now
-    final logoAsset = isUber ? AppAssets.uberLogoPng : AppAssets.lyftLogoPng;
+    final String logoAsset;
+    if (fare.platform == "Uber") {
+      logoAsset = AppAssets.uberLogoPng;
+    } else if (fare.platform == "Lyft") {
+      logoAsset = AppAssets.lyftLogoPng;
+    } else {
+      logoAsset = AppAssets.ayroLogoPng;
+    }
+    final isUber =
+        fare.platform == "Uber" ||
+        fare.platform ==
+            "Ayro"; // Keeping for background color logic if needed, or I can update that too.
+    // Actually let's just use the specific platform colors too if they exist.
+    // For now I'll just fix the logoAsset.
 
     return GestureDetector(
       onTap: () {
@@ -49,19 +62,21 @@ class FareListItem extends StatelessWidget {
                 height: 48.w,
                 width: 48.w,
                 color: isUber ? Colors.black : const Color(0xFFFF00BF),
-                padding: EdgeInsets.all(12.w),
                 child: Image.asset(
                   logoAsset,
                   fit: BoxFit.contain,
                   errorBuilder: (_, __, ___) => Text(
                     fare.platform.substring(0, 1),
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
             ),
             SizedBox(width: 16.w),
-            
+
             // Details
             Expanded(
               child: Column(
@@ -104,10 +119,14 @@ class FareListItem extends StatelessWidget {
                 SizedBox(height: 4.h),
                 Row(
                   children: [
-                    Icon(Icons.access_time, color: const Color(0xFF999999), size: 14.sp),
+                    Icon(
+                      Icons.access_time,
+                      color: const Color(0xFF999999),
+                      size: 14.sp,
+                    ),
                     SizedBox(width: 4.w),
                     Text(
-                      "${fare.etaMinutes} min",
+                      "${fare.etaMinutes} ${AppLocalizations.of(context)!.min_abbreviation}",
                       style: TextStyle(
                         fontSize: 12.sp,
                         color: const Color(0xFF999999),

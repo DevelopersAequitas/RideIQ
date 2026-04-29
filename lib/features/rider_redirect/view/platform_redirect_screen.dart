@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:rideiq/l10n/app_localizations.dart';
@@ -16,36 +16,38 @@ class PlatformRedirectScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<PlatformRedirectScreen> createState() => _PlatformRedirectScreenState();
+  ConsumerState<PlatformRedirectScreen> createState() =>
+      _PlatformRedirectScreenState();
 }
 
-class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen> with TickerProviderStateMixin {
+class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
+    with TickerProviderStateMixin {
   double _progress = 0.0;
   bool _isChecking = true;
-  final bool _isInstalled = true; // Mock: set to false to test the "Not Installed" UI
+  final bool _isInstalled =
+      true; // Mock: set to false to test the "Not Installed" UI
   late AnimationController _progressController;
 
   @override
   void initState() {
     super.initState();
-    _progressController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    )..addListener(() {
-        setState(() {
-          _progress = _progressController.value;
-        });
-      });
+    _progressController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 3))
+          ..addListener(() {
+            setState(() {
+              _progress = _progressController.value;
+            });
+          });
 
     _startRedirectFlow();
   }
 
   void _startRedirectFlow() async {
     _progressController.forward();
-    
+
     // 3 seconds mock sync
     await Future.delayed(const Duration(seconds: 3));
-    
+
     if (mounted) {
       setState(() {
         _isChecking = false;
@@ -81,7 +83,8 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
                 ],
               ),
             ),
-            if (!_isChecking && !_isInstalled) _buildNotInstalledFooter(context),
+            if (!_isChecking && !_isInstalled)
+              _buildNotInstalledFooter(context),
             if (!_isChecking && _isInstalled) _buildInstalledFooter(context),
           ],
         ),
@@ -110,12 +113,16 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
           child: Container(
             width: 110.w,
             height: 110.w,
-            color: widget.platformName == "Uber" ? Colors.black : const Color(0xFFFF00BF),
-            padding: EdgeInsets.all(20.w),
+            color:
+                (widget.platformName == "Uber" || widget.platformName == "Ayro")
+                ? Colors.black
+                : const Color(0xFFFF00BF),
             child: Image.asset(
               widget.logoAsset,
               fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => const Center(child: CircularProgressIndicator(color: Colors.white)),
+              errorBuilder: (_, __, ___) => const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              ),
             ),
           ),
         ),
@@ -180,7 +187,9 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
       style: OutlinedButton.styleFrom(
         minimumSize: Size(120.w, 54.h),
         side: const BorderSide(color: Color(0xFFF2F2F2)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.w)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.w),
+        ),
       ),
       child: Text(
         l10n.cancel,
@@ -210,7 +219,9 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
             elevation: 0,
             side: const BorderSide(color: Color(0xFFF2F2F2)),
             minimumSize: Size(200.w, 54.h),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.w)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.w),
+            ),
           ),
         ),
       ),
@@ -236,7 +247,9 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
             label: Text(l10n.install_platform(widget.platformName)),
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: Color(0xFFF2F2F2)),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.w)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.w),
+              ),
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
             ),
           ),
@@ -245,4 +258,3 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
     ).animate().fadeIn().slideY(begin: 0.2);
   }
 }
-

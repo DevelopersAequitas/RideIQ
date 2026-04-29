@@ -16,7 +16,14 @@ class PlatformLinkCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isUber = name == "Uber";
+    final String logoAsset;
+    if (name == "Uber") {
+      logoAsset = AppAssets.uberLogoPng;
+    } else if (name == "Lyft") {
+      logoAsset = AppAssets.lyftLogoPng;
+    } else {
+      logoAsset = AppAssets.ayroLogoPng;
+    }
 
     return Container(
       margin: EdgeInsets.only(bottom: 16.h),
@@ -47,8 +54,7 @@ class PlatformLinkCard extends StatelessWidget {
               ),
               child: Center(
                 child: Image.asset(
-                  isUber ? AppAssets.uberLogoPng : AppAssets.lyftLogoPng,
-
+                  logoAsset,
                   fit: BoxFit.contain,
                 ),
               ),

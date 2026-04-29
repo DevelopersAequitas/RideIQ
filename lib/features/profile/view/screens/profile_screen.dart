@@ -126,35 +126,39 @@ class ProfileScreen extends ConsumerWidget {
 
               // 4. Menu List (Staggered Animations)
               Column(
-                    children: [
-                      ProfileMenuItem(
-                        assetPath: AppAssets.headsetSvg,
-                        label: l10n.help_center,
-                        onTap: () {},
-                      ),
-                      ProfileMenuItem(
-                        assetPath: AppAssets.fileTextSvg,
-                        label: l10n.privacy_policy,
-                        onTap: () {},
-                      ),
-                      ProfileMenuItem(
-                        assetPath: AppAssets.warningCircleSvg,
-                        label: l10n.report,
-                        onTap: () {},
-                      ),
-                      ProfileMenuItem(
-                        assetPath: AppAssets.infoSvg,
-                        label: l10n.about_us,
-                        onTap: () {},
-                      ),
-                      ProfileMenuItem(
-                        assetPath: AppAssets.signOutSvg,
-                        label: l10n.log_out,
-                        isDestructive: true,
-                        onTap: () => LogoutDialog.show(context, ref),
-                      ),
-                    ].animate(interval: 50.ms).fadeIn(delay: 500.ms).slideY(begin: 0.1, end: 0),
-                  ),
+                children:
+                    [
+                          ProfileMenuItem(
+                            assetPath: AppAssets.headsetSvg,
+                            label: l10n.help_center,
+                            onTap: () {},
+                          ),
+                          ProfileMenuItem(
+                            assetPath: AppAssets.fileTextSvg,
+                            label: l10n.privacy_policy,
+                            onTap: () {},
+                          ),
+                          ProfileMenuItem(
+                            assetPath: AppAssets.warningCircleSvg,
+                            label: l10n.report,
+                            onTap: () {},
+                          ),
+                          ProfileMenuItem(
+                            assetPath: AppAssets.infoSvg,
+                            label: l10n.about_us,
+                            onTap: () {},
+                          ),
+                          ProfileMenuItem(
+                            assetPath: AppAssets.signOutSvg,
+                            label: l10n.log_out,
+                            isDestructive: true,
+                            onTap: () => LogoutDialog.show(context, ref),
+                          ),
+                        ]
+                        .animate(interval: 50.ms)
+                        .fadeIn(delay: 500.ms)
+                        .slideY(begin: 0.1, end: 0),
+              ),
 
               SizedBox(height: 40.h),
             ],
@@ -204,7 +208,11 @@ class ProfileScreen extends ConsumerWidget {
                       ),
                     ),
                     SizedBox(width: 8.w),
-                    Icon(Icons.edit, size: 16.sp, color: const Color(0xFF1E74E9)),
+                    Icon(
+                      Icons.edit,
+                      size: 16.sp,
+                      color: const Color(0xFF1E74E9),
+                    ),
                   ],
                 ),
                 Text(
@@ -260,8 +268,8 @@ class ProfileScreen extends ConsumerWidget {
           _buildAccountTile(context, "Uber", false, true),
           const Divider(height: 1, color: Color(0xFFF2F2F2)),
           _buildAccountTile(context, "Lyft", false, false),
-          // const Divider(height: 1, color: Color(0xFFF2F2F2)),
-          // _buildAccountTile(context, "Ayro", false, true),
+          const Divider(height: 1, color: Color(0xFFF2F2F2)),
+          _buildAccountTile(context, "Ayro", false, true),
         ],
       ),
     );
@@ -273,6 +281,15 @@ class ProfileScreen extends ConsumerWidget {
     bool isConnected,
     bool isUber,
   ) {
+    final String logoAsset;
+    if (name == "Uber") {
+      logoAsset = AppAssets.uberLogoPng;
+    } else if (name == "Lyft") {
+      logoAsset = AppAssets.lyftLogoPng;
+    } else {
+      logoAsset = AppAssets.ayroLogoPng;
+    }
+
     final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.all(20.w),
@@ -283,12 +300,8 @@ class ProfileScreen extends ConsumerWidget {
             child: Container(
               height: 32.w,
               width: 32.w,
-              color: isUber ? Colors.black : const Color(0xFFFF00BF),
-              padding: EdgeInsets.all(4.w),
-              child: Image.asset(
-                isUber ? AppAssets.uberLogoPng : AppAssets.lyftLogoPng,
-                fit: BoxFit.contain,
-              ),
+              color: name == "Lyft" ? const Color(0xFFFF00BF) : Colors.black,
+              child: Image.asset(logoAsset, fit: BoxFit.contain),
             ),
           ),
           SizedBox(width: 16.w),
@@ -355,4 +368,3 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 }
-

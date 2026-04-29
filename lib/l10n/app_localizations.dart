@@ -997,6 +997,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Link'**
   String get link_btn;
+
+  /// No description provided for @edit_profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get edit_profile;
+
+  /// No description provided for @enter_first_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter first name'**
+  String get enter_first_name;
+
+  /// No description provided for @enter_last_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter last name'**
+  String get enter_last_name;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @enter_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter email'**
+  String get enter_email;
+
+  /// No description provided for @invalid_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email'**
+  String get invalid_email;
+
+  /// No description provided for @required_field.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get required_field;
+
+  /// No description provided for @save_changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get save_changes;
+
+  /// No description provided for @pickup_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup location'**
+  String get pickup_location;
+
+  /// No description provided for @drop_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop location'**
+  String get drop_location;
+
+  /// No description provided for @stop_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get stop_label;
+
+  /// No description provided for @stops_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Stops'**
+  String get stops_label;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @edit_locations.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit locations'**
+  String get edit_locations;
+
+  /// No description provided for @none.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get none;
+
+  /// No description provided for @filter_all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get filter_all;
+
+  /// No description provided for @filter_economy.
+  ///
+  /// In en, this message translates to:
+  /// **'Economy'**
+  String get filter_economy;
+
+  /// No description provided for @filter_premium.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium'**
+  String get filter_premium;
+
+  /// No description provided for @min_abbreviation.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get min_abbreviation;
 }
 
 class _AppLocalizationsDelegate

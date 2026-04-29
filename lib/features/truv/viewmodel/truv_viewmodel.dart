@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:rideiq/features/truv/repository/truv_repository.dart';
 import 'package:rideiq/features/auth/repository/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -97,10 +96,9 @@ class TruvState {
       return [45, 82, 61, 95, 74, 58, 89];
     } else if (platformName == 'Lyft') {
       return [30, 60, 45, 80, 50, 40, 75];
+    } else if (platformName == 'Ayro') {
+      return [25, 45, 30, 50, 40, 35, 60];
     }
-    // else if (platformName == 'Ayro') {
-    //   return [25, 45, 30, 50, 40, 35, 60];
-    // }
     return [45, 82, 61, 95, 74, 58, 89];
   }
 
@@ -195,6 +193,45 @@ class TruvState {
       return "0.0";
     }
   }
+
+  Map<String, dynamic>? get bestPlatform {
+    if (reportData == null) return null;
+    try {
+      final data = reportData!['data'];
+      final employments = data['employments'] as List?;
+      if (employments == null || employments.isEmpty) return null;
+
+      var bestEmp = employments[0];
+      double maxRate =
+          double.tryParse(
+            (bestEmp['earnings_per_hour'] ?? bestEmp['income']?['hourly_rate'])
+                ?.toString() ??
+            "0",
+          ) ??
+          0.0;
+
+      for (var emp in employments) {
+        double currentRate =
+            double.tryParse(
+              (emp['earnings_per_hour'] ?? emp['income']?['hourly_rate'])
+                  ?.toString() ??
+              "0",
+            ) ??
+            0.0;
+        if (currentRate > maxRate) {
+          maxRate = currentRate;
+          bestEmp = emp;
+        }
+      }
+
+      return {
+        "name": bestEmp['company']?['name']?.toString() ?? "Unknown",
+        "rate": maxRate.toStringAsFixed(2),
+      };
+    } catch (_) {
+      return null;
+    }
+  }
 }
 
 
@@ -206,7 +243,7 @@ class TruvViewModel extends _$TruvViewModel {
     return TruvState();
   }
 
-  Future<String?> createBridgeToken(BuildContext context) async {
+  Future<String?> createBridgeToken() async {
     state = state.copyWith(isLoading: true);
     AppLogger.info('>>> Preparing Truv Flow...', tag: 'TruvFlow');
 
@@ -284,7 +321,7 @@ class TruvViewModel extends _$TruvViewModel {
     }
   }
 
-  Future<bool> exchangeToken(BuildContext context, String publicToken) async {
+  Future<bool> exchangeToken(String publicToken) async {
     state = state.copyWith(isLoading: true);
     try {
       final success = await ref.read(truvRepositoryProvider).exchangeToken(publicToken);
@@ -301,7 +338,7 @@ class TruvViewModel extends _$TruvViewModel {
     }
   }
 
-  Future<Map<String, dynamic>?> checkStatus(BuildContext context) async {
+  Future<Map<String, dynamic>?> checkStatus() async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await ref.read(truvRepositoryProvider).checkStatus();
@@ -324,7 +361,7 @@ class TruvViewModel extends _$TruvViewModel {
     }
   }
 
-  Future<Map<String, dynamic>?> fetchReport(BuildContext context) async {
+  Future<Map<String, dynamic>?> fetchReport() async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await ref.read(truvRepositoryProvider).fetchReport();

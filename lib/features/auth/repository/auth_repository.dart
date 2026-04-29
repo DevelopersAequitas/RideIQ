@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rideiq/core/utils/app_logger.dart'; 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rideiq/core/services/api_service.dart';
 import 'package:rideiq/core/services/local_service.dart';
@@ -126,7 +126,7 @@ class FirebaseAuthRepository implements AuthRepository {
 
     } catch (e) {
       if (e is DioException) {
-        print("Backend Error Details: ${e.response?.data}");
+        AppLogger.error("Backend Error Details: ${e.response?.data}");
       }
       rethrow;
     }

@@ -44,4 +44,5 @@ class AppAssets {
   // Logos
   static const String uberLogoPng = 'assets/uber-logo.png';
   static const String lyftLogoPng = 'assets/lyft-logo.png';
+  static const String ayroLogoPng = 'assets/Ayro-logo.png';
 }

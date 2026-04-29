@@ -1,7 +1,5 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dio/dio.dart'; 
+ 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rideiq/core/constants/api_constants.dart';
 import 'package:rideiq/core/utils/app_logger.dart';

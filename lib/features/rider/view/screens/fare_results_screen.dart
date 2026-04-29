@@ -6,6 +6,7 @@ import 'package:rideiq/features/rider/view/widgets/location_summary_header.dart'
 import 'package:rideiq/features/rider/view/widgets/fare_list_item.dart';
 import 'package:rideiq/features/rider/viewmodel/fare_comparison_viewmodel.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class FareResultsScreen extends ConsumerStatefulWidget {
   const FareResultsScreen({super.key});
@@ -25,6 +26,8 @@ class _FareResultsScreenState extends ConsumerState<FareResultsScreen> {
         ? mockFares
         : mockFares.where((f) => f.category == _selectedCategory).toList();
 
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       body: SafeArea(
@@ -32,10 +35,11 @@ class _FareResultsScreenState extends ConsumerState<FareResultsScreen> {
           children: [
             // 1. Fixed Summary Header
             LocationSummaryHeader(
-              pickup:
-                  '${locationState.pickup.split(' ').first}...', // Shorten for UI
-              stop: locationState.stops.isNotEmpty ? "Stop" : "None",
-              dropoff: '${locationState.dropoff.split(' ').first}...',
+              pickup: locationState.pickup.split(',').first,
+              stops: locationState.stops
+                  .map((s) => s.split(',').first)
+                  .toList(),
+              dropoff: locationState.dropoff.split(',').first,
               onEditTap: () => Navigator.pop(context),
             ),
 
@@ -50,11 +54,11 @@ class _FareResultsScreenState extends ConsumerState<FareResultsScreen> {
                       // Category Filters
                       Row(
                         children: [
-                          _buildFilterPill("All"),
+                          _buildFilterPill("All", l10n.filter_all),
                           SizedBox(width: 12.w),
-                          _buildFilterPill("Economy"),
+                          _buildFilterPill("Economy", l10n.filter_economy),
                           SizedBox(width: 12.w),
-                          _buildFilterPill("Premium"),
+                          _buildFilterPill("Premium", l10n.filter_premium),
                         ],
                       ),
 
@@ -79,7 +83,7 @@ class _FareResultsScreenState extends ConsumerState<FareResultsScreen> {
     );
   }
 
-  Widget _buildFilterPill(String category) {
+  Widget _buildFilterPill(String category, String label) {
     final isSelected = _selectedCategory == category;
     return GestureDetector(
       onTap: () => setState(() => _selectedCategory = category),
@@ -95,7 +99,7 @@ class _FareResultsScreenState extends ConsumerState<FareResultsScreen> {
           ),
         ),
         child: Text(
-          category,
+          label,
           style: TextStyle(
             color: isSelected
                 ? const Color(0xFF1D72DD)

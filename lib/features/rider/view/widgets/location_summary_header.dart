@@ -3,17 +3,18 @@ import 'package:rideiq/core/utils/size_config.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rideiq/features/profile/view/screens/profile_screen.dart';
 import 'package:rideiq/features/profile/viewmodel/profile_viewmodel.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 
 class LocationSummaryHeader extends ConsumerWidget {
   final String pickup;
-  final String stop;
+  final List<String> stops;
   final String dropoff;
   final VoidCallback onEditTap;
 
   const LocationSummaryHeader({
     super.key,
     required this.pickup,
-    required this.stop,
+    required this.stops,
     required this.dropoff,
     required this.onEditTap,
   });
@@ -21,6 +22,7 @@ class LocationSummaryHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileViewModelProvider);
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: const BoxDecoration(color: Colors.white),
@@ -46,7 +48,7 @@ class LocationSummaryHeader extends ConsumerWidget {
                       Icon(Icons.arrow_back, size: 18.sp, color: Colors.black),
                       SizedBox(width: 8.w),
                       Text(
-                        "Edit locations",
+                        l10n.edit_locations,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
@@ -124,16 +126,28 @@ class LocationSummaryHeader extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildLabelColumn(
-                "Pickup location",
-                pickup,
-                CrossAxisAlignment.start,
+              Expanded(
+                child: _buildLabelColumn(
+                  l10n.pickup_location,
+                  pickup,
+                  CrossAxisAlignment.start,
+                ),
               ),
-              _buildLabelColumn("Stop", stop, CrossAxisAlignment.center),
-              _buildLabelColumn(
-                "Drop location",
-                dropoff,
-                CrossAxisAlignment.end,
+              Expanded(
+                child: _buildLabelColumn(
+                  stops.length > 1 ? l10n.stops_label : l10n.stop_label,
+                  stops.isNotEmpty
+                      ? stops.join(', ')
+                      : l10n.none,
+                  CrossAxisAlignment.center,
+                ),
+              ),
+              Expanded(
+                child: _buildLabelColumn(
+                  l10n.drop_location,
+                  dropoff,
+                  CrossAxisAlignment.end,
+                ),
               ),
             ],
           ),
@@ -162,32 +176,29 @@ class LocationSummaryHeader extends ConsumerWidget {
     String address,
     CrossAxisAlignment alignment,
   ) {
-    return SizedBox(
-      width: 100.w,
-      child: Column(
-        crossAxisAlignment: alignment,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 10.sp,
-              color: const Color(0xFF999999),
-              fontFamily: 'Figtree',
-            ),
+    return Column(
+      crossAxisAlignment: alignment,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 10.sp,
+            color: const Color(0xFF999999),
+            fontFamily: 'Figtree',
           ),
-          SizedBox(height: 4.h),
-          Text(
-            address,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Figtree',
-            ),
+        ),
+        SizedBox(height: 4.h),
+        Text(
+          address,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Figtree',
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

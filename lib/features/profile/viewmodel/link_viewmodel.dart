@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:rideiq/features/truv/viewmodel/truv_viewmodel.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -91,23 +90,22 @@ class LinkViewModel extends _$LinkViewModel {
     }
   }
 
-  Future<void> startTruvSync(BuildContext context, String publicToken) async {
-
+  Future<void> startTruvSync(String publicToken) async {
     state = state.copyWith(syncStep: LinkSyncStep.syncing);
     
     try {
       final truvNotifier = ref.read(truvViewModelProvider.notifier);
       
       // 1. Exchange Token
-      final success = await truvNotifier.exchangeToken(context, publicToken);
+      final success = await truvNotifier.exchangeToken(publicToken);
       
       if (success && ref.mounted) {
         // 2. Check Status
-        final status = await truvNotifier.checkStatus(context);
+        final status = await truvNotifier.checkStatus();
         
         if (status != null && status['verification_status'] == 'connected' && ref.mounted) {
           // 3. Fetch Report (background)
-          await truvNotifier.fetchReport(context);
+          await truvNotifier.fetchReport();
           
           if (ref.mounted) {
             state = state.copyWith(syncStep: LinkSyncStep.success);

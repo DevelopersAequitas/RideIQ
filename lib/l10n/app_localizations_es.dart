@@ -493,4 +493,61 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get link_btn => 'Vincular';
+
+  @override
+  String get edit_profile => 'Editar perfil';
+
+  @override
+  String get enter_first_name => 'Ingrese el nombre';
+
+  @override
+  String get enter_last_name => 'Ingrese el apellido';
+
+  @override
+  String get email => 'Correo electrónico';
+
+  @override
+  String get enter_email => 'Ingrese el correo electrónico';
+
+  @override
+  String get invalid_email => 'Correo electrónico inválido';
+
+  @override
+  String get required_field => 'Requerido';
+
+  @override
+  String get save_changes => 'Guardar cambios';
+
+  @override
+  String get pickup_location => 'Ubicación de recogida';
+
+  @override
+  String get drop_location => 'Ubicación de destino';
+
+  @override
+  String get stop_label => 'Parada';
+
+  @override
+  String get stops_label => 'Paradas';
+
+  @override
+  String get edit => 'Editar';
+
+  @override
+  String get edit_locations => 'Editar ubicaciones';
+
+  @override
+  String get none => 'Ninguna';
+
+  @override
+  String get filter_all => 'Todos';
+
+  @override
+  String get filter_economy => 'Económico';
+
+  @override
+  String get filter_premium => 'Premium';
+
+  @override
+  String get min_abbreviation => 'min';
 }

@@ -19,7 +19,7 @@ class DriverVerificationScreen extends ConsumerStatefulWidget {
 }
 
 class _DriverVerificationScreenState extends ConsumerState<DriverVerificationScreen> {
-  bool _isVerified = false;
+  final bool _isVerified = false;
   String? _bridgeToken;
 
   @override
@@ -47,7 +47,7 @@ class _DriverVerificationScreenState extends ConsumerState<DriverVerificationScr
 
   void _startTruvVerification() async {
     final viewModel = ref.read(truvViewModelProvider.notifier);
-    final token = await viewModel.createBridgeToken(context);
+    final token = await viewModel.createBridgeToken();
     if (token != null && mounted) {
       setState(() {
         _bridgeToken = token;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/features/profile/viewmodel/profile_viewmodel.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 import 'package:rideiq/shared/widgets/primary_button.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
@@ -69,6 +70,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileViewModelProvider);
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -79,7 +82,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          "Edit Profile",
+          l10n.edit_profile,
           style: TextStyle(
             color: Colors.black,
             fontSize: 18.sp,
@@ -113,7 +116,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               ),
               SizedBox(height: 32.h),
               Text(
-                "First Name",
+                l10n.first_name,
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
@@ -124,7 +127,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               TextFormField(
                 controller: _firstNameController,
                 decoration: InputDecoration(
-                  hintText: "Enter first name",
+                  hintText: l10n.enter_first_name,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.w),
                     borderSide: const BorderSide(color: Color(0xFFF2F2F2)),
@@ -135,11 +138,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   ),
                 ),
                 validator: (val) =>
-                    val == null || val.isEmpty ? 'Required' : null,
+                    val == null || val.isEmpty ? l10n.required_field : null,
               ),
               SizedBox(height: 20.h),
               Text(
-                "Last Name",
+                l10n.last_name,
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
@@ -150,7 +153,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               TextFormField(
                 controller: _lastNameController,
                 decoration: InputDecoration(
-                  hintText: "Enter last name",
+                  hintText: l10n.enter_last_name,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.w),
                     borderSide: const BorderSide(color: Color(0xFFF2F2F2)),
@@ -161,11 +164,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   ),
                 ),
                 validator: (val) =>
-                    val == null || val.isEmpty ? 'Required' : null,
+                    val == null || val.isEmpty ? l10n.required_field : null,
               ),
               SizedBox(height: 20.h),
               Text(
-                "Email",
+                l10n.email,
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
@@ -177,7 +180,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  hintText: "Enter email",
+                  hintText: l10n.enter_email,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.w),
                     borderSide: const BorderSide(color: Color(0xFFF2F2F2)),
@@ -188,14 +191,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   ),
                 ),
                 validator: (val) {
-                  if (val == null || val.isEmpty) return 'Required';
-                  if (!val.contains('@')) return 'Invalid email';
+                  if (val == null || val.isEmpty) return l10n.required_field;
+                  if (!val.contains('@')) return l10n.invalid_email;
                   return null;
                 },
               ),
               SizedBox(height: 40.h),
               PrimaryButton(
-                text: "Save Changes",
+                text: l10n.save_changes,
                 isLoading: profileState.isLoading,
                 onPressed: _updateProfile,
               ),
