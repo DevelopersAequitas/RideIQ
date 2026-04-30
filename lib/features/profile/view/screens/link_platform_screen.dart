@@ -41,9 +41,10 @@ class LinkPlatformScreen extends ConsumerWidget {
     }
     final isUber = platformName.toLowerCase() == "uber" || platformName.toLowerCase() == "ayro";
 
-    final isValid = isDriverMode
-        ? state.isDriverPlatformValid
-        : state.isPlatformValid;
+    final isUberFlow = platformName.toLowerCase() == "uber";
+    final isValid = isUberFlow 
+        ? state.isUberValid 
+        : (isDriverMode ? state.isDriverPlatformValid : state.isPlatformValid);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -100,72 +101,85 @@ class LinkPlatformScreen extends ConsumerWidget {
             SizedBox(height: 40.h),
 
             // Input Fields
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Country Code Picker
-                GestureDetector(
-                  onTap: () {
-                    showCountryPicker(
-                      context: context,
-                      showPhoneCode: true,
-                      onSelect: (Country country) {
-                        notifier.updateCountryCode("+${country.phoneCode}");
-                      },
-                      countryListTheme: CountryListThemeData(
-                        borderRadius: BorderRadius.circular(20.w),
-                        inputDecoration: InputDecoration(
-                          hintText: l10n.search_country,
-                          prefixIcon: const Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.w),
-                            borderSide: const BorderSide(
-                              color: Color(0xFFF2F2F2),
+            if (platformName.toLowerCase() == "uber") ...[
+              AppTextField(
+                label: l10n.email_or_phone, // Need to make sure this exists in L10N
+                onChanged: notifier.updateEmail,
+                keyboardType: TextInputType.emailAddress,
+              ).animate().fade(delay: 100.ms).slideY(begin: 0.1),
+              SizedBox(height: 16.h),
+              AppTextField(
+                label: l10n.password,
+                onChanged: notifier.updatePassword,
+                obscureText: true,
+              ).animate().fade(delay: 200.ms).slideY(begin: 0.1),
+            ] else ...[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Country Code Picker
+                  GestureDetector(
+                    onTap: () {
+                      showCountryPicker(
+                        context: context,
+                        showPhoneCode: true,
+                        onSelect: (Country country) {
+                          notifier.updateCountryCode("+${country.phoneCode}");
+                        },
+                        countryListTheme: CountryListThemeData(
+                          borderRadius: BorderRadius.circular(20.w),
+                          inputDecoration: InputDecoration(
+                            hintText: l10n.search_country,
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20.w),
+                              borderSide: const BorderSide(
+                                color: Color(0xFFF2F2F2),
+                              ),
                             ),
                           ),
                         ),
+                      );
+                    },
+                    child: Container(
+                      height: 56.h,
+                      padding: EdgeInsets.symmetric(horizontal: 12.w),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8F9FA),
+                        borderRadius: BorderRadius.circular(16.w),
+                        border: Border.all(color: const Color(0xFFF2F2F2)),
                       ),
-                    );
-                  },
-                  child: Container(
-                    height: 56.h,
-                    padding: EdgeInsets.symmetric(horizontal: 12.w),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF8F9FA),
-                      borderRadius: BorderRadius.circular(16.w),
-                      border: Border.all(color: const Color(0xFFF2F2F2)),
-                    ),
-                    child: Center(
-                      child: Text(
-                        state.countryCode,
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Figtree',
-                          color: const Color(0xFF1A1A1A),
+                      child: Center(
+                        child: Text(
+                          state.countryCode,
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Figtree',
+                            color: const Color(0xFF1A1A1A),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(width: 12.w),
-                // Phone Input
-                Expanded(
-                  child: AppTextField(
-                    label: l10n.phone,
-                    onChanged: notifier.updatePhone,
-                    keyboardType: TextInputType.phone,
+                  SizedBox(width: 12.w),
+                  // Phone Input
+                  Expanded(
+                    child: AppTextField(
+                      label: l10n.phone,
+                      onChanged: notifier.updatePhone,
+                      keyboardType: TextInputType.phone,
+                    ),
                   ),
-                ),
+                ],
+              ).animate().fade(delay: 100.ms).slideY(begin: 0.1),
+              if (isDriverMode) ...[
+                SizedBox(height: 16.h),
+                AppTextField(
+                  label: l10n.drivers_license_number,
+                  onChanged: notifier.updateLicense,
+                ).animate().fade(delay: 200.ms).slideY(begin: 0.1),
               ],
-            ).animate().fade(delay: 100.ms).slideY(begin: 0.1),
-
-            if (isDriverMode) ...[
-              SizedBox(height: 20.h),
-              AppTextField(
-                label: l10n.drivers_license_number,
-                onChanged: notifier.updateLicense,
-              ).animate().fade(delay: 200.ms).slideY(begin: 0.1),
             ],
 
             SizedBox(height: 40.h),
@@ -195,7 +209,9 @@ class LinkPlatformScreen extends ConsumerWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const DriverVerificationScreen(),
+                                  builder: (_) => DriverVerificationScreen(
+                                    platformName: platformName,
+                                  ),
                                 ),
                               );
                             }

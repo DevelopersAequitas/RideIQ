@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rideiq/core/theme/app_colors.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/features/driver_dashboard/viewmodel/dashboard_viewmodel.dart';
 import 'package:rideiq/l10n/app_localizations.dart';
@@ -15,6 +16,7 @@ class DashboardTabs extends ConsumerWidget {
 
     return Container(
       decoration: const BoxDecoration(
+        color: AppColors.surface,
         border: Border(bottom: BorderSide(color: Color(0xFFF2F2F2))),
       ),
       child: Row(

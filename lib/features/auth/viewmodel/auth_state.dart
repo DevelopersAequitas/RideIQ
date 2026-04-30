@@ -7,13 +7,15 @@ abstract class AuthState with _$AuthState {
   const AuthState._();
 
   const factory AuthState({
-    @Default('+00') String countryCode,
+    @Default('+1') String countryCode,
     @Default('') String phoneNumber,
     @Default('') String otp,
     @Default(false) bool isOtpSent,
     @Default(60) int resendTimer,
     @Default(0) int resendAttempt,
     @Default(false) bool isLoading,
+    @Default(false) bool isOtpLoading,
+    @Default(false) bool isLoginLoading,
     String? errorMessage,
     String? verificationId,
     int? resendToken,

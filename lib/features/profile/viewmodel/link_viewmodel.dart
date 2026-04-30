@@ -11,6 +11,8 @@ class LinkState {
   final String phone;
   final String license;
   final String otp;
+  final String email;
+  final String password;
   final bool isLoading;
   final LinkSyncStep syncStep;
 
@@ -19,6 +21,8 @@ class LinkState {
     this.phone = "",
     this.license = "",
     this.otp = "",
+    this.email = "",
+    this.password = "",
     this.isLoading = false,
     this.syncStep = LinkSyncStep.none,
   });
@@ -28,12 +32,15 @@ class LinkState {
   bool get isPlatformValid => phone.length >= 8;
   bool get isDriverPlatformValid => phone.length >= 8 && license.isNotEmpty;
   bool get isOtpValid => otp.length >= 6;
+  bool get isUberValid => email.isNotEmpty && password.length >= 4;
 
   LinkState copyWith({
     String? countryCode,
     String? phone,
     String? license,
     String? otp,
+    String? email,
+    String? password,
     bool? isLoading,
     LinkSyncStep? syncStep,
   }) {
@@ -42,6 +49,8 @@ class LinkState {
       phone: phone ?? this.phone,
       license: license ?? this.license,
       otp: otp ?? this.otp,
+      email: email ?? this.email,
+      password: password ?? this.password,
       isLoading: isLoading ?? this.isLoading,
       syncStep: syncStep ?? this.syncStep,
     );
@@ -61,6 +70,8 @@ class LinkViewModel extends _$LinkViewModel {
   void updatePhone(String phone) => state = state.copyWith(phone: phone);
   void updateLicense(String license) => state = state.copyWith(license: license);
   void updateOtp(String otp) => state = state.copyWith(otp: otp);
+  void updateEmail(String email) => state = state.copyWith(email: email);
+  void updatePassword(String password) => state = state.copyWith(password: password);
 
   Future<bool> handleContinue() async {
     state = state.copyWith(isLoading: true);
@@ -103,7 +114,8 @@ class LinkViewModel extends _$LinkViewModel {
         // 2. Check Status
         final status = await truvNotifier.checkStatus();
         
-        if (status != null && status['verification_status'] == 'connected' && ref.mounted) {
+        final verificationStatus = status?['verification_status'];
+        if (status != null && (verificationStatus == 'connected' || verificationStatus == 'verified') && ref.mounted) {
           // 3. Fetch Report (background)
           await truvNotifier.fetchReport();
           
@@ -116,6 +128,46 @@ class LinkViewModel extends _$LinkViewModel {
       
       // If we reach here, something failed
       if (ref.mounted) {
+        state = state.copyWith(syncStep: LinkSyncStep.none);
+      }
+    } catch (e) {
+      if (ref.mounted) {
+        state = state.copyWith(syncStep: LinkSyncStep.none);
+      }
+    }
+  }
+
+  Future<void> checkTruvStatusOnly() async {
+    state = state.copyWith(syncStep: LinkSyncStep.syncing);
+    
+    try {
+      final truvNotifier = ref.read(truvViewModelProvider.notifier);
+      
+      // Retry mechanism: Poll the status up to 5 times with a 3-second delay
+      // This prevents immediate "failure" if the backend is still processing
+      int retryCount = 0;
+      bool isConnected = false;
+
+      while (retryCount < 5 && !isConnected && ref.mounted) {
+        final status = await truvNotifier.checkStatus();
+        final verificationStatus = status?['verification_status'];
+        
+        if (status != null && (verificationStatus == 'connected' || verificationStatus == 'verified')) {
+          isConnected = true;
+          await truvNotifier.fetchReport();
+          if (ref.mounted) {
+            state = state.copyWith(syncStep: LinkSyncStep.success);
+            return;
+          }
+        } else {
+          retryCount++;
+          if (retryCount < 5) {
+            await Future.delayed(const Duration(seconds: 3));
+          }
+        }
+      }
+      
+      if (ref.mounted && !isConnected) {
         state = state.copyWith(syncStep: LinkSyncStep.none);
       }
     } catch (e) {

@@ -14,7 +14,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:rideiq/l10n/app_localizations.dart';
 
 class ProfileScreen extends ConsumerWidget {
-  const ProfileScreen({super.key});
+  final bool isDriverMode;
+  const ProfileScreen({super.key, this.isDriverMode = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -56,52 +57,57 @@ class ProfileScreen extends ConsumerWidget {
                   .fadeIn(duration: 400.ms)
                   .slideY(begin: -0.1, end: 0, curve: Curves.easeOutQuad),
 
-              SizedBox(height: 32.h),
+              if (isDriverMode) ...[
+                SizedBox(height: 32.h),
+                const Divider(color: Color(0xFFF2F2F2)),
+              ] else ...[
+                SizedBox(height: 32.h),
 
-              // 2. Flexible Stats Rows
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: StatCard(
-                          assetPath: AppAssets.carProfileSvg,
-                          label: l10n.total_rides,
-                          value: "126",
+                // 2. Flexible Stats Rows (Only for Rider Mode)
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: StatCard(
+                            assetPath: AppAssets.carProfileSvg,
+                            label: l10n.total_rides,
+                            value: "126",
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 16.w),
-                      Expanded(
-                        child: StatCard(
-                          assetPath: AppAssets.moneyWavySvg,
-                          label: l10n.total_spent,
-                          value: "\$1,842",
+                        SizedBox(width: 16.w),
+                        Expanded(
+                          child: StatCard(
+                            assetPath: AppAssets.ayroLogoPng,
+                            label: "Ayro Fares",
+                            value: "\$8.50",
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16.h),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: StatCard(
-                          assetPath: AppAssets.mapPinSvg,
-                          label: l10n.frequent_location,
-                          value: "Downtown, LA",
+                      ],
+                    ),
+                    SizedBox(height: 16.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: StatCard(
+                            assetPath: AppAssets.mapPinSvg,
+                            label: l10n.frequent_location,
+                            value: "Downtown, LA",
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 16.w),
-                      Expanded(
-                        child: StatCard(
-                          assetPath: AppAssets.clockCountdownSvg,
-                          label: l10n.avg_ride_time,
-                          value: "18 mins",
+                        SizedBox(width: 16.w),
+                        Expanded(
+                          child: StatCard(
+                            assetPath: AppAssets.clockCountdownSvg,
+                            label: l10n.avg_ride_time,
+                            value: "18 mins",
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1, end: 0),
+                      ],
+                    ),
+                  ],
+                ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1, end: 0),
+              ],
 
               SizedBox(height: 32.h),
 
@@ -265,11 +271,11 @@ class ProfileScreen extends ConsumerWidget {
       ),
       child: Column(
         children: [
+          _buildAccountTile(context, "Ayro", false, true),
+          const Divider(height: 1, color: Color(0xFFF2F2F2)),
           _buildAccountTile(context, "Uber", false, true),
           const Divider(height: 1, color: Color(0xFFF2F2F2)),
           _buildAccountTile(context, "Lyft", false, false),
-          const Divider(height: 1, color: Color(0xFFF2F2F2)),
-          _buildAccountTile(context, "Ayro", false, true),
         ],
       ),
     );
@@ -300,7 +306,7 @@ class ProfileScreen extends ConsumerWidget {
             child: Container(
               height: 32.w,
               width: 32.w,
-              color: name == "Lyft" ? const Color(0xFFFF00BF) : Colors.black,
+              color: (name == "Uber" || name == "Ayro") ? Colors.black : (name == "Lyft" ? const Color(0xFFFF00BF) : Colors.black),
               child: Image.asset(logoAsset, fit: BoxFit.contain),
             ),
           ),

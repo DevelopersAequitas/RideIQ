@@ -9,7 +9,7 @@ class SplashViewModel extends _$SplashViewModel {
   @override
   FutureOr<String> build() async {
     // 1. Initial delay for branding
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(milliseconds: 3200));
 
     // 2. Check Firebase Auth State
     final user = FirebaseAuth.instance.currentUser;

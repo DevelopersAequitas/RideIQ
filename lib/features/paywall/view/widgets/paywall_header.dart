@@ -22,13 +22,14 @@ class PaywallHeader extends StatelessWidget {
           height: 350.h,
           width: double.infinity,
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
+            gradient: RadialGradient(
+              center: Alignment.bottomLeft,
+              radius: 1.2,
               colors: [
-                Color(0xFF00C896), // Figma Green
                 Color(0xFF1A6FD4), // Figma Blue
+                Color(0xFF00C896), // Figma Green
               ],
+              stops: [0.0, 1.0],
             ),
           ),
           child: SafeArea(
@@ -158,4 +159,3 @@ class WavePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-

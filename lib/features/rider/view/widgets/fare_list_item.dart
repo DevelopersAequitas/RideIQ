@@ -42,17 +42,7 @@ class FareListItem extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.only(bottom: 16.h),
         padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20.w),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.02),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
+        decoration: BoxDecoration(color: Colors.white),
         child: Row(
           children: [
             // Logo

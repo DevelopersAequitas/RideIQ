@@ -25,73 +25,62 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          height: 64.h,
-          decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFFE0E0E0), width: 1.w),
-            borderRadius: BorderRadius.circular(12.w),
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Row(
-            children: [
-              if (prefix != null) ...[
-                prefix!,
-                SizedBox(width: 12.w),
-                Container(
-                  height: 24.h,
-                  width: 1.w,
-                  color: const Color(0xFFE0E0E0),
-                ),
-                SizedBox(width: 12.w),
-              ],
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  onChanged: onChanged,
-                  keyboardType: keyboardType,
-                  obscureText: obscureText,
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: 'Figtree',
-                  ),
-                  decoration: InputDecoration(
-                    hintText: hint,
-                    hintStyle: TextStyle(
-                      color: const Color(0xFF9E9E9E),
-                      fontSize: 16.sp,
-                    ),
-                    border: InputBorder.none,
-                    isDense: true,
-                    contentPadding: EdgeInsets.zero,
-                  ),
-                ),
-              ),
-              if (suffix != null) suffix!,
-            ],
-          ),
+    return TextFormField(
+      controller: controller,
+      onChanged: onChanged,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      style: TextStyle(
+        fontSize: 16.sp,
+        fontWeight: FontWeight.w400,
+        fontFamily: 'Figtree',
+      ),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(
+          color: const Color(0xFF9E9E9E),
+          fontSize: 14.sp,
+          fontFamily: 'Figtree',
         ),
-        Positioned(
-          left: 12.w,
-          top: -8.h,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 4.w),
-            color: Colors.white,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w500,
-                color: Colors.black54,
-                fontFamily: 'Figtree',
-              ),
-            ),
-          ),
+        floatingLabelStyle: TextStyle(
+          color: const Color(0xFF1A1A1A),
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Figtree',
         ),
-      ],
+        hintText: hint,
+        hintStyle: TextStyle(
+          color: const Color(0xFF9E9E9E),
+          fontSize: 14.sp,
+        ),
+        prefixIcon: prefix != null
+            ? Padding(
+                padding: EdgeInsets.only(left: 16.w, right: 12.w),
+                child: prefix,
+              )
+            : null,
+        suffixIcon: suffix != null
+            ? Padding(
+                padding: EdgeInsets.only(right: 16.w),
+                child: suffix,
+              )
+            : null,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16.w),
+          borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16.w),
+          borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16.w),
+          borderSide: const BorderSide(color: Color(0xFF1A6FD4), width: 1.5),
+        ),
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 18.h),
+      ),
     );
   }
 }

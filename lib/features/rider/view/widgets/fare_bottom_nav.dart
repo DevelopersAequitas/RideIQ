@@ -19,8 +19,8 @@ class FareBottomNav extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.only(
-        top: 12.h,
-        bottom: MediaQuery.of(context).padding.bottom + 12.h,
+        top: 8.h,
+        bottom: MediaQuery.of(context).padding.bottom + 8.h,
       ),
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -30,16 +30,16 @@ class FareBottomNav extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _NavItem(
-            assetPath: currentIndex == 0 
-                ? AppAssets.riderTabFilled 
+            assetPath: currentIndex == 0
+                ? AppAssets.riderTabFilled
                 : AppAssets.riderTabOutlined,
             label: l10n.rider,
             isActive: currentIndex == 0,
             onTap: () => onTabChanged(0),
           ),
           _NavItem(
-            assetPath: currentIndex == 1 
-                ? AppAssets.driverTabFilled 
+            assetPath: currentIndex == 1
+                ? AppAssets.driverTabFilled
                 : AppAssets.driverTabOutlined,
             label: l10n.driver,
             isActive: currentIndex == 1,
@@ -83,12 +83,7 @@ class _NavItem extends StatelessWidget {
               colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             )
           else
-            Image.asset(
-              assetPath,
-              width: 24.w,
-              height: 24.w,
-              color: color,
-            ),
+            Image.asset(assetPath, width: 24.w, height: 24.w, color: color),
           SizedBox(height: 6.h),
           Text(
             label,
@@ -104,4 +99,3 @@ class _NavItem extends StatelessWidget {
     );
   }
 }
-

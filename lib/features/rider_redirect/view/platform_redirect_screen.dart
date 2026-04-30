@@ -25,7 +25,7 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
   double _progress = 0.0;
   bool _isChecking = true;
   final bool _isInstalled =
-      true; // Mock: set to false to test the "Not Installed" UI
+      false; // Set to false as requested to show "Not Installed" UI
   late AnimationController _progressController;
 
   @override
@@ -51,7 +51,6 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
     if (mounted) {
       setState(() {
         _isChecking = false;
-        // In a real app, we would use url_launcher or device_apps to check installation
       });
     }
   }
@@ -64,29 +63,48 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildAnimatedLogo(),
-                  SizedBox(height: 48.h),
-                  _buildStatusText(context),
-                  if (_isChecking) ...[
-                    SizedBox(height: 40.h),
-                    _buildCancelButton(context),
-                  ],
-                ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        // Navigate back to the root (Rider Tab)
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              if (!_isChecking)
+                Positioned(
+                  top: 20.h,
+                  left: 20.w,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () {
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    },
+                  ),
+                ),
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 40.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildAnimatedLogo(),
+                      SizedBox(height: 48.h),
+                      _buildStatusContent(context),
+                      if (_isChecking) ...[
+                        SizedBox(height: 40.h),
+                        _buildCancelButton(context),
+                      ],
+                    ],
+                  ),
+                ),
               ),
-            ),
-            if (!_isChecking && !_isInstalled)
-              _buildNotInstalledFooter(context),
-            if (!_isChecking && _isInstalled) _buildInstalledFooter(context),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -96,55 +114,71 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Outer Progress Circle
-        SizedBox(
-          width: 140.w,
-          height: 140.w,
-          child: CircularProgressIndicator(
-            value: _progress,
-            strokeWidth: 4.w,
-            backgroundColor: const Color(0xFFF2F2F2),
-            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1E74E9)),
+        // Outer Progress Circle (Only shown during checking)
+        if (_isChecking)
+          SizedBox(
+            width: 140.w,
+            height: 140.w,
+            child: CircularProgressIndicator(
+              value: _progress,
+              strokeWidth: 4.w,
+              backgroundColor: const Color(0xFFF2F2F2),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                Color(0xFF1E74E9),
+              ),
+            ),
           ),
-        ),
         // Platform Logo
         ClipRRect(
-          borderRadius: BorderRadius.circular(30.sp),
+          borderRadius: BorderRadius.circular(60.sp),
           child: Container(
             width: 110.w,
             height: 110.w,
             color:
                 (widget.platformName == "Uber" || widget.platformName == "Ayro")
-                ? Colors.black
-                : const Color(0xFFFF00BF),
+                    ? Colors.black
+                    : const Color(0xFFFF00BF),
             child: Image.asset(
               widget.logoAsset,
               fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => const Center(
-                child: CircularProgressIndicator(color: Colors.white),
-              ),
+              errorBuilder:
+                  (_, __, ___) => const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  ),
             ),
           ),
         ),
-        // Warning Badge for "Not Installed" state
+        // Warning Badge for "Not Installed" state (Matching Figma)
         if (!_isChecking && !_isInstalled)
           Positioned(
             right: 5.w,
             top: 5.w,
             child: Container(
-              padding: EdgeInsets.all(6.w),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFE8E8),
+              padding: EdgeInsets.all(4.w),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFEF0EF), // Light background for badge
                 shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2.w),
               ),
-              child: Icon(Icons.priority_high, color: Colors.red, size: 20.sp),
-            ).animate().scale(),
+              child: Container(
+                padding: EdgeInsets.all(4.w),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF7655A), // Orange/Red badge
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.priority_high,
+                  color: Colors.white,
+                  size: 14.sp,
+                ),
+              ),
+            ).animate().scale(duration: 400.ms, curve: Curves.easeOutBack),
           ),
       ],
     ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack);
   }
 
-  Widget _buildStatusText(BuildContext context) {
+  Widget _buildStatusContent(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     String title = l10n.opening_platform(widget.platformName);
     String subtitle = l10n.locations_added;
@@ -158,6 +192,7 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
       children: [
         Text(
           title,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 24.sp,
             fontWeight: FontWeight.w700,
@@ -171,13 +206,56 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 15.sp,
-            color: const Color(0xFF666666),
+            color: const Color(0xFF999999),
             height: 1.5,
             fontFamily: 'Figtree',
           ),
         ),
+        if (!_isChecking && !_isInstalled) ...[
+          SizedBox(height: 32.h),
+          _buildInstallButton(context),
+        ],
       ],
     ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1);
+  }
+
+  Widget _buildInstallButton(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.w),
+        border: Border.all(color: const Color(0xFFF2F2F2)),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {},
+          borderRadius: BorderRadius.circular(16.w),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.file_download_outlined,
+                  color: const Color(0xFF1E74E9),
+                  size: 20.sp,
+                ),
+                SizedBox(width: 12.w),
+                Text(
+                  l10n.install_platform(widget.platformName),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1E74E9),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildCancelButton(BuildContext context) {
@@ -200,61 +278,5 @@ class _PlatformRedirectScreenState extends ConsumerState<PlatformRedirectScreen>
         ),
       ),
     );
-  }
-
-  Widget _buildNotInstalledFooter(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Positioned(
-      bottom: 40.h,
-      left: 0,
-      right: 0,
-      child: Center(
-        child: ElevatedButton.icon(
-          onPressed: () {},
-          icon: const Icon(Icons.file_download_outlined),
-          label: Text(l10n.install_platform(widget.platformName)),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: const Color(0xFF1E74E9),
-            elevation: 0,
-            side: const BorderSide(color: Color(0xFFF2F2F2)),
-            minimumSize: Size(200.w, 54.h),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.w),
-            ),
-          ),
-        ),
-      ),
-    ).animate().fadeIn().slideY(begin: 0.2);
-  }
-
-  Widget _buildInstalledFooter(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Positioned(
-      bottom: 40.h,
-      left: 24.w,
-      right: 24.w,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            l10n.app_not_installed_question,
-            style: TextStyle(fontSize: 14.sp, color: const Color(0xFF999999)),
-          ),
-          OutlinedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.file_download_outlined, size: 20),
-            label: Text(l10n.install_platform(widget.platformName)),
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: Color(0xFFF2F2F2)),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.w),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-            ),
-          ),
-        ],
-      ),
-    ).animate().fadeIn().slideY(begin: 0.2);
   }
 }

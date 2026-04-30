@@ -131,36 +131,43 @@ class _LocationSearchSheetState extends State<LocationSearchSheet> {
   }
 
   Widget _buildSuggestion(String title, String subtitle) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.h),
-      child: Row(
-        children: [
-          Icon(Icons.north_east, color: const Color(0xFF999999), size: 20.sp),
-          SizedBox(width: 16.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Figtree',
+    return InkWell(
+      onTap: () {
+        _controller.text = title;
+        widget.onDone(title);
+        Navigator.pop(context);
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.h),
+        child: Row(
+          children: [
+            Icon(Icons.north_east, color: const Color(0xFF999999), size: 20.sp),
+            SizedBox(width: 16.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Figtree',
+                    ),
                   ),
-                ),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    color: const Color(0xFF999999),
-                    fontFamily: 'Figtree',
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: const Color(0xFF999999),
+                      fontFamily: 'Figtree',
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ).animate().fade().slideX(begin: 0.05);
   }

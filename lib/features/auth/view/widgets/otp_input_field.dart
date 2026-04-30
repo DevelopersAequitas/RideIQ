@@ -84,6 +84,8 @@ class _OtpInputFieldState extends State<OtpInputField> {
                 fontWeight: FontWeight.w600,
                 fontFamily: 'Figtree',
               ),
+              obscureText: true,
+              obscuringCharacter: '●',
               decoration: const InputDecoration(
                 border: InputBorder.none,
                 isDense: true,

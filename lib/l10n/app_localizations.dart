@@ -341,8 +341,8 @@ abstract class AppLocalizations {
   /// No description provided for @found_trips.
   ///
   /// In en, this message translates to:
-  /// **'Found 142 trips'**
-  String get found_trips;
+  /// **'Found {count} trips'**
+  String found_trips(String count);
 
   /// No description provided for @estimated_sync_time.
   ///
@@ -1111,6 +1111,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'min'**
   String get min_abbreviation;
+
+  /// No description provided for @email_or_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Email or Phone'**
+  String get email_or_phone;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @compare_fares.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare Fares'**
+  String get compare_fares;
+
+  /// No description provided for @recent_locations.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent locations'**
+  String get recent_locations;
 }
 
 class _AppLocalizationsDelegate

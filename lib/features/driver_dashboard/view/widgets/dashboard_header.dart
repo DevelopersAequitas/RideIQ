@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rideiq/core/constants/app_assets.dart';
+import 'package:rideiq/core/theme/app_colors.dart';
 import 'package:rideiq/core/utils/size_config.dart';
+import 'package:rideiq/features/driver_dashboard/viewmodel/dashboard_viewmodel.dart';
 import 'package:rideiq/features/notifications/view/screens/notifications_screen.dart';
 import 'package:rideiq/features/profile/view/screens/profile_screen.dart';
 import 'package:rideiq/features/profile/viewmodel/profile_viewmodel.dart';
@@ -15,8 +17,10 @@ class DashboardHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final profileState = ref.watch(profileViewModelProvider);
+    final dashboardState = ref.watch(dashboardViewModelProvider);
 
-    return Padding(
+    return Container(
+      color: AppColors.surface,
       padding: EdgeInsets.all(20.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,25 +52,27 @@ class DashboardHeader extends ConsumerWidget {
           ),
           Row(
             children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const NotificationsScreen(),
-                    ),
-                  );
-                },
-                icon: SvgPicture.asset(AppAssets.bellSvg, width: 24.w),
-              ),
-              SizedBox(width: 8.w),
+              if (dashboardState.isDashboardActive) ...[
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const NotificationsScreen(),
+                      ),
+                    );
+                  },
+                  icon: SvgPicture.asset(AppAssets.bellSvg, width: 24.w),
+                ),
+                SizedBox(width: 8.w),
+              ],
               GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
-                          const ProfileScreen(),
+                          const ProfileScreen(isDriverMode: true),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
                             const begin = Offset(0.0, 0.05);

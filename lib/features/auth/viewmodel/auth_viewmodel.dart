@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rideiq/features/auth/repository/auth_repository.dart';
@@ -70,38 +71,48 @@ class AuthViewModel extends _$AuthViewModel {
   Future<void> sendOtp() async {
     if (state.phoneNumber.isEmpty) return;
 
-    state = state.copyWith(isLoading: true, errorMessage: null);
-    
+    state = state.copyWith(isOtpLoading: true, errorMessage: null);
+
     final fullPhone = '${state.countryCode}${state.phoneNumber}';
-    
+
     try {
-      await ref.read(authRepositoryProvider).verifyPhoneNumber(
-        phoneNumber: fullPhone,
-        onCodeSent: (verificationId, resendToken) {
-          state = state.copyWith(
-            isLoading: false,
-            isOtpSent: true,
-            verificationId: verificationId,
-            resendToken: resendToken,
-            resendAttempt: state.resendAttempt + 1,
+      await ref
+          .read(authRepositoryProvider)
+          .verifyPhoneNumber(
+            phoneNumber: fullPhone,
+            onCodeSent: (verificationId, resendToken) {
+              state = state.copyWith(
+                isOtpLoading: false,
+                isOtpSent: true,
+                verificationId: verificationId,
+                resendToken: resendToken,
+                resendAttempt: state.resendAttempt + 1,
+              );
+              _startTimer();
+            },
+            onVerificationFailed: (message) {
+              debugPrint("Verification Failed: $message");
+              String userMessage = "Something went wrong. Please try again.";
+              if (message.contains("too-many-requests")) {
+                userMessage = "Too many attempts. Please try again later.";
+              } else if (message.contains("invalid-phone-number")) {
+                userMessage = "Invalid phone number. Please check and try again.";
+              }
+              state = state.copyWith(isOtpLoading: false, errorMessage: userMessage);
+            },
+            onVerificationCompleted: () {
+              state = state.copyWith(isOtpLoading: false);
+            },
           );
-          _startTimer();
-        },
-        onVerificationFailed: (message) {
-          state = state.copyWith(isLoading: false, errorMessage: message);
-        },
-        onVerificationCompleted: () {
-          state = state.copyWith(isLoading: false);
-        },
-      );
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      debugPrint("OTP Request Error: $e");
+      state = state.copyWith(isOtpLoading: false, errorMessage: "Failed to send OTP. Please try again.");
     }
   }
 
   void _startTimer() {
     _timer?.cancel();
-    
+
     int seconds = 60;
     if (state.resendAttempt == 2) {
       seconds = 300; // 5 mins
@@ -124,52 +135,39 @@ class AuthViewModel extends _$AuthViewModel {
   Future<void> login() async {
     if (state.otp.length < 6 || state.verificationId == null) return;
 
-    state = state.copyWith(isLoading: true, errorMessage: null);
-    
+    state = state.copyWith(isLoginLoading: true, errorMessage: null);
+
     try {
-      final userCredential = await ref.read(authRepositoryProvider).signInWithOtp(
-        verificationId: state.verificationId!,
-        smsCode: state.otp,
-      );
+      final userCredential = await ref
+          .read(authRepositoryProvider)
+          .signInWithOtp(
+            verificationId: state.verificationId!,
+            smsCode: state.otp,
+          );
 
       if (userCredential != null && userCredential.user != null) {
+        final user = userCredential.user!;
+        final token = await user.getIdToken();
+        
+        // Initial verification call with token
+        await ref.read(authRepositoryProvider).verifyBackend(
+          token: token ?? '',
+          firstName: state.firstName,
+          lastName: state.lastName,
+          email: state.email,
+          role: state.userType,
+        );
+
         await LocalService.setAuthStep(AuthSteps.userType);
-        state = state.copyWith(isLoading: false, isAuthenticated: true);
+        state = state.copyWith(isLoginLoading: false, isAuthenticated: true);
       }
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: "Invalid OTP");
-    }
-  }
-
-  Future<void> syncWithBackend() async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
-    try {
-      final user = ref.read(authRepositoryProvider).currentUser;
-      if (user == null) throw Exception("User not logged in");
-
-      // Force refresh token to ensure validity
-      final token = await user.getIdToken(true);
-      if (!ref.mounted) return;
-
-      await ref.read(authRepositoryProvider).verifyBackend(
-            token: token ?? '',
-            firstName: state.firstName,
-            lastName: state.lastName,
-            email: state.email,
-            role: state.userType,
-          );
-      
-      if (!ref.mounted) return;
-
-      await LocalService.setAuthStep(AuthSteps.permissions);
-      if (ref.mounted) {
-        state = state.copyWith(isLoading: false);
+      debugPrint("Login Error: $e");
+      String userMessage = "Invalid OTP. Please check and try again.";
+      if (e.toString().contains("network-request-failed")) {
+        userMessage = "Network error. Please check your connection.";
       }
-    } catch (e) {
-      if (ref.mounted) {
-        state = state.copyWith(isLoading: false, errorMessage: e.toString());
-      }
-      rethrow;
+      state = state.copyWith(isLoginLoading: false, errorMessage: userMessage);
     }
   }
 
@@ -203,5 +201,4 @@ class AuthViewModel extends _$AuthViewModel {
       }
     }
   }
-
 }

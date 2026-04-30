@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rideiq/core/theme/app_colors.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/features/rider/viewmodel/fare_comparison_viewmodel.dart';
+import 'package:rideiq/l10n/app_localizations.dart';
 import 'package:rideiq/shared/widgets/primary_button.dart';
 import 'package:rideiq/features/rider/view/widgets/location_input_card.dart';
 import 'package:rideiq/features/rider/view/widgets/recent_location_item.dart';
@@ -43,8 +45,9 @@ class SelectLocationScreen extends ConsumerWidget {
     final notifier = ref.read(fareComparisonViewModelProvider.notifier);
     final profileState = ref.watch(profileViewModelProvider);
 
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: AppColors.surface.withValues(alpha: 0.8),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -58,7 +61,7 @@ class SelectLocationScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Select location",
+                      l10n.search_location,
                       style: TextStyle(
                         color: const Color(0xFF1A1A1A),
                         fontSize: 22.sp,
@@ -73,30 +76,38 @@ class SelectLocationScreen extends ConsumerWidget {
                           PageRouteBuilder(
                             pageBuilder:
                                 (context, animation, secondaryAnimation) =>
-                                    const ProfileScreen(),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              const begin = Offset(0.0, 0.05);
-                              const end = Offset.zero;
-                              const curve = Curves.easeOutQuart;
+                                    const ProfileScreen(isDriverMode: false),
+                            transitionsBuilder:
+                                (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  const begin = Offset(0.0, 0.05);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeOutQuart;
 
-                              var slideTween = Tween(begin: begin, end: end)
-                                  .chain(CurveTween(curve: curve));
-                              var fadeTween =
-                                  Tween<double>(begin: 0.0, end: 1.0).chain(
-                                CurveTween(curve: Curves.easeOut),
-                              );
+                                  var slideTween = Tween(
+                                    begin: begin,
+                                    end: end,
+                                  ).chain(CurveTween(curve: curve));
+                                  var fadeTween = Tween<double>(
+                                    begin: 0.0,
+                                    end: 1.0,
+                                  ).chain(CurveTween(curve: Curves.easeOut));
 
-                              return SlideTransition(
-                                position: animation.drive(slideTween),
-                                child: FadeTransition(
-                                  opacity: animation.drive(fadeTween),
-                                  child: child,
-                                ),
-                              );
-                            },
-                            transitionDuration:
-                                const Duration(milliseconds: 500),
+                                  return SlideTransition(
+                                    position: animation.drive(slideTween),
+                                    child: FadeTransition(
+                                      opacity: animation.drive(fadeTween),
+                                      child: child,
+                                    ),
+                                  );
+                                },
+                            transitionDuration: const Duration(
+                              milliseconds: 500,
+                            ),
                           ),
                         );
                       },
@@ -125,19 +136,19 @@ class SelectLocationScreen extends ConsumerWidget {
                   stops: state.stops,
                   onPickupTap: () => _openLocationSheet(
                     context,
-                    "Pickup location",
+                    l10n.pickup_location,
                     state.pickup,
                     notifier.updatePickup,
                   ),
                   onDropoffTap: () => _openLocationSheet(
                     context,
-                    "Drop location",
+                    l10n.drop_location,
                     state.dropoff,
                     notifier.updateDropoff,
                   ),
                   onStopTap: (index) => _openLocationSheet(
                     context,
-                    "Stop ${index + 1}",
+                    "${l10n.stop_label} ${index + 1}",
                     state.stops[index],
                     (val) => notifier.updateStop(index, val),
                   ),
@@ -149,7 +160,7 @@ class SelectLocationScreen extends ConsumerWidget {
 
                 // 2. Main Action Button
                 PrimaryButton(
-                  text: "Compare Fares",
+                  text: l10n.compare_fares,
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -161,10 +172,11 @@ class SelectLocationScreen extends ConsumerWidget {
                 ).animate().scale(delay: 200.ms),
 
                 SizedBox(height: 32.h),
-
+                Divider(height: 1, color: const Color(0xFFE6E8EB)),
+                SizedBox(height: 20.h),
                 // 3. Recent Locations Section
                 Text(
-                  "Recent locations",
+                  l10n.recent_locations,
                   style: TextStyle(
                     color: const Color(0xFF999999),
                     fontSize: 14.sp,
@@ -175,17 +187,33 @@ class SelectLocationScreen extends ConsumerWidget {
                 SizedBox(height: 16.h),
 
                 // List of Recents
-                ...List.generate(
-                  3,
-                  (index) =>
-                      RecentLocationItem(
-                            title: "2458 Maple Ave",
-                            subtitle: "Apt 3B — Brooklyn, NY",
-                          )
-                          .animate()
-                          .fade(delay: (300 + (index * 100)).ms)
-                          .slideX(begin: 0.05),
-                ),
+                ...[
+                  {
+                    "title": "2458 Maple Ave",
+                    "subtitle": "Apt 3B — Brooklyn, NY",
+                  },
+                  {
+                    "title": "Grand Central Terminal",
+                    "subtitle": "89 E 42nd St, New York",
+                  },
+                  {
+                    "title": "Brooklyn Bridge",
+                    "subtitle": "New York, NY 10038",
+                  },
+                ].asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final loc = entry.value;
+                  return RecentLocationItem(
+                        title: loc["title"]!,
+                        subtitle: loc["subtitle"]!,
+                        onTap: () {
+                          notifier.updateDropoff(loc["title"]!);
+                        },
+                      )
+                      .animate()
+                      .fade(delay: (300 + (index * 100)).ms)
+                      .slideX(begin: 0.05);
+                }),
 
                 SizedBox(height: 20.h),
               ],

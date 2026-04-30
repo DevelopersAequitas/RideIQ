@@ -26,9 +26,9 @@ class PermissionScreen extends ConsumerWidget {
 
       if (isGranted && !wasGranted) {
         notifier.completePermissions();
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => const PaywallScreen()));
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const PaywallScreen()),
+        );
       }
     });
 
@@ -77,4 +77,3 @@ class PermissionScreen extends ConsumerWidget {
     );
   }
 }
-

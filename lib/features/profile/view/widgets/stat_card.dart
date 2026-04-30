@@ -39,15 +39,17 @@ class StatCard extends StatelessWidget {
           // Icon and Value row
           Row(
             children: [
-              SvgPicture.asset(
-                assetPath,
-                width: 20.w,
-                height: 20.w,
-                colorFilter: const ColorFilter.mode(
-                  Color(0xFF1D72DD),
-                  BlendMode.srcIn,
-                ),
-              ),
+              assetPath.endsWith('.svg')
+                  ? SvgPicture.asset(
+                    assetPath,
+                    width: 20.w,
+                    height: 20.w,
+                    colorFilter: const ColorFilter.mode(
+                      Color(0xFF1D72DD),
+                      BlendMode.srcIn,
+                    ),
+                  )
+                  : Image.asset(assetPath, width: 20.w, height: 20.w),
               SizedBox(width: 8.w),
               Expanded(
                 child: Text(

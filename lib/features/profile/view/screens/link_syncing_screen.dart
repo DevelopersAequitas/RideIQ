@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/core/constants/app_assets.dart';
 import 'package:rideiq/features/profile/viewmodel/link_viewmodel.dart';
+import 'package:rideiq/features/truv/viewmodel/truv_viewmodel.dart';
+import 'package:rideiq/features/home/viewmodel/home_viewmodel.dart';
+import 'package:rideiq/features/home/view/screens/main_dashboard_screen.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:rideiq/l10n/app_localizations.dart';
 
@@ -21,6 +24,7 @@ class LinkSyncingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(linkViewModelProvider);
+    final truvState = ref.watch(truvViewModelProvider);
     final notifier = ref.read(linkViewModelProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
 
@@ -28,6 +32,10 @@ class LinkSyncingScreen extends ConsumerWidget {
     if (state.syncStep == LinkSyncStep.none) {
       if (publicToken != null) {
         Future.microtask(() => notifier.startTruvSync(publicToken!));
+      } else if (isDriverMode) {
+        // If we came back from Truv without a token (e.g. Close/Cancel)
+        // we still check the status to see if it connected anyway
+        Future.microtask(() => notifier.checkTruvStatusOnly());
       } else {
         Future.microtask(() => notifier.startSync());
       }
@@ -188,7 +196,7 @@ class LinkSyncingScreen extends ConsumerWidget {
                     // Subtext logic
                     if (isDriverMode) ...[
                       Text(
-                        l10n.found_trips,
+                        l10n.found_trips(truvState.totalTrips),
                         style: TextStyle(
                           color: const Color(0xFF1E74E9),
                           fontSize: 14.sp,
@@ -240,11 +248,16 @@ class LinkSyncingScreen extends ConsumerWidget {
                     // Reset state
                     notifier.resetSync();
 
-                    // Smart Navigation back to relative home screen
-                    // Pops back through Syncing -> Verification -> Link screen
-                    Navigator.of(context).pop(); // Pop Syncing
-                    Navigator.of(context).pop(); // Pop Verification
-                    Navigator.of(context).pop(); // Pop Link Screen
+                    // Switch to Driver Dashboard tab
+                    ref.read(homeViewModelProvider.notifier).setTab(1);
+
+                    // Navigate home and clear stack
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (_) => const MainDashboardScreen(),
+                      ),
+                      (route) => false,
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1E74E9),

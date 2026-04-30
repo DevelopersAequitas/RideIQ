@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rideiq/core/constants/app_assets.dart';
+import 'package:rideiq/core/theme/app_colors.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/features/driver_dashboard/viewmodel/dashboard_viewmodel.dart';
 import 'package:rideiq/features/truv/viewmodel/truv_viewmodel.dart';
@@ -115,9 +116,17 @@ Widget _buildStatCard(String label, String value, String icon) {
   return Container(
     padding: EdgeInsets.all(16.w),
     decoration: BoxDecoration(
-      color: const Color(0xFFFBFBFB),
+      color: AppColors.surface,
       borderRadius: BorderRadius.circular(20.w),
-      border: Border.all(color: const Color(0xFFF2F2F2)),
+      // border: Border.all(color: const Color(0xFFF2F2F2)),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.05),
+          blurRadius: 4,
+          // spreadRadius: 2,
+          offset: const Offset(0, 2),
+        ),
+      ],
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,6 +216,11 @@ Widget _buildPlatformDropdown(
       itemBuilder: (context) => [
         _buildPopupMenuItem("All", null, state.selectedPlatform == null),
         _buildPopupMenuItem(
+          "Ayro",
+          AppAssets.ayroLogoPng,
+          state.selectedPlatform == "Ayro",
+        ),
+        _buildPopupMenuItem(
           "Uber",
           AppAssets.uberLogoPng,
           state.selectedPlatform == "Uber",
@@ -216,11 +230,6 @@ Widget _buildPlatformDropdown(
           AppAssets.lyftLogoPng,
           state.selectedPlatform == "Lyft",
         ),
-        // _buildPopupMenuItem(
-        //   "Ayro",
-        //   AppAssets.uberLogoPng,
-        //   state.selectedPlatform == "Ayro",
-        // ),
       ],
     ),
   );
@@ -242,7 +251,7 @@ PopupMenuItem<String> _buildPopupMenuItem(
             child: Container(
               width: 24.w,
               height: 24.w,
-              color: title == "Uber" ? Colors.black : const Color(0xFFFF00BF),
+              color: (title == "Uber" || title == "Ayro") ? Colors.black : const Color(0xFFFF00BF),
               padding: EdgeInsets.all(4.w),
               child: Image.asset(logo, fit: BoxFit.contain),
             ),

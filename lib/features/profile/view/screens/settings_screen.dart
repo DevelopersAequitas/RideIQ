@@ -8,10 +8,20 @@ import 'package:rideiq/features/profile/view/widgets/delete_account_dialog.dart'
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:rideiq/l10n/app_localizations.dart';
 
-class SettingsScreen extends ConsumerWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
-  void _showLanguageBottomSheet(BuildContext context, WidgetRef ref, String currentLang) {
+  @override
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  bool _notificationsEnabled = true;
+
+  void _showLanguageBottomSheet(
+    BuildContext context,
+    String currentLang,
+  ) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -37,7 +47,10 @@ class SettingsScreen extends ConsumerWidget {
               SizedBox(height: 24.h),
               ListTile(
                 title: Text(l10n.english),
-                trailing: currentLang == 'en' ? const Icon(Icons.check, color: Color(0xFF1E74E9)) : null,
+                trailing:
+                    currentLang == 'en'
+                        ? const Icon(Icons.check, color: Color(0xFF1E74E9))
+                        : null,
                 onTap: () {
                   ref.read(languageProvider.notifier).setLanguage('en');
                   Navigator.pop(context);
@@ -45,7 +58,10 @@ class SettingsScreen extends ConsumerWidget {
               ),
               ListTile(
                 title: Text(l10n.spanish),
-                trailing: currentLang == 'es' ? const Icon(Icons.check, color: Color(0xFF1E74E9)) : null,
+                trailing:
+                    currentLang == 'es'
+                        ? const Icon(Icons.check, color: Color(0xFF1E74E9))
+                        : null,
                 onTap: () {
                   ref.read(languageProvider.notifier).setLanguage('es');
                   Navigator.pop(context);
@@ -60,7 +76,7 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final lang = ref.watch(languageProvider);
     final l10n = AppLocalizations.of(context)!;
 
@@ -90,12 +106,26 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             SizedBox(height: 10.h),
 
+            // Notifications Toggle
+            SettingSwitchItem(
+              assetPath: AppAssets.bellSvg,
+              label: l10n.notifications,
+              value: _notificationsEnabled,
+              onChanged: (val) {
+                setState(() {
+                  _notificationsEnabled = val;
+                });
+              },
+            ),
+
+            const Divider(color: Color(0xFFF2F2F2)),
+
             // Language Selection
             SettingDropdownItem(
               assetPath: AppAssets.translateSvg,
               label: l10n.language,
               value: lang == 'en' ? l10n.english : l10n.spanish,
-              onTap: () => _showLanguageBottomSheet(context, ref, lang),
+              onTap: () => _showLanguageBottomSheet(context, lang),
             ),
 
             // Default Ride Selection
@@ -114,7 +144,14 @@ class SettingsScreen extends ConsumerWidget {
               label: l10n.delete_account,
               onTap: () => DeleteAccountDialog.show(context, ref),
             ),
-          ].animate(interval: 50.ms).fadeIn(duration: 400.ms).slideY(begin: 0.05, end: 0, curve: Curves.easeOutQuad),
+          ]
+              .animate(interval: 50.ms)
+              .fadeIn(duration: 400.ms)
+              .slideY(
+                begin: 0.05,
+                end: 0,
+                curve: Curves.easeOutQuad,
+              ),
         ),
       ),
     );

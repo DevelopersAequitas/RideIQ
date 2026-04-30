@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/features/driver_dashboard/view/widgets/all_time_stats_view.dart';
 import 'package:rideiq/features/driver_dashboard/view/widgets/dashboard_header.dart';
 import 'package:rideiq/features/driver_dashboard/view/widgets/dashboard_link_view.dart';
@@ -53,7 +52,7 @@ class _DriverDashboardViewState extends ConsumerState<DriverDashboardView> {
                       else
                         AllTimeStatsView(),
                     ],
-                    SizedBox(height: 100.h),
+                    // SizedBox(height: 100.h),
                   ],
                 ),
               ),
@@ -63,5 +62,4 @@ class _DriverDashboardViewState extends ConsumerState<DriverDashboardView> {
       ),
     );
   }
-
 }

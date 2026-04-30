@@ -28,15 +28,15 @@ class LocationInputCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24.w),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        // color: Colors.white,
+        // borderRadius: BorderRadius.circular(24.w),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black.withValues(alpha: 0.04),
+        //     blurRadius: 20,
+        //     offset: const Offset(0, 10),
+        //   ),
+        // ],
       ),
       child: Column(
         children: [

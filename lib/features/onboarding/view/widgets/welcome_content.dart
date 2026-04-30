@@ -22,48 +22,48 @@ class WelcomeContent extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 30.h),
           // Header Logo
-          SvgPicture.asset(
-            AppAssets.whiteLogoSvg,
-            width: 100.w,
-          ),
-          
+          SvgPicture.asset(AppAssets.whiteLogoSvg, width: 94.w, height: 27.h),
+
           const Spacer(),
-          
+
           // Main Headline
           Text(
             l10n.welcome_title,
             style: TextStyle(
               color: Colors.white,
               fontFamily: 'Figtree',
-              fontSize: 46.sp,
+              fontSize: 42.sp,
               fontWeight: FontWeight.w600,
               height: 1.0,
               letterSpacing: -0.46,
             ),
           ),
-          
+
           SizedBox(height: 40.h),
-          
+
           // Buttons
           PrimaryButton(
             text: l10n.welcome_login,
             onPressed: () {
               viewModel.onLoginPressed();
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-              );
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const LoginScreen()));
             },
           ),
-          
+
           SizedBox(height: 16.h),
-          
+
           Center(
             child: TextButton(
               onPressed: () {
                 viewModel.onSignUpPressed();
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const CreateAccountScreen(),
+                  ),
                 );
               },
               child: Text(
@@ -78,11 +78,10 @@ class WelcomeContent extends ConsumerWidget {
               ),
             ),
           ),
-          
+
           SizedBox(height: 20.h),
         ],
       ),
     );
   }
 }
-

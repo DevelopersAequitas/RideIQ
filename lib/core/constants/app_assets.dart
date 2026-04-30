@@ -3,7 +3,7 @@ class AppAssets {
   static const String driverPng = 'assets/driver.png';
   static const String passengerPng = 'assets/passenger.png';
   static const String whiteLogoSvg = 'assets/white-logo.svg';
-  static const String welcomeBg = 'assets/welcomei.png';
+  static const String welcomeBg = 'assets/welcome.png';
 
   // Dashboard Tabs
   static const String riderTabFilled = 'assets/rider-tab-filled.svg';

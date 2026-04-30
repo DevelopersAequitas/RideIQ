@@ -24,7 +24,8 @@ class MyApp extends ConsumerWidget {
     final lang = ref.watch(languageProvider);
 
     return MaterialApp(
-      title: 'RideIQ',
+      initialRoute: null,
+      title: 'RYDE iQ',
       debugShowCheckedModeBanner: false,
       locale: Locale(lang),
       localizationsDelegates: const [

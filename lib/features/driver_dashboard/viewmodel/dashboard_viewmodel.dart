@@ -35,7 +35,7 @@ class DashboardState {
 @riverpod
 class DashboardViewModel extends _$DashboardViewModel {
   @override
-  DashboardState build() => DashboardState();
+  DashboardState build() => DashboardState(selectedPlatform: "Ayro");
 
   void selectTab(DashboardTab tab) {
     state = state.copyWith(selectedTab: tab);

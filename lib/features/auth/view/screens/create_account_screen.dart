@@ -6,7 +6,7 @@ import 'package:rideiq/features/auth/view/widgets/phone_input_field.dart';
 import 'package:rideiq/features/auth/view/screens/register_details_screen.dart';
 import 'package:rideiq/shared/widgets/primary_button.dart';
 import 'package:rideiq/core/utils/size_config.dart';
-import 'package:elegant_notification/elegant_notification.dart';
+import 'package:rideiq/core/utils/notification_utils.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:rideiq/l10n/app_localizations.dart';
 
@@ -22,6 +22,7 @@ class CreateAccountScreen extends ConsumerWidget {
     // Listen for OTP sent state to navigate
     ref.listen(authViewModelProvider.select((s) => s.isOtpSent), (prev, next) {
       if (next && !(prev ?? false)) {
+        RydeNotification.showSuccess(context, l10n.otp_sent);
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const RegisterDetailsScreen()),
         );
@@ -31,31 +32,7 @@ class CreateAccountScreen extends ConsumerWidget {
     // Listen for errors
     ref.listen(authViewModelProvider.select((s) => s.errorMessage), (prev, next) {
       if (next != null) {
-        ElegantNotification.error(
-          width: MediaQuery.of(context).size.width * 0.9,
-          background: const Color(0xFFFFFBFA), // Very light red/blush
-          title: Text(
-            l10n.error,
-            style: TextStyle(
-              color: const Color(0xFFC62828),
-              fontWeight: FontWeight.w700,
-              fontSize: 14.sp,
-            ),
-          ),
-          description: Text(
-            next,
-            style: TextStyle(
-              color: const Color(0xFFC62828),
-              fontSize: 13.sp,
-            ),
-          ),
-          displayCloseButton: true,
-          icon: Icon(
-            Icons.error_outline,
-            color: const Color(0xFFC62828),
-            size: 24.sp,
-          ),
-        ).show(context);
+        RydeNotification.showError(context, next);
       }
     });
 
@@ -81,7 +58,7 @@ class CreateAccountScreen extends ConsumerWidget {
               if (!state.isOtpSent)
                 PrimaryButton(
                   text: l10n.send_otp,
-                  isLoading: state.isLoading,
+                  isLoading: state.isOtpLoading,
                   onPressed: notifier.sendOtp,
                 )
               else

@@ -16,33 +16,48 @@ class ProfileState {
   }) {
     return ProfileState(
       isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage, // We want to clear error message if null is passed
+      errorMessage: errorMessage ?? this.errorMessage,
       userData: userData ?? this.userData,
     );
   }
 
   String get fullName {
     if (userData == null) return "User Name";
-    return "${userData!['first_name'] ?? ''} ${userData!['last_name'] ?? ''}".trim();
+    final name = userData!['name']?.toString() ?? "";
+    if (name.isNotEmpty) return name;
+    
+    final fName = userData!['first_name']?.toString() ?? "";
+    final lName = userData!['last_name']?.toString() ?? "";
+    if (fName.isEmpty && lName.isEmpty) return "User Name";
+    return "$fName $lName".trim();
   }
 
   String get initials {
     if (userData == null) return "U";
-    final first = userData!['first_name']?.toString().trim() ?? "";
-    final last = userData!['last_name']?.toString().trim() ?? "";
-    String result = "";
-    if (first.isNotEmpty) result += first[0];
-    if (last.isNotEmpty) result += last[0];
-    return result.isEmpty ? "U" : result.toUpperCase();
+    
+    // Prioritize generating initials from the combined 'name' field
+    final name = userData!['name']?.toString() ?? "";
+    if (name.isNotEmpty) {
+      final parts = name.trim().split(' ');
+      if (parts.length > 1) {
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      }
+      return name[0].toUpperCase();
+    }
+
+    final fName = userData!['first_name']?.toString() ?? "";
+    final lName = userData!['last_name']?.toString() ?? "";
+    
+    if (fName.isNotEmpty || lName.isNotEmpty) {
+      String res = "";
+      if (fName.isNotEmpty) res += fName[0];
+      if (lName.isNotEmpty) res += lName[0];
+      return res.toUpperCase();
+    }
+    
+    return "U";
   }
 
-  String get email {
-    if (userData == null) return "user@email.com";
-    return userData!['email'] ?? "user@email.com";
-  }
-
-  String get phone {
-    if (userData == null) return "+1 000-0000";
-    return userData!['phone'] ?? "+1 000-0000";
-  }
+  String get email => userData?['email']?.toString() ?? "user@email.com";
+  String get phone => userData?['phone']?.toString() ?? "+1 000-0000";
 }

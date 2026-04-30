@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rideiq/core/utils/size_config.dart';
+import 'package:rideiq/core/theme/app_colors.dart';
 
 class UserTypeCard extends StatelessWidget {
   final String title;
@@ -63,7 +64,7 @@ class UserTypeCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w700,
-                              color: Colors.black,
+                              color: AppColors.textPrimary,
                               fontFamily: 'Figtree',
                             ),
                           ),
@@ -73,7 +74,7 @@ class UserTypeCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w400,
-                              color: const Color(0xFF666666),
+                              color: AppColors.textSecondary,
                               fontFamily: 'Figtree',
                             ),
                           ),
@@ -85,7 +86,7 @@ class UserTypeCard extends StatelessWidget {
                       child: CupertinoSwitch(
                         value: isSelected,
                         onChanged: (_) => onTap(),
-                        activeTrackColor: const Color(0xFF1E74E9),
+                        activeTrackColor: AppColors.primary,
                       ),
                     ),
                   ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rideiq/core/theme/app_colors.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/features/notifications/viewmodel/notification_viewmodel.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -16,9 +17,9 @@ class NotificationsScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -82,10 +83,10 @@ class NotificationsScreen extends ConsumerWidget {
                       Container(
                         height: 48.w,
                         width: 48.w,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF8F9FA),
-                          borderRadius: BorderRadius.circular(12.w),
-                        ),
+                        // decoration: BoxDecoration(
+                        //   color: const Color(0xFFF8F9FA),
+                        //   borderRadius: BorderRadius.circular(12.w),
+                        // ),
                         padding: EdgeInsets.all(10.w),
                         child: SvgPicture.asset(
                           item.icon,
@@ -146,7 +147,11 @@ class NotificationsScreen extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.notifications_none, size: 64.sp, color: const Color(0xFFF2F2F2)),
+          Icon(
+            Icons.notifications_none,
+            size: 64.sp,
+            color: const Color(0xFFF2F2F2),
+          ),
           SizedBox(height: 16.h),
           Text(
             l10n.no_notifications_yet,
@@ -161,4 +166,3 @@ class NotificationsScreen extends ConsumerWidget {
     );
   }
 }
-

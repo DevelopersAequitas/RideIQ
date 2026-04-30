@@ -40,7 +40,7 @@
   "pulling_ride_history": "Obteniendo tu historial de viajes...",
   "connecting_to": "Conectando a {platform}...",
   "platform_connected": "{platform} Conectado",
-  "found_trips": "142 viajes encontrados",
+  "found_trips": "{count} viajes encontrados",
   "estimated_sync_time": "Tiempo de sincronización estimado: 1 minuto",
   "securely_syncing": "Sincronizando tus datos de viaje de forma segura.",
   "trips_synced": "Tus viajes ahora están sincronizados con\nRYDE-IQ.",
@@ -168,6 +168,9 @@
   "filter_all": "Todos",
   "filter_economy": "Económico",
   "filter_premium": "Premium",
-  "min_abbreviation": "min"
+  "min_abbreviation": "min",
+  "email_or_phone": "Correo electrónico o teléfono",
+  "password": "Contraseña",
+  "compare_fares": "Comparar tarifas",
+  "recent_locations": "Ubicaciones recientes"
 }
-

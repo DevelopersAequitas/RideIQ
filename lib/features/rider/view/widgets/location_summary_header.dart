@@ -23,10 +23,13 @@ class LocationSummaryHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileViewModelProvider);
     final l10n = AppLocalizations.of(context)!;
+    final screenWidth = MediaQuery.sizeOf(context).width;
+
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: const BoxDecoration(color: Colors.white),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -72,12 +75,14 @@ class LocationSummaryHeader extends ConsumerWidget {
                         const end = Offset.zero;
                         const curve = Curves.easeOutQuart;
 
-                        var slideTween = Tween(begin: begin, end: end)
-                            .chain(CurveTween(curve: curve));
-                        var fadeTween =
-                            Tween<double>(begin: 0.0, end: 1.0).chain(
-                          CurveTween(curve: Curves.easeOut),
-                        );
+                        var slideTween = Tween(
+                          begin: begin,
+                          end: end,
+                        ).chain(CurveTween(curve: curve));
+                        var fadeTween = Tween<double>(
+                          begin: 0.0,
+                          end: 1.0,
+                        ).chain(CurveTween(curve: Curves.easeOut));
 
                         return SlideTransition(
                           position: animation.drive(slideTween),
@@ -109,47 +114,48 @@ class LocationSummaryHeader extends ConsumerWidget {
           ),
           SizedBox(height: 30.h),
 
-          // Horizontal Route Timeline - DOTS ONLY
-          Row(
-            children: [
-              _buildDot(isCircle: true),
-              Expanded(child: _buildDottedLine()),
-              _buildDot(isCircle: true, isOutline: true),
-              Expanded(child: _buildDottedLine()),
-              _buildDot(isCircle: false),
-            ],
-          ),
-          SizedBox(height: 12.h),
-
-          // Labels & Addresses Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: _buildLabelColumn(
+          // Integrated Route Timeline & Labels
+          SizedBox(
+            width: screenWidth - 40.w, // Ensure finite width for Row
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Pickup
+                _buildLocationNode(
                   l10n.pickup_location,
                   pickup,
-                  CrossAxisAlignment.start,
+                  isCircle: true,
+                  alignment: CrossAxisAlignment.start,
+                  shouldTruncate: stops.isNotEmpty,
                 ),
-              ),
-              Expanded(
-                child: _buildLabelColumn(
-                  stops.length > 1 ? l10n.stops_label : l10n.stop_label,
-                  stops.isNotEmpty
-                      ? stops.join(', ')
-                      : l10n.none,
-                  CrossAxisAlignment.center,
-                ),
-              ),
-              Expanded(
-                child: _buildLabelColumn(
+                Expanded(child: _buildDottedLine()),
+
+                // Dynamic Stops
+                if (stops.isNotEmpty)
+                  for (int i = 0; i < stops.length; i++) ...[
+                    _buildLocationNode(
+                      stops.length > 1
+                          ? '${l10n.stop_label} ${i + 1}'
+                          : l10n.stop_label,
+                      stops[i],
+                      isCircle: true,
+                      isOutline: true,
+                      alignment: CrossAxisAlignment.center,
+                      shouldTruncate: true,
+                    ),
+                    Expanded(child: _buildDottedLine()),
+                  ],
+
+                // Drop-off
+                _buildLocationNode(
                   l10n.drop_location,
                   dropoff,
-                  CrossAxisAlignment.end,
+                  isCircle: false,
+                  alignment: CrossAxisAlignment.end,
+                  shouldTruncate: stops.isNotEmpty,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -171,53 +177,99 @@ class LocationSummaryHeader extends ConsumerWidget {
     );
   }
 
-  Widget _buildLabelColumn(
+  Widget _buildLocationNode(
     String label,
-    String address,
-    CrossAxisAlignment alignment,
-  ) {
-    return Column(
-      crossAxisAlignment: alignment,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10.sp,
-            color: const Color(0xFF999999),
-            fontFamily: 'Figtree',
-          ),
-        ),
-        SizedBox(height: 4.h),
-        Text(
-          address,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w600,
-            fontFamily: 'Figtree',
+    String address, {
+    required bool isCircle,
+    bool isOutline = false,
+    required CrossAxisAlignment alignment,
+    required bool shouldTruncate,
+  }) {
+    final String displayAddress = (shouldTruncate && address.length > 5)
+        ? '${address.substring(0, 4)}...'
+        : address;
+
+    // Determine the text alignment for the overflow box
+    AlignmentGeometry textAlignment;
+    if (alignment == CrossAxisAlignment.start) {
+      textAlignment = Alignment.topLeft;
+    } else if (alignment == CrossAxisAlignment.end) {
+      textAlignment = Alignment.topRight;
+    } else {
+      textAlignment = Alignment.topCenter;
+    }
+
+    return SizedBox(
+      width: 12.w, // Only occupy dot width to let lines connect
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: alignment,
+        children: [
+          _buildDot(isCircle: isCircle, isOutline: isOutline),
+          SizedBox(height: 12.h),
+          SizedBox(
+            height: 40.h,
+            child: OverflowBox(
+              maxWidth: shouldTruncate ? 60.w : 100.w,
+              maxHeight: 40.h, // Provide finite height constraint
+              alignment: textAlignment,
+            child: Column(
+              crossAxisAlignment: alignment,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 9.sp,
+                    color: const Color(0xFF999999),
+                    fontFamily: 'Figtree',
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  displayAddress,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Figtree',
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildDottedLine() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 4.w),
+    return SizedBox(
+      height: 12.w, // Match dot height for perfect centering
       child: LayoutBuilder(
         builder: (context, constraints) {
-          return Flex(
-            direction: Axis.horizontal,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(
-              (constraints.constrainWidth() / 6).floor(),
-              (index) => SizedBox(
-                width: 3.w,
-                height: 1.5.h,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1D72DD).withValues(alpha: 0.5),
+          // Safety check for unbounded width to prevent infinite loop in List.generate
+          final width = constraints.hasBoundedWidth
+              ? constraints.maxWidth
+              : 100.w; // Fallback width
+
+          return Center(
+            child: Flex(
+              direction: Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(
+                (width / 6).floor(),
+                (index) => SizedBox(
+                  width: 3.w,
+                  height: 1.5.h,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1D72DD).withValues(alpha: 0.5),
+                    ),
                   ),
                 ),
               ),

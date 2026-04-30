@@ -9,16 +9,18 @@ import 'package:rideiq/core/utils/app_logger.dart';
 import 'package:rideiq/features/profile/view/screens/link_syncing_screen.dart';
 import 'package:rideiq/core/services/local_service.dart';
 
-
-
 class DriverVerificationScreen extends ConsumerStatefulWidget {
-  const DriverVerificationScreen({super.key});
+  final String platformName;
+
+  const DriverVerificationScreen({super.key, required this.platformName});
 
   @override
-  ConsumerState<DriverVerificationScreen> createState() => _DriverVerificationScreenState();
+  ConsumerState<DriverVerificationScreen> createState() =>
+      _DriverVerificationScreenState();
 }
 
-class _DriverVerificationScreenState extends ConsumerState<DriverVerificationScreen> {
+class _DriverVerificationScreenState
+    extends ConsumerState<DriverVerificationScreen> {
   final bool _isVerified = false;
   String? _bridgeToken;
 
@@ -31,16 +33,22 @@ class _DriverVerificationScreenState extends ConsumerState<DriverVerificationScr
   }
 
   void _checkAndStartVerification() async {
-    AppLogger.info('Checking for cached bridge token...', tag: 'DriverVerification');
+    AppLogger.info(
+      'Checking for cached bridge token...',
+      tag: 'DriverVerification',
+    );
     final cachedToken = await LocalService.getBridgeToken();
-    
+
     if (cachedToken != null) {
       AppLogger.info('Using cached bridge token', tag: 'DriverVerification');
       setState(() {
         _bridgeToken = cachedToken;
       });
     } else {
-      AppLogger.info('No cached token, requesting new one...', tag: 'DriverVerification');
+      AppLogger.info(
+        'No cached token, requesting new one...',
+        tag: 'DriverVerification',
+      );
       _startTruvVerification();
     }
   }
@@ -57,31 +65,46 @@ class _DriverVerificationScreenState extends ConsumerState<DriverVerificationScr
 
   void _handleTruvEvent(TruvEvent event) async {
     AppLogger.info('Truv Event received: $event', tag: 'DriverVerification');
-    
+
     if (event is TruvEventSuccess) {
       final publicToken = event.publicToken;
-      AppLogger.info('Truv Success! Public Token: $publicToken', tag: 'DriverVerification');
+      AppLogger.info(
+        'Truv Success! Public Token: $publicToken',
+        tag: 'DriverVerification',
+      );
 
       if (mounted) {
-        // Navigate to syncing screen to handle the exchange and show progress
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (_) => LinkSyncingScreen(
-              platformName: 'Uber', // TODO: Get actual platform name from state
+              platformName: widget.platformName,
               isDriverMode: true,
               publicToken: publicToken,
             ),
           ),
         );
       }
-    }
- else if (event is TruvEventClose || event is TruvEventError) {
-      setState(() {
-        _bridgeToken = null;
-      });
-      // Optionally pop back if user closed the bridge without success
-      if (mounted && !_isVerified) {
+    } else if (event is TruvEventClose) {
+      AppLogger.info('Truv Bridge Closed', tag: 'DriverVerification');
+      if (mounted) {
+        // Navigate to syncing screen even on close to check if connection happened
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => LinkSyncingScreen(
+              platformName: widget.platformName,
+              isDriverMode: true,
+            ),
+          ),
+        );
+      }
+    } else if (event is TruvEventError) {
+      AppLogger.error(
+        'Truv Error: ${event.toString()}',
+        tag: 'DriverVerification',
+      );
+      if (mounted) {
         Navigator.pop(context);
       }
     }
@@ -90,7 +113,7 @@ class _DriverVerificationScreenState extends ConsumerState<DriverVerificationScr
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     if (_bridgeToken != null) {
       return Scaffold(
         body: SafeArea(
@@ -103,7 +126,6 @@ class _DriverVerificationScreenState extends ConsumerState<DriverVerificationScr
     }
 
     final isLoading = ref.watch(truvViewModelProvider).isLoading;
-
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -198,5 +220,4 @@ class _DriverVerificationScreenState extends ConsumerState<DriverVerificationScr
       ),
     );
   }
-
 }

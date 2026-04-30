@@ -20,7 +20,7 @@ class PhoneInputField extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Container(
-          height: 64.h,
+          height: 50.h,
           decoration: BoxDecoration(
             border: Border.all(color: const Color(0xFFE0E0E0), width: 1.w),
             borderRadius: BorderRadius.circular(12.w),

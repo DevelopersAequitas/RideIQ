@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AuthState {
 
- String get countryCode; String get phoneNumber; String get otp; bool get isOtpSent; int get resendTimer; int get resendAttempt; bool get isLoading; String? get errorMessage; String? get verificationId; int? get resendToken; String get firstName; String get lastName; String get email; String get userType; bool get locationGranted; bool get notificationsGranted; bool get isAuthenticated;
+ String get countryCode; String get phoneNumber; String get otp; bool get isOtpSent; int get resendTimer; int get resendAttempt; bool get isLoading; bool get isOtpLoading; bool get isLoginLoading; String? get errorMessage; String? get verificationId; int? get resendToken; String get firstName; String get lastName; String get email; String get userType; bool get locationGranted; bool get notificationsGranted; bool get isAuthenticated;
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $AuthStateCopyWith<AuthState> get copyWith => _$AuthStateCopyWithImpl<AuthState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.countryCode, countryCode) || other.countryCode == countryCode)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.otp, otp) || other.otp == otp)&&(identical(other.isOtpSent, isOtpSent) || other.isOtpSent == isOtpSent)&&(identical(other.resendTimer, resendTimer) || other.resendTimer == resendTimer)&&(identical(other.resendAttempt, resendAttempt) || other.resendAttempt == resendAttempt)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.verificationId, verificationId) || other.verificationId == verificationId)&&(identical(other.resendToken, resendToken) || other.resendToken == resendToken)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.userType, userType) || other.userType == userType)&&(identical(other.locationGranted, locationGranted) || other.locationGranted == locationGranted)&&(identical(other.notificationsGranted, notificationsGranted) || other.notificationsGranted == notificationsGranted)&&(identical(other.isAuthenticated, isAuthenticated) || other.isAuthenticated == isAuthenticated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.countryCode, countryCode) || other.countryCode == countryCode)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.otp, otp) || other.otp == otp)&&(identical(other.isOtpSent, isOtpSent) || other.isOtpSent == isOtpSent)&&(identical(other.resendTimer, resendTimer) || other.resendTimer == resendTimer)&&(identical(other.resendAttempt, resendAttempt) || other.resendAttempt == resendAttempt)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isOtpLoading, isOtpLoading) || other.isOtpLoading == isOtpLoading)&&(identical(other.isLoginLoading, isLoginLoading) || other.isLoginLoading == isLoginLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.verificationId, verificationId) || other.verificationId == verificationId)&&(identical(other.resendToken, resendToken) || other.resendToken == resendToken)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.userType, userType) || other.userType == userType)&&(identical(other.locationGranted, locationGranted) || other.locationGranted == locationGranted)&&(identical(other.notificationsGranted, notificationsGranted) || other.notificationsGranted == notificationsGranted)&&(identical(other.isAuthenticated, isAuthenticated) || other.isAuthenticated == isAuthenticated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,countryCode,phoneNumber,otp,isOtpSent,resendTimer,resendAttempt,isLoading,errorMessage,verificationId,resendToken,firstName,lastName,email,userType,locationGranted,notificationsGranted,isAuthenticated);
+int get hashCode => Object.hashAll([runtimeType,countryCode,phoneNumber,otp,isOtpSent,resendTimer,resendAttempt,isLoading,isOtpLoading,isLoginLoading,errorMessage,verificationId,resendToken,firstName,lastName,email,userType,locationGranted,notificationsGranted,isAuthenticated]);
 
 @override
 String toString() {
-  return 'AuthState(countryCode: $countryCode, phoneNumber: $phoneNumber, otp: $otp, isOtpSent: $isOtpSent, resendTimer: $resendTimer, resendAttempt: $resendAttempt, isLoading: $isLoading, errorMessage: $errorMessage, verificationId: $verificationId, resendToken: $resendToken, firstName: $firstName, lastName: $lastName, email: $email, userType: $userType, locationGranted: $locationGranted, notificationsGranted: $notificationsGranted, isAuthenticated: $isAuthenticated)';
+  return 'AuthState(countryCode: $countryCode, phoneNumber: $phoneNumber, otp: $otp, isOtpSent: $isOtpSent, resendTimer: $resendTimer, resendAttempt: $resendAttempt, isLoading: $isLoading, isOtpLoading: $isOtpLoading, isLoginLoading: $isLoginLoading, errorMessage: $errorMessage, verificationId: $verificationId, resendToken: $resendToken, firstName: $firstName, lastName: $lastName, email: $email, userType: $userType, locationGranted: $locationGranted, notificationsGranted: $notificationsGranted, isAuthenticated: $isAuthenticated)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $AuthStateCopyWith<$Res>  {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) _then) = _$AuthStateCopyWithImpl;
 @useResult
 $Res call({
- String countryCode, String phoneNumber, String otp, bool isOtpSent, int resendTimer, int resendAttempt, bool isLoading, String? errorMessage, String? verificationId, int? resendToken, String firstName, String lastName, String email, String userType, bool locationGranted, bool notificationsGranted, bool isAuthenticated
+ String countryCode, String phoneNumber, String otp, bool isOtpSent, int resendTimer, int resendAttempt, bool isLoading, bool isOtpLoading, bool isLoginLoading, String? errorMessage, String? verificationId, int? resendToken, String firstName, String lastName, String email, String userType, bool locationGranted, bool notificationsGranted, bool isAuthenticated
 });
 
 
@@ -62,7 +62,7 @@ class _$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? countryCode = null,Object? phoneNumber = null,Object? otp = null,Object? isOtpSent = null,Object? resendTimer = null,Object? resendAttempt = null,Object? isLoading = null,Object? errorMessage = freezed,Object? verificationId = freezed,Object? resendToken = freezed,Object? firstName = null,Object? lastName = null,Object? email = null,Object? userType = null,Object? locationGranted = null,Object? notificationsGranted = null,Object? isAuthenticated = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? countryCode = null,Object? phoneNumber = null,Object? otp = null,Object? isOtpSent = null,Object? resendTimer = null,Object? resendAttempt = null,Object? isLoading = null,Object? isOtpLoading = null,Object? isLoginLoading = null,Object? errorMessage = freezed,Object? verificationId = freezed,Object? resendToken = freezed,Object? firstName = null,Object? lastName = null,Object? email = null,Object? userType = null,Object? locationGranted = null,Object? notificationsGranted = null,Object? isAuthenticated = null,}) {
   return _then(_self.copyWith(
 countryCode: null == countryCode ? _self.countryCode : countryCode // ignore: cast_nullable_to_non_nullable
 as String,phoneNumber: null == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
@@ -71,6 +71,8 @@ as String,isOtpSent: null == isOtpSent ? _self.isOtpSent : isOtpSent // ignore: 
 as bool,resendTimer: null == resendTimer ? _self.resendTimer : resendTimer // ignore: cast_nullable_to_non_nullable
 as int,resendAttempt: null == resendAttempt ? _self.resendAttempt : resendAttempt // ignore: cast_nullable_to_non_nullable
 as int,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as bool,isOtpLoading: null == isOtpLoading ? _self.isOtpLoading : isOtpLoading // ignore: cast_nullable_to_non_nullable
+as bool,isLoginLoading: null == isLoginLoading ? _self.isLoginLoading : isLoginLoading // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,verificationId: freezed == verificationId ? _self.verificationId : verificationId // ignore: cast_nullable_to_non_nullable
 as String?,resendToken: freezed == resendToken ? _self.resendToken : resendToken // ignore: cast_nullable_to_non_nullable
@@ -166,10 +168,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String countryCode,  String phoneNumber,  String otp,  bool isOtpSent,  int resendTimer,  int resendAttempt,  bool isLoading,  String? errorMessage,  String? verificationId,  int? resendToken,  String firstName,  String lastName,  String email,  String userType,  bool locationGranted,  bool notificationsGranted,  bool isAuthenticated)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String countryCode,  String phoneNumber,  String otp,  bool isOtpSent,  int resendTimer,  int resendAttempt,  bool isLoading,  bool isOtpLoading,  bool isLoginLoading,  String? errorMessage,  String? verificationId,  int? resendToken,  String firstName,  String lastName,  String email,  String userType,  bool locationGranted,  bool notificationsGranted,  bool isAuthenticated)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.countryCode,_that.phoneNumber,_that.otp,_that.isOtpSent,_that.resendTimer,_that.resendAttempt,_that.isLoading,_that.errorMessage,_that.verificationId,_that.resendToken,_that.firstName,_that.lastName,_that.email,_that.userType,_that.locationGranted,_that.notificationsGranted,_that.isAuthenticated);case _:
+return $default(_that.countryCode,_that.phoneNumber,_that.otp,_that.isOtpSent,_that.resendTimer,_that.resendAttempt,_that.isLoading,_that.isOtpLoading,_that.isLoginLoading,_that.errorMessage,_that.verificationId,_that.resendToken,_that.firstName,_that.lastName,_that.email,_that.userType,_that.locationGranted,_that.notificationsGranted,_that.isAuthenticated);case _:
   return orElse();
 
 }
@@ -187,10 +189,10 @@ return $default(_that.countryCode,_that.phoneNumber,_that.otp,_that.isOtpSent,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String countryCode,  String phoneNumber,  String otp,  bool isOtpSent,  int resendTimer,  int resendAttempt,  bool isLoading,  String? errorMessage,  String? verificationId,  int? resendToken,  String firstName,  String lastName,  String email,  String userType,  bool locationGranted,  bool notificationsGranted,  bool isAuthenticated)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String countryCode,  String phoneNumber,  String otp,  bool isOtpSent,  int resendTimer,  int resendAttempt,  bool isLoading,  bool isOtpLoading,  bool isLoginLoading,  String? errorMessage,  String? verificationId,  int? resendToken,  String firstName,  String lastName,  String email,  String userType,  bool locationGranted,  bool notificationsGranted,  bool isAuthenticated)  $default,) {final _that = this;
 switch (_that) {
 case _AuthState():
-return $default(_that.countryCode,_that.phoneNumber,_that.otp,_that.isOtpSent,_that.resendTimer,_that.resendAttempt,_that.isLoading,_that.errorMessage,_that.verificationId,_that.resendToken,_that.firstName,_that.lastName,_that.email,_that.userType,_that.locationGranted,_that.notificationsGranted,_that.isAuthenticated);case _:
+return $default(_that.countryCode,_that.phoneNumber,_that.otp,_that.isOtpSent,_that.resendTimer,_that.resendAttempt,_that.isLoading,_that.isOtpLoading,_that.isLoginLoading,_that.errorMessage,_that.verificationId,_that.resendToken,_that.firstName,_that.lastName,_that.email,_that.userType,_that.locationGranted,_that.notificationsGranted,_that.isAuthenticated);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -207,10 +209,10 @@ return $default(_that.countryCode,_that.phoneNumber,_that.otp,_that.isOtpSent,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String countryCode,  String phoneNumber,  String otp,  bool isOtpSent,  int resendTimer,  int resendAttempt,  bool isLoading,  String? errorMessage,  String? verificationId,  int? resendToken,  String firstName,  String lastName,  String email,  String userType,  bool locationGranted,  bool notificationsGranted,  bool isAuthenticated)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String countryCode,  String phoneNumber,  String otp,  bool isOtpSent,  int resendTimer,  int resendAttempt,  bool isLoading,  bool isOtpLoading,  bool isLoginLoading,  String? errorMessage,  String? verificationId,  int? resendToken,  String firstName,  String lastName,  String email,  String userType,  bool locationGranted,  bool notificationsGranted,  bool isAuthenticated)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.countryCode,_that.phoneNumber,_that.otp,_that.isOtpSent,_that.resendTimer,_that.resendAttempt,_that.isLoading,_that.errorMessage,_that.verificationId,_that.resendToken,_that.firstName,_that.lastName,_that.email,_that.userType,_that.locationGranted,_that.notificationsGranted,_that.isAuthenticated);case _:
+return $default(_that.countryCode,_that.phoneNumber,_that.otp,_that.isOtpSent,_that.resendTimer,_that.resendAttempt,_that.isLoading,_that.isOtpLoading,_that.isLoginLoading,_that.errorMessage,_that.verificationId,_that.resendToken,_that.firstName,_that.lastName,_that.email,_that.userType,_that.locationGranted,_that.notificationsGranted,_that.isAuthenticated);case _:
   return null;
 
 }
@@ -222,7 +224,7 @@ return $default(_that.countryCode,_that.phoneNumber,_that.otp,_that.isOtpSent,_t
 
 
 class _AuthState extends AuthState {
-  const _AuthState({this.countryCode = '+00', this.phoneNumber = '', this.otp = '', this.isOtpSent = false, this.resendTimer = 60, this.resendAttempt = 0, this.isLoading = false, this.errorMessage, this.verificationId, this.resendToken, this.firstName = '', this.lastName = '', this.email = '', this.userType = 'passenger', this.locationGranted = false, this.notificationsGranted = false, this.isAuthenticated = false}): super._();
+  const _AuthState({this.countryCode = '+1', this.phoneNumber = '', this.otp = '', this.isOtpSent = false, this.resendTimer = 60, this.resendAttempt = 0, this.isLoading = false, this.isOtpLoading = false, this.isLoginLoading = false, this.errorMessage, this.verificationId, this.resendToken, this.firstName = '', this.lastName = '', this.email = '', this.userType = 'passenger', this.locationGranted = false, this.notificationsGranted = false, this.isAuthenticated = false}): super._();
   
 
 @override@JsonKey() final  String countryCode;
@@ -232,6 +234,8 @@ class _AuthState extends AuthState {
 @override@JsonKey() final  int resendTimer;
 @override@JsonKey() final  int resendAttempt;
 @override@JsonKey() final  bool isLoading;
+@override@JsonKey() final  bool isOtpLoading;
+@override@JsonKey() final  bool isLoginLoading;
 @override final  String? errorMessage;
 @override final  String? verificationId;
 @override final  int? resendToken;
@@ -253,16 +257,16 @@ _$AuthStateCopyWith<_AuthState> get copyWith => __$AuthStateCopyWithImpl<_AuthSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.countryCode, countryCode) || other.countryCode == countryCode)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.otp, otp) || other.otp == otp)&&(identical(other.isOtpSent, isOtpSent) || other.isOtpSent == isOtpSent)&&(identical(other.resendTimer, resendTimer) || other.resendTimer == resendTimer)&&(identical(other.resendAttempt, resendAttempt) || other.resendAttempt == resendAttempt)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.verificationId, verificationId) || other.verificationId == verificationId)&&(identical(other.resendToken, resendToken) || other.resendToken == resendToken)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.userType, userType) || other.userType == userType)&&(identical(other.locationGranted, locationGranted) || other.locationGranted == locationGranted)&&(identical(other.notificationsGranted, notificationsGranted) || other.notificationsGranted == notificationsGranted)&&(identical(other.isAuthenticated, isAuthenticated) || other.isAuthenticated == isAuthenticated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.countryCode, countryCode) || other.countryCode == countryCode)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.otp, otp) || other.otp == otp)&&(identical(other.isOtpSent, isOtpSent) || other.isOtpSent == isOtpSent)&&(identical(other.resendTimer, resendTimer) || other.resendTimer == resendTimer)&&(identical(other.resendAttempt, resendAttempt) || other.resendAttempt == resendAttempt)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isOtpLoading, isOtpLoading) || other.isOtpLoading == isOtpLoading)&&(identical(other.isLoginLoading, isLoginLoading) || other.isLoginLoading == isLoginLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.verificationId, verificationId) || other.verificationId == verificationId)&&(identical(other.resendToken, resendToken) || other.resendToken == resendToken)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.userType, userType) || other.userType == userType)&&(identical(other.locationGranted, locationGranted) || other.locationGranted == locationGranted)&&(identical(other.notificationsGranted, notificationsGranted) || other.notificationsGranted == notificationsGranted)&&(identical(other.isAuthenticated, isAuthenticated) || other.isAuthenticated == isAuthenticated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,countryCode,phoneNumber,otp,isOtpSent,resendTimer,resendAttempt,isLoading,errorMessage,verificationId,resendToken,firstName,lastName,email,userType,locationGranted,notificationsGranted,isAuthenticated);
+int get hashCode => Object.hashAll([runtimeType,countryCode,phoneNumber,otp,isOtpSent,resendTimer,resendAttempt,isLoading,isOtpLoading,isLoginLoading,errorMessage,verificationId,resendToken,firstName,lastName,email,userType,locationGranted,notificationsGranted,isAuthenticated]);
 
 @override
 String toString() {
-  return 'AuthState(countryCode: $countryCode, phoneNumber: $phoneNumber, otp: $otp, isOtpSent: $isOtpSent, resendTimer: $resendTimer, resendAttempt: $resendAttempt, isLoading: $isLoading, errorMessage: $errorMessage, verificationId: $verificationId, resendToken: $resendToken, firstName: $firstName, lastName: $lastName, email: $email, userType: $userType, locationGranted: $locationGranted, notificationsGranted: $notificationsGranted, isAuthenticated: $isAuthenticated)';
+  return 'AuthState(countryCode: $countryCode, phoneNumber: $phoneNumber, otp: $otp, isOtpSent: $isOtpSent, resendTimer: $resendTimer, resendAttempt: $resendAttempt, isLoading: $isLoading, isOtpLoading: $isOtpLoading, isLoginLoading: $isLoginLoading, errorMessage: $errorMessage, verificationId: $verificationId, resendToken: $resendToken, firstName: $firstName, lastName: $lastName, email: $email, userType: $userType, locationGranted: $locationGranted, notificationsGranted: $notificationsGranted, isAuthenticated: $isAuthenticated)';
 }
 
 
@@ -273,7 +277,7 @@ abstract mixin class _$AuthStateCopyWith<$Res> implements $AuthStateCopyWith<$Re
   factory _$AuthStateCopyWith(_AuthState value, $Res Function(_AuthState) _then) = __$AuthStateCopyWithImpl;
 @override @useResult
 $Res call({
- String countryCode, String phoneNumber, String otp, bool isOtpSent, int resendTimer, int resendAttempt, bool isLoading, String? errorMessage, String? verificationId, int? resendToken, String firstName, String lastName, String email, String userType, bool locationGranted, bool notificationsGranted, bool isAuthenticated
+ String countryCode, String phoneNumber, String otp, bool isOtpSent, int resendTimer, int resendAttempt, bool isLoading, bool isOtpLoading, bool isLoginLoading, String? errorMessage, String? verificationId, int? resendToken, String firstName, String lastName, String email, String userType, bool locationGranted, bool notificationsGranted, bool isAuthenticated
 });
 
 
@@ -290,7 +294,7 @@ class __$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? countryCode = null,Object? phoneNumber = null,Object? otp = null,Object? isOtpSent = null,Object? resendTimer = null,Object? resendAttempt = null,Object? isLoading = null,Object? errorMessage = freezed,Object? verificationId = freezed,Object? resendToken = freezed,Object? firstName = null,Object? lastName = null,Object? email = null,Object? userType = null,Object? locationGranted = null,Object? notificationsGranted = null,Object? isAuthenticated = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? countryCode = null,Object? phoneNumber = null,Object? otp = null,Object? isOtpSent = null,Object? resendTimer = null,Object? resendAttempt = null,Object? isLoading = null,Object? isOtpLoading = null,Object? isLoginLoading = null,Object? errorMessage = freezed,Object? verificationId = freezed,Object? resendToken = freezed,Object? firstName = null,Object? lastName = null,Object? email = null,Object? userType = null,Object? locationGranted = null,Object? notificationsGranted = null,Object? isAuthenticated = null,}) {
   return _then(_AuthState(
 countryCode: null == countryCode ? _self.countryCode : countryCode // ignore: cast_nullable_to_non_nullable
 as String,phoneNumber: null == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
@@ -299,6 +303,8 @@ as String,isOtpSent: null == isOtpSent ? _self.isOtpSent : isOtpSent // ignore: 
 as bool,resendTimer: null == resendTimer ? _self.resendTimer : resendTimer // ignore: cast_nullable_to_non_nullable
 as int,resendAttempt: null == resendAttempt ? _self.resendAttempt : resendAttempt // ignore: cast_nullable_to_non_nullable
 as int,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as bool,isOtpLoading: null == isOtpLoading ? _self.isOtpLoading : isOtpLoading // ignore: cast_nullable_to_non_nullable
+as bool,isLoginLoading: null == isLoginLoading ? _self.isLoginLoading : isLoginLoading // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,verificationId: freezed == verificationId ? _self.verificationId : verificationId // ignore: cast_nullable_to_non_nullable
 as String?,resendToken: freezed == resendToken ? _self.resendToken : resendToken // ignore: cast_nullable_to_non_nullable

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rideiq/core/theme/app_colors.dart';
 import 'package:rideiq/core/utils/size_config.dart';
 import 'package:rideiq/features/rider/model/fare_result.dart';
 import 'package:rideiq/features/rider/view/widgets/location_summary_header.dart';
@@ -29,7 +30,7 @@ class _FareResultsScreenState extends ConsumerState<FareResultsScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: AppColors.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -52,14 +53,18 @@ class _FareResultsScreenState extends ConsumerState<FareResultsScreen> {
                     children: [
                       SizedBox(height: 20.h),
                       // Category Filters
-                      Row(
-                        children: [
-                          _buildFilterPill("All", l10n.filter_all),
-                          SizedBox(width: 12.w),
-                          _buildFilterPill("Economy", l10n.filter_economy),
-                          SizedBox(width: 12.w),
-                          _buildFilterPill("Premium", l10n.filter_premium),
-                        ],
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        clipBehavior: Clip.none,
+                        child: Row(
+                          children: [
+                            _buildFilterPill("All", l10n.filter_all),
+                            SizedBox(width: 12.w),
+                            _buildFilterPill("Economy", l10n.filter_economy),
+                            SizedBox(width: 12.w),
+                            _buildFilterPill("Premium", l10n.filter_premium),
+                          ],
+                        ),
                       ),
 
                       SizedBox(height: 24.h),

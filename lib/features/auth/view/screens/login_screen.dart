@@ -4,10 +4,11 @@ import 'package:rideiq/features/auth/viewmodel/auth_viewmodel.dart';
 import 'package:rideiq/features/auth/view/widgets/auth_header.dart';
 import 'package:rideiq/features/auth/view/widgets/phone_input_field.dart';
 import 'package:rideiq/features/auth/view/widgets/otp_input_field.dart';
-import 'package:rideiq/features/home/view/screens/main_dashboard_screen.dart';
 import 'package:rideiq/shared/widgets/primary_button.dart';
 import 'package:rideiq/core/utils/size_config.dart';
-import 'package:elegant_notification/elegant_notification.dart';
+import 'package:rideiq/core/utils/notification_utils.dart';
+import 'package:rideiq/features/auth/view/screens/user_selection_screen.dart';
+import 'package:rideiq/core/theme/app_colors.dart';
 import 'package:rideiq/l10n/app_localizations.dart';
 
 class LoginScreen extends ConsumerWidget {
@@ -32,9 +33,16 @@ class LoginScreen extends ConsumerWidget {
     ) {
       if (next) {
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const MainDashboardScreen()),
+          MaterialPageRoute(builder: (_) => const UserSelectionScreen()),
           (route) => false,
         );
+      }
+    });
+
+    // Listen for OTP Sent
+    ref.listen(authViewModelProvider.select((s) => s.isOtpSent), (prev, next) {
+      if (next && !(prev ?? false)) {
+        RydeNotification.showSuccess(context, l10n.otp_sent);
       }
     });
 
@@ -44,13 +52,7 @@ class LoginScreen extends ConsumerWidget {
       next,
     ) {
       if (next != null) {
-        ElegantNotification.error(
-          width: 380.w,
-          height: 100.h,
-          title: Text(l10n.error),
-          description: Text(next),
-          displayCloseButton: true,
-        ).show(context);
+        RydeNotification.showError(context, next);
       }
     });
 
@@ -64,7 +66,7 @@ class LoginScreen extends ConsumerWidget {
             children: [
               AuthHeader(title: l10n.login),
 
-              const SizedBox(height: 100),
+              const SizedBox(height: 40),
               PhoneInputField(
                 countryCode: state.countryCode,
                 onPhoneChanged: notifier.updatePhoneNumber,
@@ -76,17 +78,17 @@ class LoginScreen extends ConsumerWidget {
               if (!state.isOtpSent)
                 PrimaryButton(
                   text: l10n.send_otp,
-                  isLoading: state.isLoading,
+                  isLoading: state.isOtpLoading,
                   onPressed: notifier.sendOtp,
                 )
-              else ...[
+              else
                 // OTP Sent Status Button
                 Container(
                   width: double.infinity,
-                  height: 64.h,
+                  height: 50.h,
                   decoration: BoxDecoration(
                     color: const Color(0xFFEBF2FF),
-                    borderRadius: BorderRadius.circular(20.w),
+                    borderRadius: BorderRadius.circular(12.w),
                   ),
                   child: Center(
                     child: Text(
@@ -100,67 +102,79 @@ class LoginScreen extends ConsumerWidget {
                   ),
                 ),
 
-                const SizedBox(height: 48),
-                const Divider(color: Color(0xFFF0F0F0), thickness: 1),
-                const SizedBox(height: 48),
+              const SizedBox(height: 24),
+              const Divider(color: Color(0xFFF0F0F0), thickness: 1),
+              const SizedBox(height: 24),
 
-                Text(
-                  l10n.enter_otp,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black54,
-                  ),
+              Text(
+                l10n.enter_otp,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textSecondary,
                 ),
-                const SizedBox(height: 16),
+              ),
+              const SizedBox(height: 16),
 
-                // OTP Boxes
-                OtpInputField(onCompleted: notifier.updateOtp, length: 6),
+              // OTP Boxes
+              OtpInputField(onCompleted: notifier.updateOtp, length: 6),
 
-                const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          l10n.resend_otp_in,
-                          style: const TextStyle(color: Colors.black45, fontSize: 14),
-                        ),
-                        Text(
-                          _formatTimer(state.resendTimer),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (state.resendTimer == 0)
-                      TextButton(
-                        onPressed: notifier.sendOtp,
-                        child: Text(
-                          l10n.resend,
-                          style: const TextStyle(
-                            color: Color(0xFF1E74E9),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                          ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        l10n.resend_otp_in,
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 14,
                         ),
                       ),
-                  ],
-                ),
+                      const SizedBox(width: 4),
+                      Text(
+                        _formatTimer(state.resendTimer),
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (state.resendTimer == 0)
+                    TextButton(
+                      onPressed: state.isOtpLoading ? null : notifier.sendOtp,
+                      child: state.isOtpLoading
+                          ? const SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Color(0xFF1E74E9),
+                              ),
+                            )
+                          : Text(
+                              l10n.resend,
+                              style: const TextStyle(
+                                color: Color(0xFF1E74E9),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                              ),
+                            ),
+                    ),
+                ],
+              ),
 
-                const SizedBox(height: 40),
+              const SizedBox(height: 20),
 
-                PrimaryButton(
-                  text: l10n.login,
-                  isLoading: state.isLoading,
-                  onPressed: state.otp.length == 6 ? notifier.login : null,
-                ),
-              ],
+              PrimaryButton(
+                text: l10n.login,
+                isLoading: state.isLoginLoading,
+                onPressed: state.otp.length == 6 ? notifier.login : null,
+              ),
             ],
           ),
         ),
@@ -168,4 +182,3 @@ class LoginScreen extends ConsumerWidget {
     );
   }
 }
-

@@ -8,7 +8,6 @@ part 'profile_viewmodel.g.dart';
 class ProfileViewModel extends _$ProfileViewModel {
   @override
   ProfileState build() {
-    // Initial fetch when the viewmodel is created
     Future.microtask(() => fetchProfile());
     return const ProfileState();
   }
@@ -16,13 +15,8 @@ class ProfileViewModel extends _$ProfileViewModel {
   Future<void> fetchProfile() async {
     state = state.copyWith(isLoading: true);
     try {
-      final repository = ref.read(profileRepositoryProvider);
-      final userData = await repository.fetchProfile();
-      if (userData != null) {
-        state = state.copyWith(isLoading: false, userData: userData, errorMessage: null);
-      } else {
-        state = state.copyWith(isLoading: false, errorMessage: "Failed to load profile");
-      }
+      final userData = await ref.read(profileRepositoryProvider).fetchProfile();
+      state = state.copyWith(isLoading: false, userData: userData, errorMessage: null);
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
@@ -35,8 +29,7 @@ class ProfileViewModel extends _$ProfileViewModel {
   }) async {
     state = state.copyWith(isLoading: true);
     try {
-      final repository = ref.read(profileRepositoryProvider);
-      final userData = await repository.updateProfile(
+      final userData = await ref.read(profileRepositoryProvider).updateProfile(
         firstName: firstName,
         lastName: lastName,
         email: email,
@@ -44,10 +37,9 @@ class ProfileViewModel extends _$ProfileViewModel {
       if (userData != null) {
         state = state.copyWith(isLoading: false, userData: userData, errorMessage: null);
         return true;
-      } else {
-        state = state.copyWith(isLoading: false, errorMessage: "Failed to update profile");
-        return false;
       }
+      state = state.copyWith(isLoading: false, errorMessage: "Update failed");
+      return false;
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
       return false;

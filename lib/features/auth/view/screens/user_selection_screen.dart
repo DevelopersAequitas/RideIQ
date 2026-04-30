@@ -5,6 +5,7 @@ import 'package:rideiq/features/auth/view/screens/permission_screen.dart';
 import 'package:rideiq/features/auth/view/widgets/user_type_card.dart';
 import 'package:rideiq/shared/widgets/primary_button.dart';
 import 'package:rideiq/core/utils/size_config.dart';
+import 'package:rideiq/core/theme/app_colors.dart';
 import 'package:rideiq/core/constants/app_assets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:rideiq/l10n/app_localizations.dart';
@@ -41,7 +42,7 @@ class UserSelectionScreen extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black,
+                  color: AppColors.textPrimary,
                   fontFamily: 'Figtree',
                 ),
               ).animate().fade().slideX(begin: -0.1, end: 0),
@@ -72,15 +73,11 @@ class UserSelectionScreen extends ConsumerWidget {
                 text: l10n.continue_btn,
                 isLoading: state.isLoading,
                 onPressed: state.userType.isNotEmpty ? () async {
-                  try {
-                    await notifier.syncWithBackend();
-                    if (context.mounted) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const PermissionScreen()),
-                      );
-                    }
-                  } catch (e) {
-                    // Error is handled by listener
+                  await notifier.completeUserSelection();
+                  if (context.mounted) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const PermissionScreen()),
+                    );
                   }
                 } : null,
               ).animate().fade(delay: 600.ms),

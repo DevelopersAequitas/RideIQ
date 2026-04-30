@@ -136,7 +136,9 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get found_trips => '142 viajes encontrados';
+  String found_trips(String count) {
+    return '$count viajes encontrados';
+  }
 
   @override
   String get estimated_sync_time =>
@@ -550,4 +552,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get min_abbreviation => 'min';
+
+  @override
+  String get email_or_phone => 'Correo electrónico o teléfono';
+
+  @override
+  String get password => 'Contraseña';
+
+  @override
+  String get compare_fares => 'Comparar tarifas';
+
+  @override
+  String get recent_locations => 'Ubicaciones recientes';
 }
