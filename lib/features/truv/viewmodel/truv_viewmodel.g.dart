@@ -41,7 +41,7 @@ final class TruvViewModelProvider
   }
 }
 
-String _$truvViewModelHash() => r'4fc6aed7c65b156584ef9fe051a0d798a135680d';
+String _$truvViewModelHash() => r'493afdf6655cc5d4e256475f43723ee977a0b748';
 
 abstract class _$TruvViewModel extends $Notifier<TruvState> {
   TruvState build();

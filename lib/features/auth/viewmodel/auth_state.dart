@@ -22,7 +22,7 @@ abstract class AuthState with _$AuthState {
     @Default('') String firstName,
     @Default('') String lastName,
     @Default('') String email,
-    @Default('passenger') String userType,
+    @Default('driver') String userType,
     @Default(false) bool locationGranted,
     @Default(false) bool notificationsGranted,
     @Default(false) bool isAuthenticated,

@@ -146,7 +146,11 @@ class ApiService {
 
   String _handleError(DioException e) {
     if (e.response != null) {
-      return e.response?.data['message'] ?? 'Something went wrong';
+      final data = e.response?.data;
+      if (data is Map<String, dynamic>) {
+        return data['message'] ?? 'Something went wrong';
+      }
+      return data?.toString() ?? 'Something went wrong';
     }
     switch (e.type) {
       case DioExceptionType.connectionTimeout:

@@ -15,7 +15,7 @@ abstract class AuthRepository {
     required String phoneNumber,
     required Function(String verificationId, int? resendToken) onCodeSent,
     required Function(String errorMessage) onVerificationFailed,
-    required Function() onVerificationCompleted,
+    required Function(UserCredential userCredential) onVerificationCompleted,
   });
 
   Future<UserCredential?> signInWithOtp({
@@ -62,13 +62,13 @@ class FirebaseAuthRepository implements AuthRepository {
     required String phoneNumber,
     required Function(String verificationId, int? resendToken) onCodeSent,
     required Function(String errorMessage) onVerificationFailed,
-    required Function() onVerificationCompleted,
+    required Function(UserCredential userCredential) onVerificationCompleted,
   }) async {
     await _auth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        await _auth.signInWithCredential(credential);
-        onVerificationCompleted();
+        final userCredential = await _auth.signInWithCredential(credential);
+        onVerificationCompleted(userCredential);
       },
       verificationFailed: (FirebaseAuthException e) {
         onVerificationFailed(e.message ?? 'Verification failed');
@@ -117,7 +117,9 @@ class FirebaseAuthRepository implements AuthRepository {
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
-      if (response.data['status'] == true && response.data['data'] != null) {
+      if (response.data is Map<String, dynamic> &&
+          response.data['status'] == true &&
+          response.data['data'] != null) {
         final backendToken = response.data['data']['token'];
         if (backendToken != null) {
           await LocalService.setAuthToken(backendToken);

@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:rideiq/core/constants/api_constants.dart';
 import 'package:rideiq/core/services/api_service.dart';
+import 'package:rideiq/core/utils/app_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'truv_repository.g.dart';
@@ -14,10 +16,26 @@ class TruvRepository {
 
   TruvRepository(this._apiService);
 
-  Future<Map<String, dynamic>?> createBridgeToken() async {
-    final response = await _apiService.post(ApiConstants.driverTruvCreateToken);
-    if (response.data['status'] == true) {
-      return response.data['data'];
+  Future<Map<String, dynamic>?> createBridgeToken({String? companyId}) async {
+    final response = await _apiService.post(
+      ApiConstants.driverTruvCreateToken,
+      data: companyId != null ? {'company_mapping_id': companyId} : null,
+    );
+    AppLogger.info('Truv Response Data: ${response.data}', tag: 'TruvRepo');
+    
+    final data = response.data;
+    if (data is Map<String, dynamic>) {
+      if (data['status'] == true) {
+        return data;
+      }
+    } else if (data is String) {
+      // Manual fallback if Dio didn't parse it
+      try {
+        final decoded = jsonDecode(data);
+        if (decoded['status'] == true) {
+          return decoded;
+        }
+      } catch (_) {}
     }
     return null;
   }

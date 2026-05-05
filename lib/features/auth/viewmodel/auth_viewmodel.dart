@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rideiq/features/auth/repository/auth_repository.dart';
@@ -96,17 +97,24 @@ class AuthViewModel extends _$AuthViewModel {
               if (message.contains("too-many-requests")) {
                 userMessage = "Too many attempts. Please try again later.";
               } else if (message.contains("invalid-phone-number")) {
-                userMessage = "Invalid phone number. Please check and try again.";
+                userMessage =
+                    "Invalid phone number. Please check and try again.";
               }
-              state = state.copyWith(isOtpLoading: false, errorMessage: userMessage);
+              state = state.copyWith(
+                isOtpLoading: false,
+                errorMessage: userMessage,
+              );
             },
-            onVerificationCompleted: () {
-              state = state.copyWith(isOtpLoading: false);
+            onVerificationCompleted: (userCredential) async {
+              await _finalizeLogin(userCredential);
             },
           );
     } catch (e) {
       debugPrint("OTP Request Error: $e");
-      state = state.copyWith(isOtpLoading: false, errorMessage: "Failed to send OTP. Please try again.");
+      state = state.copyWith(
+        isOtpLoading: false,
+        errorMessage: "Failed to send OTP. Please try again.",
+      );
     }
   }
 
@@ -146,11 +154,40 @@ class AuthViewModel extends _$AuthViewModel {
           );
 
       if (userCredential != null && userCredential.user != null) {
-        final user = userCredential.user!;
-        final token = await user.getIdToken();
-        
-        // Initial verification call with token
-        await ref.read(authRepositoryProvider).verifyBackend(
+        await _finalizeLogin(userCredential);
+      }
+    } catch (e) {
+      debugPrint("Login Error: $e");
+
+      String userMessage = e.toString();
+
+      // If it's a specific Firebase error
+      if (userMessage.contains("invalid-verification-code")) {
+        userMessage = "Invalid OTP. Please check and try again.";
+      } else if (userMessage.contains("network-request-failed")) {
+        userMessage = "Network error. Please check your connection.";
+      }
+      
+      // If the message is just 'Exception: ...', strip it for the user
+      if (userMessage.startsWith("Exception: ")) {
+        userMessage = userMessage.replaceFirst("Exception: ", "");
+      }
+
+      state = state.copyWith(
+        isLoginLoading: false, 
+        errorMessage: userMessage,
+      );
+    }
+  }
+
+  Future<void> _finalizeLogin(UserCredential userCredential) async {
+    final user = userCredential.user!;
+    final token = await user.getIdToken();
+
+    // Initial verification call with token
+    await ref
+        .read(authRepositoryProvider)
+        .verifyBackend(
           token: token ?? '',
           firstName: state.firstName,
           lastName: state.lastName,
@@ -158,19 +195,13 @@ class AuthViewModel extends _$AuthViewModel {
           role: state.userType,
         );
 
-        await LocalService.setAuthStep(AuthSteps.userType);
-        state = state.copyWith(isLoginLoading: false, isAuthenticated: true);
-      }
-    } catch (e) {
-      debugPrint("Login Error: $e");
-      String userMessage = "Invalid OTP. Please check and try again.";
-      if (e.toString().contains("network-request-failed")) {
-        userMessage = "Network error. Please check your connection.";
-      }
-      state = state.copyWith(isLoginLoading: false, errorMessage: userMessage);
-    }
+    await LocalService.setAuthStep(AuthSteps.userType);
+    state = state.copyWith(
+      isOtpLoading: false,
+      isLoginLoading: false,
+      isAuthenticated: true,
+    );
   }
-
 
   Future<void> logout() async {
     state = state.copyWith(isLoading: true);

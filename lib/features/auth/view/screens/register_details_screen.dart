@@ -26,6 +26,23 @@ class RegisterDetailsScreen extends ConsumerWidget {
     final notifier = ref.read(authViewModelProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
 
+    // Listen for authentication success
+    ref.listen(authViewModelProvider.select((s) => s.isAuthenticated), (
+      prev,
+      next,
+    ) async {
+      if (next) {
+        await notifier.completeRegistration(); // Save registration step
+        if (context.mounted) {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => const UserSelectionScreen()),
+            (route) => false,
+          );
+        }
+      }
+    });
+
+    // Listen for errors
     ref.listen(authViewModelProvider.select((s) => s.errorMessage), (
       prev,
       next,
@@ -133,18 +150,12 @@ class RegisterDetailsScreen extends ConsumerWidget {
 
                       PrimaryButton(
                         text: l10n.confirm,
-                        isLoading: state.isLoading,
-                        onPressed: state.otp.length == 6 ? () async {
-                          await notifier.login();
-                          await notifier.completeRegistration(); // Save step
-                          if (context.mounted) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const UserSelectionScreen(),
-                              ),
-                            );
-                          }
-                        } : null,
+                        isLoading: state.isLoginLoading,
+                        onPressed: state.otp.length == 6
+                            ? () async {
+                                await notifier.login();
+                              }
+                            : null,
                       ),
 
                       SizedBox(height: 20.h),
@@ -160,9 +171,7 @@ class RegisterDetailsScreen extends ConsumerWidget {
                               fontFamily: 'Figtree',
                             ),
                             children: [
-                              TextSpan(
-                                text: l10n.by_clicking_confirm,
-                              ),
+                              TextSpan(text: l10n.by_clicking_confirm),
                               TextSpan(
                                 text: l10n.terms_and_conditions,
                                 style: const TextStyle(
@@ -193,4 +202,3 @@ class RegisterDetailsScreen extends ConsumerWidget {
     );
   }
 }
-

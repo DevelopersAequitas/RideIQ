@@ -224,7 +224,7 @@ return $default(_that.countryCode,_that.phoneNumber,_that.otp,_that.isOtpSent,_t
 
 
 class _AuthState extends AuthState {
-  const _AuthState({this.countryCode = '+1', this.phoneNumber = '', this.otp = '', this.isOtpSent = false, this.resendTimer = 60, this.resendAttempt = 0, this.isLoading = false, this.isOtpLoading = false, this.isLoginLoading = false, this.errorMessage, this.verificationId, this.resendToken, this.firstName = '', this.lastName = '', this.email = '', this.userType = 'passenger', this.locationGranted = false, this.notificationsGranted = false, this.isAuthenticated = false}): super._();
+  const _AuthState({this.countryCode = '+1', this.phoneNumber = '', this.otp = '', this.isOtpSent = false, this.resendTimer = 60, this.resendAttempt = 0, this.isLoading = false, this.isOtpLoading = false, this.isLoginLoading = false, this.errorMessage, this.verificationId, this.resendToken, this.firstName = '', this.lastName = '', this.email = '', this.userType = 'driver', this.locationGranted = false, this.notificationsGranted = false, this.isAuthenticated = false}): super._();
   
 
 @override@JsonKey() final  String countryCode;

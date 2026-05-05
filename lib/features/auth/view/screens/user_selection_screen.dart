@@ -20,7 +20,10 @@ class UserSelectionScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
 
     // Listen for errors
-    ref.listen(authViewModelProvider.select((s) => s.errorMessage), (prev, next) {
+    ref.listen(authViewModelProvider.select((s) => s.errorMessage), (
+      prev,
+      next,
+    ) {
       if (next != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(next), backgroundColor: Colors.red),
@@ -46,19 +49,19 @@ class UserSelectionScreen extends ConsumerWidget {
                   fontFamily: 'Figtree',
                 ),
               ).animate().fade().slideX(begin: -0.1, end: 0),
-              
+
               SizedBox(height: 32.h),
-              
+
               UserTypeCard(
                 title: l10n.im_a_passenger,
                 subtitle: l10n.find_cheapest_ride_fares,
                 imagePath: AppAssets.passengerPng,
-                isSelected: state.userType == 'passenger',
-                onTap: () => notifier.updateUserType('passenger'),
+                isSelected: state.userType == 'rider',
+                onTap: () => notifier.updateUserType('rider'),
               ).animate().fade(delay: 200.ms).slideY(begin: 0.1, end: 0),
-              
+
               SizedBox(height: 20.h),
-              
+
               UserTypeCard(
                 title: l10n.im_a_driver,
                 subtitle: l10n.compare_my_earnings,
@@ -66,20 +69,24 @@ class UserSelectionScreen extends ConsumerWidget {
                 isSelected: state.userType == 'driver',
                 onTap: () => notifier.updateUserType('driver'),
               ).animate().fade(delay: 400.ms).slideY(begin: 0.1, end: 0),
-              
+
               const Spacer(),
-              
+
               PrimaryButton(
                 text: l10n.continue_btn,
                 isLoading: state.isLoading,
-                onPressed: state.userType.isNotEmpty ? () async {
-                  await notifier.completeUserSelection();
-                  if (context.mounted) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const PermissionScreen()),
-                    );
-                  }
-                } : null,
+                onPressed: state.userType.isNotEmpty
+                    ? () async {
+                        await notifier.completeUserSelection();
+                        if (context.mounted) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const PermissionScreen(),
+                            ),
+                          );
+                        }
+                      }
+                    : null,
               ).animate().fade(delay: 600.ms),
             ],
           ),
@@ -88,4 +95,3 @@ class UserSelectionScreen extends ConsumerWidget {
     );
   }
 }
-

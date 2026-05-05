@@ -55,7 +55,7 @@ class _DriverVerificationScreenState
 
   void _startTruvVerification() async {
     final viewModel = ref.read(truvViewModelProvider.notifier);
-    final token = await viewModel.createBridgeToken();
+    final token = await viewModel.createBridgeToken(platformName: widget.platformName);
     if (token != null && mounted) {
       setState(() {
         _bridgeToken = token;
@@ -88,16 +88,8 @@ class _DriverVerificationScreenState
     } else if (event is TruvEventClose) {
       AppLogger.info('Truv Bridge Closed', tag: 'DriverVerification');
       if (mounted) {
-        // Navigate to syncing screen even on close to check if connection happened
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => LinkSyncingScreen(
-              platformName: widget.platformName,
-              isDriverMode: true,
-            ),
-          ),
-        );
+        // Just go back so user can try again, don't show syncing animation
+        Navigator.pop(context);
       }
     } else if (event is TruvEventError) {
       AppLogger.error(

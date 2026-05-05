@@ -421,11 +421,19 @@ class TruvViewModel extends _$TruvViewModel {
     return TruvState();
   }
 
-  Future<String?> createBridgeToken() async {
+  Future<String?> createBridgeToken({String? platformName}) async {
     state = state.copyWith(isLoading: true);
-    AppLogger.info('>>> Preparing Truv Flow...', tag: 'TruvFlow');
+    AppLogger.info('>>> Preparing Truv Flow for $platformName...', tag: 'TruvFlow');
 
     try {
+      // Mapping for Uber and Lyft Company IDs
+      String? companyId;
+      if (platformName?.toLowerCase() == 'uber') {
+        companyId = '3d2d4abeee6545b6aa75e277a3e827f7';
+      } else if (platformName?.toLowerCase() == 'lyft') {
+        companyId = '44504d1f33964b59bdcb05d3830d4a20';
+      }
+
       // 1. Check if we have the backend bearer token
       String? backendToken = await LocalService.getAuthToken();
 
@@ -442,9 +450,7 @@ class TruvViewModel extends _$TruvViewModel {
           final firstName = nameParts.isNotEmpty ? nameParts.first : '';
           final lastName = nameParts.length > 1 ? nameParts.last : '';
 
-          await ref
-              .read(authRepositoryProvider)
-              .verifyBackend(
+          await ref.read(authRepositoryProvider).verifyBackend(
                 token: firebaseToken.toString(),
                 firstName: firstName,
                 lastName: lastName,
@@ -466,8 +472,11 @@ class TruvViewModel extends _$TruvViewModel {
       }
 
       // 2. Now call create-token with the backend token (handled by ApiService interceptor)
-      AppLogger.info('Requesting Bridge Token...', tag: 'TruvFlow');
-      final data = await ref.read(truvRepositoryProvider).createBridgeToken();
+      AppLogger.info('Requesting Bridge Token for $companyId...', tag: 'TruvFlow');
+      final data = await ref
+          .read(truvRepositoryProvider)
+          .createBridgeToken(companyId: companyId);
+      
       if (!ref.mounted) return null;
 
       if (data != null) {

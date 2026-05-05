@@ -203,7 +203,7 @@ class LinkPlatformScreen extends ConsumerWidget {
 
 
                             final truvNotifier = ref.read(truvViewModelProvider.notifier);
-                            final bridgeToken = await truvNotifier.createBridgeToken();
+                            final bridgeToken = await truvNotifier.createBridgeToken(platformName: platformName);
                             
                             if (bridgeToken != null && context.mounted) {
                               Navigator.push(
